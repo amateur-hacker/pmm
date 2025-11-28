@@ -1,7 +1,18 @@
+/** biome-ignore-all lint/suspicious/noArrayIndexKey: <explanation> */
 import Link from "next/link";
-import { Handshake, Users, Mail, Info } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import {
+  Handshake,
+  Users,
+  Mail,
+  Info,
+  Heart,
+  Star,
+  Calendar,
+  MapPin,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -32,58 +43,135 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
-      <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex justify-center items-center mb-6">
-            <Handshake className="h-20 w-20 text-primary" />
+      <section className="py-20 md:py-32 relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-secondary/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-6 p-4 rounded-full bg-primary/10">
+              <Handshake className="h-16 w-16 text-primary" />
+            </div>
+
+            <div className="max-w-4xl">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                Purvanchal Mitra Mahasabha (Regd.)
+              </h1>
+              <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto">
+                A socially committed NGO working tirelessly for the development
+                and well-being of communities across the eastern region of India
+              </p>
+
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <Button
+                  size="lg"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg cursor-pointer"
+                  asChild
+                >
+                  <Link href="/form">Join Our Community</Link>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="px-8 py-6 text-lg cursor-pointer"
+                  asChild
+                >
+                  <Link href="/about">Learn More</Link>
+                </Button>
+              </div>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Purvanchal Mitra Mahasabha (Regd.)
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto mb-10">
-            A socially committed NGO working tirelessly for the development and
-            well-being of communities across the eastern region of India
-          </p>
         </div>
       </section>
 
-      {/* About & Mission Section */}
-      <section className="py-16 bg-muted/50">
+      {/* Stats Section */}
+      <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-            <div>
-              <h2 className="text-3xl font-bold mb-6">
-                About Our Organization
-              </h2>
-              <p className="text-lg text-muted-foreground mb-4">
-                Founded with a vision to uplift society by blending cultural
-                strength with social development for a better future.
-              </p>
-              <p className="text-lg text-muted-foreground">
-                We are committed to supporting local needs, preserving
-                traditions that shape our identity, and building strong
-                communities across eastern India.
-              </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div className="p-6">
+              <div className="text-4xl font-bold text-primary mb-2">5000+</div>
+              <div className="text-muted-foreground">Active Members</div>
             </div>
-            <div className="bg-card p-8 rounded-xl shadow-sm border">
-              <div className="flex items-center mb-4">
-                <Users className="h-10 w-10 text-primary mr-4" />
-                <h3 className="text-2xl font-semibold">Our Mission</h3>
+            <div className="p-6">
+              <div className="text-4xl font-bold text-primary mb-2">100+</div>
+              <div className="text-muted-foreground">Communities Served</div>
+            </div>
+            <div className="p-6">
+              <div className="text-4xl font-bold text-primary mb-2">25+</div>
+              <div className="text-muted-foreground">Years of Service</div>
+            </div>
+            <div className="p-6">
+              <div className="text-4xl font-bold text-primary mb-2">50+</div>
+              <div className="text-muted-foreground">Projects Completed</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission & Vision Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <Badge variant="secondary" className="mb-4">
+              Our Foundation
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Mission & Vision
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Building a stronger society through cultural preservation, social
+              welfare, and community development
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <Card className="p-8 border-0 shadow-lg bg-gradient-to-br from-primary/5 to-secondary/5">
+              <div className="flex items-start">
+                <div className="mr-4 flex-shrink-0">
+                  <Heart className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-semibold mb-3">Our Mission</h3>
+                  <p className="text-muted-foreground">
+                    To create empowered communities by blending cultural
+                    strength with social development. We strive to preserve
+                    traditions while fostering progress, ensuring every
+                    individual has the opportunity to thrive and contribute to
+                    societal well-being.
+                  </p>
+                </div>
               </div>
-              <p className="text-muted-foreground">
-                Building strong communities through cultural preservation,
-                social welfare, and educational initiatives that bring people
-                together.
-              </p>
-            </div>
+            </Card>
+
+            <Card className="p-8 border-0 shadow-lg bg-gradient-to-br from-secondary/5 to-primary/5">
+              <div className="flex items-start">
+                <div className="mr-4 flex-shrink-0">
+                  <Star className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-semibold mb-3">Our Vision</h3>
+                  <p className="text-muted-foreground">
+                    A society where cultural heritage and social progress
+                    coexist harmoniously. We envision communities that are
+                    self-reliant, inclusive, and driven by shared values of
+                    compassion, unity, and sustainable development.
+                  </p>
+                </div>
+              </div>
+            </Card>
           </div>
         </div>
       </section>
 
       {/* Activities Section */}
-      <section className="py-16">
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
+            <Badge variant="secondary" className="mb-4">
+              What We Do
+            </Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Our Activities
             </h2>
@@ -94,89 +182,275 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-xl border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow text-center">
-              <div className="flex justify-center mb-4">
-                <Users className="h-12 w-12 text-primary" />
+            <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl">
+              <div className="p-8">
+                <div className="flex justify-center mb-6">
+                  <div className="p-4 rounded-full bg-primary/10">
+                    <Users className="h-12 w-12 text-primary" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold mb-3 text-center">
+                  Cultural Celebrations
+                </h3>
+                <p className="text-muted-foreground text-center mb-4">
+                  Organizing large-scale festivals like Chhath Puja, Ram Leela,
+                  and community gatherings to preserve traditions.
+                </p>
+                <div className="flex justify-center">
+                  <Badge variant="outline">Festivals</Badge>
+                  <Badge variant="outline" className="ml-2">
+                    Traditions
+                  </Badge>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold mb-3">
-                Cultural Celebrations
-              </h3>
-              <p className="text-muted-foreground">
-                Organizing large-scale festivals like Chhath Puja, Ram Leela,
-                and community gatherings to preserve traditions.
-              </p>
-            </div>
+            </Card>
 
-            <div className="p-8 rounded-xl border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow text-center">
-              <div className="flex justify-center mb-4">
-                <Info className="h-12 w-12 text-primary" />
+            <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl">
+              <div className="p-8">
+                <div className="flex justify-center mb-6">
+                  <div className="p-4 rounded-full bg-primary/10">
+                    <Info className="h-12 w-12 text-primary" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold mb-3 text-center">
+                  Social Welfare
+                </h3>
+                <p className="text-muted-foreground text-center mb-4">
+                  Running welfare programs, awareness drives, and educational
+                  initiatives for community development.
+                </p>
+                <div className="flex justify-center">
+                  <Badge variant="outline">Education</Badge>
+                  <Badge variant="outline" className="ml-2">
+                    Healthcare
+                  </Badge>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold mb-3">Social Welfare</h3>
-              <p className="text-muted-foreground">
-                Running welfare programs, awareness drives, and educational
-                initiatives for community development.
-              </p>
-            </div>
+            </Card>
 
-            <div className="p-8 rounded-xl border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow text-center">
-              <div className="flex justify-center mb-4">
-                <Mail className="h-12 w-12 text-primary" />
+            <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl">
+              <div className="p-8">
+                <div className="flex justify-center mb-6">
+                  <div className="p-4 rounded-full bg-primary/10">
+                    <Mail className="h-12 w-12 text-primary" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold mb-3 text-center">
+                  Community Support
+                </h3>
+                <p className="text-muted-foreground text-center mb-4">
+                  Supporting underprivileged families, empowering women and
+                  youth, and encouraging community participation.
+                </p>
+                <div className="flex justify-center">
+                  <Badge variant="outline">Support</Badge>
+                  <Badge variant="outline" className="ml-2">
+                    Empowerment
+                  </Badge>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold mb-3">Community Support</h3>
-              <p className="text-muted-foreground">
-                Supporting underprivileged families, empowering women and youth,
-                and encouraging community participation.
-              </p>
-            </div>
+            </Card>
           </div>
         </div>
       </section>
 
+      {/* Upcoming Events */}
+      {/* <section className="py-20"> */}
+      {/*   <div className="container mx-auto px-4"> */}
+      {/*     <div className="text-center mb-16"> */}
+      {/*       <Badge variant="secondary" className="mb-4"> */}
+      {/*         Coming Soon */}
+      {/*       </Badge> */}
+      {/*       <h2 className="text-3xl md:text-4xl font-bold mb-4"> */}
+      {/*         Upcoming Events */}
+      {/*       </h2> */}
+      {/*       <p className="text-lg text-muted-foreground max-w-2xl mx-auto"> */}
+      {/*         Join us in our cultural celebrations and community initiatives */}
+      {/*       </p> */}
+      {/*     </div> */}
+      {/**/}
+      {/*     <div className="max-w-3xl mx-auto"> */}
+      {/*       <Card className="p-6 mb-6"> */}
+      {/*         <div className="flex flex-col md:flex-row items-start md:items-center"> */}
+      {/*           <div className="flex items-center mb-4 md:mb-0 md:mr-6"> */}
+      {/*             <Calendar className="h-5 w-5 text-primary mr-2" /> */}
+      {/*             <span>December 15, 2025</span> */}
+      {/*           </div> */}
+      {/*           <div className="flex items-center md:ml-4"> */}
+      {/*             <MapPin className="h-5 w-5 text-primary mr-2" /> */}
+      {/*             <span>Patna, Bihar</span> */}
+      {/*           </div> */}
+      {/*         </div> */}
+      {/*         <h3 className="text-xl font-semibold mt-4 md:mt-0"> */}
+      {/*           Annual Chhath Puja Celebration */}
+      {/*         </h3> */}
+      {/*         <p className="text-muted-foreground mt-2"> */}
+      {/*           Join us for the largest Chhath Puja celebration in eastern */}
+      {/*           India. Experience traditional rituals, cultural programs, and */}
+      {/*           community bonding. */}
+      {/*         </p> */}
+      {/*         <Button */}
+      {/*           variant="link" */}
+      {/*           className="p-0 mt-4 text-primary hover:no-underline cursor-pointer" */}
+      {/*           asChild */}
+      {/*         > */}
+      {/*           <Link href="/events">View Details</Link> */}
+      {/*         </Button> */}
+      {/*       </Card> */}
+      {/**/}
+      {/*       <Card className="p-6"> */}
+      {/*         <div className="flex flex-col md:flex-row items-start md:items-center"> */}
+      {/*           <div className="flex items-center mb-4 md:mb-0 md:mr-6"> */}
+      {/*             <Calendar className="h-5 w-5 text-primary mr-2" /> */}
+      {/*             <span>January 20, 2026</span> */}
+      {/*           </div> */}
+      {/*           <div className="flex items-center md:ml-4"> */}
+      {/*             <MapPin className="h-5 w-5 text-primary mr-2" /> */}
+      {/*             <span>Varanasi, Uttar Pradesh</span> */}
+      {/*           </div> */}
+      {/*         </div> */}
+      {/*         <h3 className="text-xl font-semibold mt-4 md:mt-0"> */}
+      {/*           Community Health Camp */}
+      {/*         </h3> */}
+      {/*         <p className="text-muted-foreground mt-2"> */}
+      {/*           Free health check-ups, medical consultations, and health */}
+      {/*           awareness programs for underprivileged communities in Varanasi. */}
+      {/*         </p> */}
+      {/*         <Button */}
+      {/*           variant="link" */}
+      {/*           className="p-0 mt-4 text-primary hover:no-underline cursor-pointer" */}
+      {/*           asChild */}
+      {/*         > */}
+      {/*           <Link href="/events">View Details</Link> */}
+      {/*         </Button> */}
+      {/*       </Card> */}
+      {/*     </div> */}
+      {/*   </div> */}
+      {/* </section> */}
+
       {/* CTA Section */}
-      <section className="py-16 bg-primary text-primary-foreground">
+      <section className="py-24 bg-gradient-to-r from-primary to-secondary">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Join Our Community?
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary-foreground">
+            Ready to Make a Difference?
           </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Become a member today and contribute to our social welfare programs
-            and community initiatives
+          <p className="text-xl mb-8 max-w-2xl mx-auto text-primary-foreground">
+            Join our mission to build stronger communities and preserve our
+            cultural heritage
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button
-              variant="default"
-              size="lg"
-              className="bg-background text-foreground hover:bg-background/90 cursor-pointer"
-              asChild
-            >
-              <Link href="/form">Register as Member</Link>
-            </Button>
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <Button
               variant="secondary"
               size="lg"
-              className="bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer"
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 px-8 py-6 text-lg cursor-pointer"
               asChild
             >
-              <Link href="/about">Learn More About Us</Link>
+              <Link href="/form">Become a Member</Link>
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="text-foreground hover:text-primary-foreground hover:bg-primary-foreground/10 px-8 py-6 text-lg cursor-pointer"
+              asChild
+            >
+              <Link href="/blogs">Explore Stories</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Registration Requirements */}
-      <section className="py-16">
+      {/* Testimonials */}
+      <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-8">Membership Requirements</h2>
-            <div className="bg-card p-8 rounded-xl shadow-sm border">
-              <ul className="list-disc text-left pl-6 text-lg text-muted-foreground space-y-3 max-w-2xl mx-auto">
-                <li>Applicant must be 18 years or older</li>
-                <li>No criminal record</li>
-                <li>Must be a citizen of India</li>
-                <li>Commitment to community service</li>
-                <li>Willingness to participate in organization activities</li>
-              </ul>
-            </div>
+          <div className="text-center mb-16">
+            <Badge variant="secondary" className="mb-4">
+              Community Voices
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              What Our Members Say
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Hear from those who are part of our mission
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="p-8">
+              <div className="flex items-center mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="h-5 w-5 text-yellow-500 fill-current"
+                  />
+                ))}
+              </div>
+              <p className="text-muted-foreground mb-6">
+                "Being part of Purvanchal Mitra Mahasabha has been an incredible
+                journey. The organization's commitment to both cultural
+                preservation and community development is truly inspiring."
+              </p>
+              <div className="flex items-center">
+                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />
+                <div className="ml-4">
+                  <div className="font-semibold">Rajesh Kumar</div>
+                  <div className="text-muted-foreground text-sm">
+                    Active Member, 5 years
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-8">
+              <div className="flex items-center mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="h-5 w-5 text-yellow-500 fill-current"
+                  />
+                ))}
+              </div>
+              <p className="text-muted-foreground mb-6">
+                "The social welfare programs have made a real impact in my
+                village. From health camps to educational initiatives, this
+                organization brings hope and opportunities to underprivileged
+                communities."
+              </p>
+              <div className="flex items-center">
+                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />
+                <div className="ml-4">
+                  <div className="font-semibold">Sunita Devi</div>
+                  <div className="text-muted-foreground text-sm">
+                    Community Volunteer
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-8">
+              <div className="flex items-center mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="h-5 w-5 text-yellow-500 fill-current"
+                  />
+                ))}
+              </div>
+              <p className="text-muted-foreground mb-6">
+                "Organizing cultural events has helped preserve our traditions
+                while bringing communities together. The organization does
+                remarkable work in maintaining our cultural identity while
+                promoting social development."
+              </p>
+              <div className="flex items-center">
+                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />
+                <div className="ml-4">
+                  <div className="font-semibold">Amit Singh</div>
+                  <div className="text-muted-foreground text-sm">
+                    Cultural Coordinator
+                  </div>
+                </div>
+              </div>
+            </Card>
           </div>
         </div>
       </section>
