@@ -87,7 +87,7 @@ export function AdminDashboardClient() {
 
     const fetchBlogs = async () => {
       try {
-        const response = await fetch("/api/blogs", {
+        const response = await fetch("/api/blogs?getAll=true", {
           credentials: "include", // Include cookies by default
         });
 

@@ -32,13 +32,15 @@ export async function GET(request: NextRequest) {
     // ------------------------
     // Conditions Array
     // ------------------------
-    const conditions: SQL<unknown>[] = [eq(blogs.published, 1)];
+    const conditions: SQL<unknown>[] = [];
+
+    // Check if user is admin
+    const isAdmin = !!(await verifyAdminToken(token ?? undefined));
 
     // Only add published condition if user is not an admin
-    // const isAdmin = !!(await verifyAdminToken(token ?? undefined));
-    // if (!isAdmin) {
-    //   conditions.push(eq(blogs.published, 1));
-    // }
+    if (!isAdmin) {
+      conditions.push(eq(blogs.published, 1));
+    }
 
     if (search) {
       const like = `%${search}%`;
@@ -53,6 +55,23 @@ export async function GET(request: NextRequest) {
     }
 
     const finalWhere = conditions.length > 0 ? and(...conditions) : undefined;
+
+    // Check if getAll parameter is true (for admin dashboard)
+    const getAll = url.searchParams.get("getAll") === "true";
+
+    if (getAll && isAdmin) {
+      // Admin requesting all blogs without pagination
+      const allBlogsQuery = finalWhere
+        ? db
+            .select()
+            .from(blogs)
+            .where(finalWhere)
+            .orderBy(desc(blogs.createdAt))
+        : db.select().from(blogs).orderBy(desc(blogs.createdAt));
+
+      const items = await allBlogsQuery;
+      return Response.json(items);
+    }
 
     // ------------------------
     // MAIN PAGINATED LIST
