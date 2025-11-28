@@ -7,9 +7,8 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { cn } from "@/lib/utils";
+import { MarkdownViewer } from "./MarkdownViewer";
+import { Metadata } from 'next';
 
 async function getBlog(id: string) {
   try {
@@ -26,6 +25,47 @@ async function getBlog(id: string) {
 type Props = {
   params: Promise<{ id: string }>;
 };
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const { id } = await props.params;
+  const blog = await getBlog(id);
+
+  if (!blog) {
+    return {
+      title: "Blog Not Found",
+      description: "The requested blog post could not be found."
+    };
+  }
+
+  return {
+    title: `${blog.title} - Purvanchal Mitra Mahasabha Blog`,
+    description: blog.excerpt || blog.content.substring(0, 160) + '...',
+    keywords: `${blog.title}, Purvanchal Mitra Mahasabha, community development, social welfare`,
+    openGraph: {
+      title: blog.title,
+      description: blog.excerpt || blog.content.substring(0, 160) + '...',
+      type: 'article',
+      url: `https://purvanchalmitramahasabha.vercel.app/blogs/${blog.id}`,
+      images: blog.image ? [
+        {
+          url: blog.image,
+          width: 1200,
+          height: 630,
+          alt: blog.title,
+        },
+      ] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.title,
+      description: blog.excerpt || blog.content.substring(0, 160) + '...',
+      images: blog.image ? [blog.image] : [],
+    },
+    alternates: {
+      canonical: `https://purvanchalmitramahasabha.vercel.app/blogs/${blog.id}`,
+    }
+  };
+}
 
 export default async function BlogDetailPage(props: Props) {
   const { id } = await props.params;
@@ -83,7 +123,7 @@ export default async function BlogDetailPage(props: Props) {
           </div>
 
           <div className="prose prose-lg max-w-none dark:prose-invert">
-            <Markdown remarkPlugins={[remarkGfm]}>{blog.content}</Markdown>
+            <MarkdownViewer content={blog.content} />
           </div>
         </div>
       </div>

@@ -1,34 +1,45 @@
-import { NextRequest } from 'next/server';
-import { getDb } from '@/lib/db';
-import { blogs } from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { NextRequest } from "next/server";
+import { getDb } from "@/lib/db";
+import { blogs } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
+import { verifyAdminToken } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const db = getDb();
 
   try {
     const { id } = await params;
     // Validate UUID format
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(id)) {
-      return Response.json({ error: 'Invalid blog ID' }, { status: 400 });
+      return Response.json({ error: "Invalid blog ID" }, { status: 400 });
     }
 
     // Check for admin authentication
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    const isAdmin = token === 'admin_session_token';
+    // First try to get token from Authorization header, then from cookie
+    const authHeader = request.headers.get("authorization");
+    let token = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice(7)
+      : authHeader || null;
 
-    let blog;
+    if (!token) {
+      // Try getting token from cookies
+      const cookieStore = await cookies();
+      token = cookieStore.get("adminToken")?.value || null;
+    }
+
+    const adminToken = await verifyAdminToken(token || undefined);
+    const isAdmin = !!adminToken;
+
+    let blog: any;
     if (isAdmin) {
       // Admin can see any blog (published or draft)
-      blog = await db
-        .select()
-        .from(blogs)
-        .where(eq(blogs.id, id))
-        .limit(1);
+      blog = await db.select().from(blogs).where(eq(blogs.id, id)).limit(1);
     } else {
       // Regular users can only see published blogs
       blog = await db
@@ -39,34 +50,48 @@ export async function GET(
     }
 
     if (blog.length === 0) {
-      return Response.json({ error: 'Blog not found' }, { status: 404 });
+      return Response.json({ error: "Blog not found" }, { status: 404 });
     }
 
     return Response.json(blog[0]);
   } catch (error) {
-    console.error('Error fetching blog:', error);
-    return Response.json({ error: 'Failed to fetch blog' }, { status: 500 });
+    console.error("Error fetching blog:", error);
+    return Response.json({ error: "Failed to fetch blog" }, { status: 500 });
   }
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const db = getDb();
 
   // Check for admin authentication
-  const token = request.headers.get('authorization')?.replace('Bearer ', '');
-  if (token !== 'admin_session_token') {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  // First try to get token from Authorization header, then from cookie
+  const authHeader = request.headers.get("authorization");
+  let token = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : authHeader || null;
+
+  if (!token) {
+    // Try getting token from cookies
+    const cookieStore = await cookies();
+    token = cookieStore.get("adminToken")?.value || null;
+  }
+
+  const adminToken = await verifyAdminToken(token || undefined);
+
+  if (!adminToken) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const { id } = await params;
     // Validate UUID format
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(id)) {
-      return Response.json({ error: 'Invalid blog ID' }, { status: 400 });
+      return Response.json({ error: "Invalid blog ID" }, { status: 400 });
     }
 
     const body = await request.json();
@@ -92,38 +117,54 @@ export async function PUT(
 
     return Response.json(updatedBlog);
   } catch (error) {
-    console.error('Error updating blog:', error);
-    return Response.json({ error: 'Failed to update blog' }, { status: 500 });
+    console.error("Error updating blog:", error);
+    return Response.json({ error: "Failed to update blog" }, { status: 500 });
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const db = getDb();
 
   // Check for admin authentication
-  const token = request.headers.get('authorization')?.replace('Bearer ', '');
-  if (token !== 'admin_session_token') {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  // First try to get token from Authorization header, then from cookie
+  const authHeader = request.headers.get("authorization");
+  let token: string | null = null;
+
+  if (authHeader?.startsWith("Bearer ")) {
+    token = authHeader.substring(7);
+  } else if (authHeader) {
+    token = authHeader;
+  }
+
+  if (!token) {
+    // Try getting token from cookies
+    const cookieStore = await cookies();
+    token = cookieStore.get("adminToken")?.value || null;
+  }
+
+  const adminToken = await verifyAdminToken(token || undefined);
+
+  if (!adminToken) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const { id } = await params;
     // Validate UUID format
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(id)) {
-      return Response.json({ error: 'Invalid blog ID' }, { status: 400 });
+      return Response.json({ error: "Invalid blog ID" }, { status: 400 });
     }
 
-    await db
-      .delete(blogs)
-      .where(eq(blogs.id, id));
+    await db.delete(blogs).where(eq(blogs.id, id));
 
-    return Response.json({ message: 'Blog deleted successfully' });
+    return Response.json({ message: "Blog deleted successfully" });
   } catch (error) {
-    console.error('Error deleting blog:', error);
-    return Response.json({ error: 'Failed to delete blog' }, { status: 500 });
+    console.error("Error deleting blog:", error);
+    return Response.json({ error: "Failed to delete blog" }, { status: 500 });
   }
 }

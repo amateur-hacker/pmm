@@ -2,6 +2,31 @@ import Link from "next/link";
 import { Handshake, Users, Mail, Info } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Purvanchal Mitra Mahasabha (Regd.) - Home",
+  description:
+    "A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India. Join our organization and contribute to social welfare programs.",
+  keywords:
+    "NGO, Purvanchal Mitra Mahasabha, community development, social welfare, India, membership",
+  openGraph: {
+    title: "Purvanchal Mitra Mahasabha (Regd.) - Home",
+    description:
+      "A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
+    type: "website",
+    url: process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Purvanchal Mitra Mahasabha (Regd.) - Home",
+    description:
+      "A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
+  },
+  alternates: {
+    canonical: "https://purvanchalmitramahasabha.org",
+  },
+};
 
 export default function Home() {
   return (

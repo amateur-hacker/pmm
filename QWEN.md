@@ -4,14 +4,15 @@
 
 This is a Next.js 16 application bootstrapped with `create-next-app`, designed as a membership management system (PMM). The project uses modern web development technologies including React 19, TypeScript, Tailwind CSS, and a PostgreSQL database via Neon serverless database.
 
-### Key Technologies & Features:
+### Key Technologies & Features
+
 - **Framework**: Next.js 16 with App Router and React Compiler enabled
 - **Language**: TypeScript
 - **Database**: PostgreSQL via Neon serverless with Drizzle ORM
 - **Styling**: Tailwind CSS with Radix UI components
 - **Icons**: Lucide React
 - **Forms**: React Hook Form with Zod validation
-- **Date handling**: date-fns and @internationalized/date
+- **Date handling**: date-fns and internationalized/date
 - **Theming**: next-themes for dark/light mode
 - **Code quality**: Biome.js for linting and formatting
 - **Database migrations**: Drizzle Kit
@@ -19,6 +20,7 @@ This is a Next.js 16 application bootstrapped with `create-next-app`, designed a
 ## Project Architecture
 
 The project follows Next.js App Router conventions with the following main directories:
+
 - `app/` - Next.js app router pages and layouts
 - `components/` - Reusable React components
 - `contexts/` - React contexts for state management
@@ -59,11 +61,14 @@ The application uses a PostgreSQL database with the following tables:
 ## Building and Running
 
 ### Prerequisites
+
 - Node.js (with Bun, npm, Yarn, or pnpm)
 - PostgreSQL database (Neon serverless recommended)
 
 ### Setup Instructions
+
 1. Install dependencies:
+
    ```bash
    bun install
    # or npm install, yarn install, pnpm install
@@ -74,23 +79,27 @@ The application uses a PostgreSQL database with the following tables:
    - Add your `DATABASE_URL` for the PostgreSQL database
 
 3. Set up the database:
+
    ```bash
    npx drizzle-kit generate # Generate migration files
    npx drizzle-kit migrate  # Run migrations to create tables
    ```
 
 4. Create an initial admin user:
+
    ```bash
    bun run create-admin
    # This creates an admin user with username 'admin' and password 'admin123'
    ```
 
 5. Run the development server:
+
    ```bash
    bun run dev
    # or npm run dev, yarn dev, pnpm dev
    ```
-   The application will be available at http://localhost:3000
+
+   The application will be available at <http://localhost:3000>
 
 ### Available Scripts
 
@@ -104,17 +113,20 @@ The application uses a PostgreSQL database with the following tables:
 ## Development Conventions
 
 ### Code Style
+
 - Code formatting is handled by Biome.js
 - Indentation: 2 spaces
 - Linting follows Biome's recommended rules with React and Next.js domains enabled
 - Import organization is handled automatically
 
 ### File Structure
+
 - Components use the `@/*` path alias (e.g., `@/components/ui/button`)
 - Database operations are abstracted through Drizzle ORM
 - Environment variables are loaded using dotenv
 
 ### Database Migrations
+
 - Schema is defined in `src/lib/db/schema.ts`
 - Migrations are managed with Drizzle Kit
 - Use `npx drizzle-kit generate` to create migration files
@@ -123,6 +135,7 @@ The application uses a PostgreSQL database with the following tables:
 ## Key Application Features
 
 Based on the schema, this appears to be a membership management system with:
+
 - Member profiles with contact information and details
 - Admin authentication system
 - Blog/publishing functionality
@@ -139,3 +152,4 @@ Based on the schema, this appears to be a membership management system with:
 5. Timestamps for creation and updates are automatically managed
 
 This appears to be a well-structured Next.js application with modern tooling for a membership management system with blogging capabilities.
+

@@ -1,4 +1,29 @@
-import { Phone, Mail, MapPin, Calendar } from 'lucide-react';
+import { Phone, Mail, MapPin, Calendar } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact Purvanchal Mitra Mahasabha - NGO in India",
+  description:
+    "Get in touch with Purvanchal Mitra Mahasabha (Regd.). Find our contact information, office location, phone numbers, and office hours for community development initiatives.",
+  keywords:
+    "contact NGO, Purvanchal Mitra Mahasabha contact, NGO Delhi, community development contact",
+  openGraph: {
+    title: "Contact Purvanchal Mitra Mahasabha - NGO in India",
+    description:
+      "Get in touch with Purvanchal Mitra Mahasabha (Regd.). Find our contact information, office location, phone numbers, and office hours for community development initiatives.",
+    type: "website",
+    url: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app"}/contact`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Purvanchal Mitra Mahasabha - NGO in India",
+    description:
+      "Get in touch with Purvanchal Mitra Mahasabha (Regd.). Find our contact information, office location, phone numbers, and office hours for community development initiatives.",
+  },
+  alternates: {
+    canonical: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app"}/contact`,
+  },
+};
 
 export default function ContactPage() {
   return (
@@ -7,7 +32,9 @@ export default function ContactPage() {
       <section className="py-16 bg-muted/20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-          <p className="text-xl text-muted-foreground">Get in touch with Purvanchal Mitra Mahasabha (Regd.)</p>
+          <p className="text-xl text-muted-foreground">
+            Get in touch with Purvanchal Mitra Mahasabha (Regd.)
+          </p>
         </div>
       </section>
 
@@ -24,7 +51,9 @@ export default function ContactPage() {
                     <Calendar className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Registration Number</h3>
+                    <h3 className="font-semibold text-lg">
+                      Registration Number
+                    </h3>
                     <p className="text-muted-foreground">S/00589NE/2012</p>
                   </div>
                 </div>
@@ -35,7 +64,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">Address</h3>
-                    <p className="text-muted-foreground">E-1/3 Mukund Vihar Karawal Nagar Delhi-90</p>
+                    <p className="text-muted-foreground">
+                      E-1/3 Mukund Vihar Karawal Nagar Delhi-90
+                    </p>
                   </div>
                 </div>
 
@@ -56,7 +87,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">President</h3>
-                    <p className="text-muted-foreground">Shri Uttam Singh Chauhan</p>
+                    <p className="text-muted-foreground">
+                      Shri Uttam Singh Chauhan
+                    </p>
                   </div>
                 </div>
               </div>
@@ -67,11 +100,15 @@ export default function ContactPage() {
               <div className="space-y-4">
                 <div className="flex justify-between py-2 border-b">
                   <span className="font-medium">Monday - Friday</span>
-                  <span className="text-muted-foreground">10:00 AM - 6:00 PM</span>
+                  <span className="text-muted-foreground">
+                    10:00 AM - 6:00 PM
+                  </span>
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="font-medium">Saturday</span>
-                  <span className="text-muted-foreground">10:00 AM - 4:00 PM</span>
+                  <span className="text-muted-foreground">
+                    10:00 AM - 4:00 PM
+                  </span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span className="font-medium">Sunday</span>
@@ -82,9 +119,10 @@ export default function ContactPage() {
               <div className="mt-8 pt-6 border-t">
                 <h3 className="text-xl font-semibold mb-3">Visit Us</h3>
                 <p className="text-muted-foreground">
-                  Feel free to visit our office during working hours for any inquiries,
-                  to become a member, or to learn more about our initiatives.
-                  We welcome community members and volunteers who share our vision.
+                  Feel free to visit our office during working hours for any
+                  inquiries, to become a member, or to learn more about our
+                  initiatives. We welcome community members and volunteers who
+                  share our vision.
                 </p>
               </div>
             </div>
@@ -94,3 +132,4 @@ export default function ContactPage() {
     </div>
   );
 }
+
