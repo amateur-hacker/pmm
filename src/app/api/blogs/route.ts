@@ -29,12 +29,16 @@ export async function GET(request: NextRequest) {
       token = cookieStore.get("adminToken")?.value || null;
     }
 
-    const isAdmin = !!(await verifyAdminToken(token ?? undefined));
-
     // ------------------------
     // Conditions Array
     // ------------------------
     const conditions: SQL<unknown>[] = [eq(blogs.published, 1)];
+
+    // Only add published condition if user is not an admin
+    // const isAdmin = !!(await verifyAdminToken(token ?? undefined));
+    // if (!isAdmin) {
+    //   conditions.push(eq(blogs.published, 1));
+    // }
 
     if (search) {
       const like = `%${search}%`;

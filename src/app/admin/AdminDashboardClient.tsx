@@ -100,7 +100,9 @@ export function AdminDashboardClient() {
         }
 
         const data = await response.json();
-        setBlogs(data);
+        // Handle both paginated and non-paginated responses
+        const blogsData = Array.isArray(data) ? data : data.items || [];
+        setBlogs(blogsData);
       } catch (error) {
         console.error("Error fetching blogs:", error);
         toast.error("Failed to load blogs. Please try again.");
