@@ -246,3 +246,4 @@ export function MemberDetailPageClient(props: Props) {
     </div>
   );
 }
+
