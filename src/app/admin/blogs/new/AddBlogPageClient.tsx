@@ -84,6 +84,11 @@ export function AddBlogPageClient() {
 
       if (!res.ok) {
         if (res.status === 401) {
+          // Call logout API to properly delete the server-side cookie
+          await fetch("/api/admin/logout", {
+            method: "POST",
+            credentials: "include",
+          });
           return router.push("/admin/login");
         }
         throw new Error("Failed to create blog");

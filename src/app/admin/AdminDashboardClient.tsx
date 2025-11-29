@@ -20,7 +20,6 @@ import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { deleteCookie } from "cookies-next/client";
 
 interface Blog {
   id: string;
@@ -117,9 +116,20 @@ export function AdminDashboardClient() {
     fetchBlogs();
   }, [router]);
 
-  const handleLogout = () => {
-    deleteCookie("adminToken");
-    router.push("/admin/login");
+  const handleLogout = async () => {
+    try {
+      // Call the logout API to properly delete the server-side cookie
+      await fetch("/api/admin/logout", {
+        method: "POST",
+        credentials: "include", // Include cookies
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if API call fails, still redirect to login page
+    } finally {
+      // Redirect to login page regardless of API response
+      router.push("/admin/login");
+    }
   };
 
   const handleDeleteBlog = async (id: string) => {

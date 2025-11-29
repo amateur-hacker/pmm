@@ -55,8 +55,14 @@ export function MemberDetailPageClient(props: Props) {
 
           if (!response.ok) {
             if (response.status === 401) {
+              // Call logout API to properly delete the server-side cookie
+              await fetch("/api/admin/logout", {
+                method: "POST",
+                credentials: "include",
+              });
               router.push("/admin/login");
               return;
+            }
             }
             if (response.status === 404) {
               toast.error("Member not found.");
