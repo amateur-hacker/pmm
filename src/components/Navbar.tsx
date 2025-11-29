@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Handshake, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -33,14 +34,14 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
               <Handshake className="h-8 w-8 text-primary" />
-              <span className="ml-2 text-xl font-bold hidden md:inline-block">
+              <span className="ml-2 text-xl font-bold hidden lg:inline-block">
                 Purvanchal Mitra Mahasabha
               </span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-8">
+          <div className="hidden lg:flex lg:items-center lg:space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -54,10 +55,11 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
+            <PWAInstallButton />
           </div>
 
-          {/* Mobile menu button */}
-          <div className="flex items-center md:hidden">
+          {/* Mobile menu button - moved PWA button inside the menu */}
+          <div className="flex items-center lg:hidden">
             <button
               type="button"
               className="inline-flex items-center justify-center rounded-md p-2 text-foreground hover:text-primary focus:outline-none"
@@ -74,7 +76,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t py-4">
+          <div className="lg:hidden border-t py-4">
             <div className="space-y-1 px-2 pt-2 pb-3">
               {navItems.map((item) => (
                 <Link
@@ -90,6 +92,9 @@ const Navbar = () => {
                   {item.name}
                 </Link>
               ))}
+              <div className="px-3 pt-2">
+                <PWAInstallButton />
+              </div>
             </div>
           </div>
         )}

@@ -64,7 +64,7 @@ export default function Home() {
                 and well-being of communities across the eastern region of India
               </p>
 
-              <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+              <div className="flex flex-col sm:flex-row justify-center sm:items-center gap-4">
                 <Button
                   size="lg"
                   className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg cursor-pointer"
@@ -181,7 +181,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl">
               <div className="p-8">
                 <div className="flex justify-center mb-6">
@@ -338,7 +338,7 @@ export default function Home() {
             Join our mission to build stronger communities and preserve our
             cultural heritage
           </p>
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center sm:items-center gap-4">
             <Button
               variant="secondary"
               size="lg"
@@ -374,7 +374,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="p-8">
               <div className="flex items-center mb-4">
                 {[...Array(5)].map((_, i) => (
