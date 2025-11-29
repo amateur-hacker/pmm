@@ -4,7 +4,7 @@ import { eq, desc } from "drizzle-orm";
 
 export default async function sitemap() {
   const db = getDb();
-  
+
   // Get all published blogs from the database
   const publishedBlogs = await db
     .select({
@@ -16,7 +16,8 @@ export default async function sitemap() {
     .orderBy(desc(blogs.updatedAt));
 
   // Base site URL
-  const siteUrl = process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app";
+  const siteUrl =
+    process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app";
 
   // Generate sitemap entries
   const blogEntries = publishedBlogs.map((blog) => ({
@@ -53,6 +54,12 @@ export default async function sitemap() {
       priority: 0.9,
     },
     {
+      url: `${siteUrl}/members`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+    },
+    {
       url: `${siteUrl}/blogs`,
       lastModified: new Date(),
       changeFrequency: "daily" as const,
@@ -63,3 +70,4 @@ export default async function sitemap() {
   // Combine static pages and blog entries
   return [...staticPages, ...blogEntries];
 }
+
