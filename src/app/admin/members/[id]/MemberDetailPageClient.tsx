@@ -63,7 +63,6 @@ export function MemberDetailPageClient(props: Props) {
               router.push("/admin/login");
               return;
             }
-            }
             if (response.status === 404) {
               toast.error("Member not found.");
               router.push("/admin");
