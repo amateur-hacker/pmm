@@ -3,13 +3,13 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Purvanchal Mitra Mahasabha",
-    short_name: "P.M.M",
+    short_name: "PMM",
     description:
       "Official website of Purvanchal Mitra Mahasabha (Regd.) - A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
     start_url: "/",
     display: "standalone",
-    background_color: "#fff",
-    theme_color: "#fff",
+    background_color: "#ffffff",
+    theme_color: "#6366f1",
     icons: [
       {
         src: "/android-chrome-192x192.png",
@@ -24,3 +24,4 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
   };
 }
+

@@ -42,7 +42,7 @@ const Footer = () => {
             <p className="text-sm text-muted-foreground mb-2">
               Join our community and stay updated with our initiatives.
             </p>
-            <Link href="/form">
+            <Link href="/register-member">
               <span className="inline-flex items-center px-3 py-1 text-sm bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity">
                 Register as Member
               </span>

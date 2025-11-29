@@ -65,7 +65,7 @@ export function AdminDashboardClient() {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await fetch("/api/admin/members", {
+        const response = await fetch("/api/admin/members?getAll=true", {
           credentials: "include", // Include cookies by default
         });
 
@@ -78,7 +78,9 @@ export function AdminDashboardClient() {
         }
 
         const data = await response.json();
-        setMembers(data);
+        // Handle both paginated and non-paginated responses
+        const membersData = Array.isArray(data) ? data : data.items || [];
+        setMembers(membersData);
       } catch (error) {
         console.error("Error fetching members:", error);
         toast.error("Failed to load members. Please try again.");

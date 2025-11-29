@@ -23,7 +23,7 @@ const config: IConfig = {
     if (path === "/") {
       priority = 1.0;
       changefreq = "daily";
-    } else if (["/about", "/contact", "/form", "/terms"].includes(path)) {
+    } else if (["/about", "/contact", "/register-member", "/terms"].includes(path)) {
       priority = 0.9;
     } else if (path.startsWith("/blogs")) {
       priority = 0.8;

@@ -1,8 +1,8 @@
-# Project Context for PMM (Presumably a Membership Management System)
+# Project Context for PMM (Purvanchal Mitra Mahasabha)
 
 ## Project Overview
 
-This is a Next.js 16 application bootstrapped with `create-next-app`, designed as a membership management system (PMM). The project uses modern web development technologies including React 19, TypeScript, Tailwind CSS, and a PostgreSQL database via Neon serverless database.
+This is a Next.js 16 application bootstrapped with `create-next-app`, designed as a membership management system for "Purvanchal Mitra Mahasabha" - an NGO focused on community development and cultural preservation in eastern India. The project uses modern web development technologies including React 19, TypeScript, Tailwind CSS, and a PostgreSQL database via Neon serverless database.
 
 ### Key Technologies & Features
 
@@ -99,7 +99,7 @@ The application uses a PostgreSQL database with the following tables:
    # or npm run dev, yarn dev, pnpm dev
    ```
 
-   The application will be available at <http://localhost:3000>
+   The application will be available at http://localhost:3000
 
 ### Available Scripts
 
@@ -134,7 +134,7 @@ The application uses a PostgreSQL database with the following tables:
 
 ## Key Application Features
 
-Based on the schema, this appears to be a membership management system with:
+Based on the schema and code, this appears to be a membership management system with:
 
 - Member profiles with contact information and details
 - Admin authentication system
@@ -142,6 +142,9 @@ Based on the schema, this appears to be a membership management system with:
 - Support for member images and featured blog images
 - Donation tracking per member
 - Draft/published state for blog posts
+- Responsive UI with Tailwind CSS
+- SEO optimization with metadata management
+- Mobile-first design approach
 
 ## Important Notes
 
@@ -151,5 +154,4 @@ Based on the schema, this appears to be a membership management system with:
 4. UUIDs are used for primary keys across all tables
 5. Timestamps for creation and updates are automatically managed
 
-This appears to be a well-structured Next.js application with modern tooling for a membership management system with blogging capabilities.
-
+This appears to be a well-structured Next.js application with modern tooling for a membership management system with blogging capabilities, designed specifically for an NGO called "Purvanchal Mitra Mahasabha".

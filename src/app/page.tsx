@@ -70,7 +70,7 @@ export default function Home() {
                   className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg cursor-pointer"
                   asChild
                 >
-                  <Link href="/form">Join Our Community</Link>
+                  <Link href="/register-member">Join Our Community</Link>
                 </Button>
                 <Button
                   variant="outline"
@@ -255,78 +255,78 @@ export default function Home() {
       </section>
 
       {/* Upcoming Events */}
-      {/* <section className="py-20"> */}
-      {/*   <div className="container mx-auto px-4"> */}
-      {/*     <div className="text-center mb-16"> */}
-      {/*       <Badge variant="secondary" className="mb-4"> */}
-      {/*         Coming Soon */}
-      {/*       </Badge> */}
-      {/*       <h2 className="text-3xl md:text-4xl font-bold mb-4"> */}
-      {/*         Upcoming Events */}
-      {/*       </h2> */}
-      {/*       <p className="text-lg text-muted-foreground max-w-2xl mx-auto"> */}
-      {/*         Join us in our cultural celebrations and community initiatives */}
-      {/*       </p> */}
-      {/*     </div> */}
-      {/**/}
-      {/*     <div className="max-w-3xl mx-auto"> */}
-      {/*       <Card className="p-6 mb-6"> */}
-      {/*         <div className="flex flex-col md:flex-row items-start md:items-center"> */}
-      {/*           <div className="flex items-center mb-4 md:mb-0 md:mr-6"> */}
-      {/*             <Calendar className="h-5 w-5 text-primary mr-2" /> */}
-      {/*             <span>December 15, 2025</span> */}
-      {/*           </div> */}
-      {/*           <div className="flex items-center md:ml-4"> */}
-      {/*             <MapPin className="h-5 w-5 text-primary mr-2" /> */}
-      {/*             <span>Patna, Bihar</span> */}
-      {/*           </div> */}
-      {/*         </div> */}
-      {/*         <h3 className="text-xl font-semibold mt-4 md:mt-0"> */}
-      {/*           Annual Chhath Puja Celebration */}
-      {/*         </h3> */}
-      {/*         <p className="text-muted-foreground mt-2"> */}
-      {/*           Join us for the largest Chhath Puja celebration in eastern */}
-      {/*           India. Experience traditional rituals, cultural programs, and */}
-      {/*           community bonding. */}
-      {/*         </p> */}
-      {/*         <Button */}
-      {/*           variant="link" */}
-      {/*           className="p-0 mt-4 text-primary hover:no-underline cursor-pointer" */}
-      {/*           asChild */}
-      {/*         > */}
-      {/*           <Link href="/events">View Details</Link> */}
-      {/*         </Button> */}
-      {/*       </Card> */}
-      {/**/}
-      {/*       <Card className="p-6"> */}
-      {/*         <div className="flex flex-col md:flex-row items-start md:items-center"> */}
-      {/*           <div className="flex items-center mb-4 md:mb-0 md:mr-6"> */}
-      {/*             <Calendar className="h-5 w-5 text-primary mr-2" /> */}
-      {/*             <span>January 20, 2026</span> */}
-      {/*           </div> */}
-      {/*           <div className="flex items-center md:ml-4"> */}
-      {/*             <MapPin className="h-5 w-5 text-primary mr-2" /> */}
-      {/*             <span>Varanasi, Uttar Pradesh</span> */}
-      {/*           </div> */}
-      {/*         </div> */}
-      {/*         <h3 className="text-xl font-semibold mt-4 md:mt-0"> */}
-      {/*           Community Health Camp */}
-      {/*         </h3> */}
-      {/*         <p className="text-muted-foreground mt-2"> */}
-      {/*           Free health check-ups, medical consultations, and health */}
-      {/*           awareness programs for underprivileged communities in Varanasi. */}
-      {/*         </p> */}
-      {/*         <Button */}
-      {/*           variant="link" */}
-      {/*           className="p-0 mt-4 text-primary hover:no-underline cursor-pointer" */}
-      {/*           asChild */}
-      {/*         > */}
-      {/*           <Link href="/events">View Details</Link> */}
-      {/*         </Button> */}
-      {/*       </Card> */}
-      {/*     </div> */}
-      {/*   </div> */}
-      {/* </section> */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <Badge variant="secondary" className="mb-4">
+              Coming Soon
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Upcoming Events
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Join us in our cultural celebrations and community initiatives
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto">
+            <Card className="p-6 mb-6">
+              <div className="flex flex-col md:flex-row items-start md:items-center">
+                <div className="flex items-center mb-4 md:mb-0 md:mr-6">
+                  <Calendar className="h-5 w-5 text-primary mr-2" />
+                  <span>December 15, 2025</span>
+                </div>
+                <div className="flex items-center md:ml-4">
+                  <MapPin className="h-5 w-5 text-primary mr-2" />
+                  <span>Patna, Bihar</span>
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold mt-4 md:mt-0">
+                Annual Chhath Puja Celebration
+              </h3>
+              <p className="text-muted-foreground mt-2">
+                Join us for the largest Chhath Puja celebration in eastern
+                India. Experience traditional rituals, cultural programs, and
+                community bonding.
+              </p>
+              <Button
+                variant="link"
+                className="p-0 mt-4 text-primary hover:no-underline cursor-pointer"
+                asChild
+              >
+                <Link href="/events">View Details</Link>
+              </Button>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex flex-col md:flex-row items-start md:items-center">
+                <div className="flex items-center mb-4 md:mb-0 md:mr-6">
+                  <Calendar className="h-5 w-5 text-primary mr-2" />
+                  <span>January 20, 2026</span>
+                </div>
+                <div className="flex items-center md:ml-4">
+                  <MapPin className="h-5 w-5 text-primary mr-2" />
+                  <span>Varanasi, Uttar Pradesh</span>
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold mt-4 md:mt-0">
+                Community Health Camp
+              </h3>
+              <p className="text-muted-foreground mt-2">
+                Free health check-ups, medical consultations, and health
+                awareness programs for underprivileged communities in Varanasi.
+              </p>
+              <Button
+                variant="link"
+                className="p-0 mt-4 text-primary hover:no-underline cursor-pointer"
+                asChild
+              >
+                <Link href="/events">View Details</Link>
+              </Button>
+            </Card>
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="py-24 bg-gradient-to-r from-primary to-secondary">
@@ -345,7 +345,7 @@ export default function Home() {
               className="bg-secondary text-secondary-foreground hover:bg-secondary/90 px-8 py-6 text-lg cursor-pointer"
               asChild
             >
-              <Link href="/form">Become a Member</Link>
+              <Link href="/register-member">Become a Member</Link>
             </Button>
             <Button
               variant="outline"

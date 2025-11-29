@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "Member Registration - Purvanchal Mitra Mahasabha",
     description: "Join Purvanchal Mitra Mahasabha as a member. Fill out the registration form to become part of our community development initiatives in eastern India.",
     type: "website",
-    url: "https://purvanchalmitramahasabha.vercel.app/form",
+    url: "https://purvanchalmitramahasabha.vercel.app/register-member",
   },
   twitter: {
     card: "summary_large_image",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     description: "Join Purvanchal Mitra Mahasabha as a member. Fill out the registration form to become part of our community development initiatives in eastern India.",
   },
   alternates: {
-    canonical: "https://purvanchalmitramahasabha.vercel.app/form",
+    canonical: "https://purvanchalmitramahasabha.vercel.app/register-member",
   }
 };
 
