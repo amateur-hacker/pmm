@@ -101,17 +101,9 @@ export function usePWAInstall() {
     setDeferredPrompt(null);
   };
 
-  const openPWA = () => {
-    // For installed PWA, we can just alert the user
-    alert(
-      "App is already installed! Please use the installed app for the best experience.",
-    );
-  };
-
   return {
     installStatus,
     installPWA,
-    openPWA,
   };
 }
 
