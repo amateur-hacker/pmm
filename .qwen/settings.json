@@ -2,25 +2,17 @@
   "mcpServers": {
     "shadcn": {
       "command": "bunx",
-      "args": [
-        "shadcn@latest",
-        "mcp"
-      ]
+      "args": ["shadcn@latest", "mcp"]
     },
     "next-devtools": {
       "command": "bunx",
-      "args": [
-        "-y",
-        "next-devtools-mcp@latest"
-      ]
+      "args": ["-y", "next-devtools-mcp@latest"]
     },
-    "drizzle": {
+    "@magicuidesign/mcp": {
       "command": "bunx",
-      "args": [
-        "github:defrex/drizzle-mcp",
-        "../drizzle.config.ts"
-      ]
+      "args": ["-y", "@magicuidesign/mcp@latest"]
     }
   },
   "$version": 2
 }
+
