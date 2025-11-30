@@ -92,7 +92,7 @@ export default function FormPageClient() {
         `/api/check-member?name=${encodeURIComponent(data.name)}`,
       );
 
-      if (!response.ok) toast.error("Failed to check member existence");
+      if (!response.ok) throw new Error("Failed to check member existence");
 
       const { exists } = await response.json();
 
@@ -115,11 +115,15 @@ export default function FormPageClient() {
 
       if (!submitResponse.ok) throw new Error("Failed to submit member data");
 
-      toast.success("Your application has been submitted successfully!");
+      toast.success(
+        "You’re now a member! We're truly grateful to have you with us 🤝",
+      );
       form.reset();
       setExistingMember(false);
     } catch (error) {
-      toast.error("There was an error submitting your application.");
+      toast.error(
+        "Something went wrong on our side. Please try again — we really want to get you onboard 🙏",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -401,4 +405,5 @@ export default function FormPageClient() {
       </div>
     </div>
   );
-};
+}
+
