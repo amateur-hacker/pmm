@@ -1,56 +1,59 @@
-// Service worker for PWA functionality
+// public/sw.js
 
-const CACHE_NAME = 'pmm-v1';
-const urlsToCache = [
-  '/',
-  '/about',
-  '/members',
-  '/blogs',
-  '/contact',
-  '/register-member',
-  '/terms',
-  '/manifest.json',
-  '/android-chrome-192x192.png',
-  '/android-chrome-512x512.png',
-  '/apple-touch-icon.png',
-  '/favicon-16x16.png',
-  '/favicon-32x32.png',
-  '/_next/static/css/main.css',
-  '/_next/static/js/main.js'
-];
+const CACHE_NAME = "pmm-cache-v1";
 
-self.addEventListener('install', (event) => {
+self.addEventListener("install", (event) => {
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll([
+        "/",
+        "/about",
+        "/members",
+        "/blogs",
+        "/contact",
+        "/register-member",
+        "/manifest.json",
+        "/favicon.ico",
+      ]);
+    }),
   );
 });
 
-self.addEventListener('fetch', (event) => {
+// Offline-first fetch
+self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version if available, otherwise fetch from network
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      }
-    )
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+
+      return fetch(event.request)
+        .then((res) => {
+          // Cache new resources dynamically
+          const cloned = res.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, cloned);
+          });
+          return res;
+        })
+        .catch(() => {
+          if (event.request.mode === "navigate") {
+            // fallback offline page
+            return caches.match("/");
+          }
+        });
+    }),
   );
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((cacheName) => cacheName !== CACHE_NAME)
-          .map((cacheName) => caches.delete(cacheName))
-      );
-    })
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)),
+        ),
+      ),
   );
 });
+
