@@ -1,19 +1,11 @@
 /** biome-ignore-all lint/suspicious/noArrayIndexKey: <explanation> */
 import Link from "next/link";
-import {
-  Handshake,
-  Users,
-  Mail,
-  Info,
-  Heart,
-  Star,
-  Calendar,
-  MapPin,
-} from "lucide-react";
+import { Users, Mail, Info, Heart, Star, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Purvanchal Mitra Mahasabha (Regd.) - Home",
@@ -51,8 +43,14 @@ export default function Home() {
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex flex-col items-center text-center">
-            <div className="mb-6 p-4 rounded-full bg-primary/10">
-              <Handshake className="h-16 w-16 text-primary" />
+            <div className="mb-6">
+              <Image
+                src="/logo.png"
+                alt="Purvanchal Mitra Mahasabha Logo"
+                width={128}
+                height={128}
+                className="object-contain"
+              />
             </div>
 
             <div className="max-w-4xl">

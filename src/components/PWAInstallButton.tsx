@@ -2,23 +2,25 @@
 
 import { Button } from '@/components/ui/button';
 import { Smartphone } from 'lucide-react';
-import { usePWAInstall } from '@/hooks/use-pwa-install';
+import { usePWAInstall } from 'react-use-pwa-install';
+import { useEffect, useState } from 'react';
 
 export function PWAInstallButton() {
-  const { installStatus, installPWA } = usePWAInstall();
+  const [isClient, setIsClient] = useState(false);
+  const install = usePWAInstall();
 
-  // Only show the button if it's appropriate to install
-  if (installStatus === 'notSupported' || installStatus === 'installed') {
+  useEffect(() => {
+    // Ensure we're on the client side before attempting to show the button
+    setIsClient(true);
+  }, []);
+
+  // Only show the button if installation is available and we're on the client
+  if (!isClient || !install) {
     return null;
   }
 
-  const handleClick = () => {
-    // Directly trigger the installation
-    installPWA();
-  };
-
   return (
-    <Button onClick={handleClick} size="sm" className="gap-2">
+    <Button onClick={install} size="sm" className="gap-2">
       <Smartphone className="h-4 w-4" />
       Install App
     </Button>

@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Handshake, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { PWAInstallButton } from "@/components/PWAInstallButton";
+import Image from "next/image";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -33,9 +34,15 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <Handshake className="h-8 w-8 text-primary" />
+              <Image
+                src="/logo.png"
+                alt="Purvanchal Mitra Mahasabha Logo"
+                width={32}
+                height={32}
+                className="object-contain"
+              />
               <span className="ml-2 text-xl font-bold hidden lg:inline-block">
-                Purvanchal Mitra Mahasabha
+                PMM
               </span>
             </Link>
           </div>
