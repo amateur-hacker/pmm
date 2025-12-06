@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Menu, User } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -138,8 +138,12 @@ const Navbar = () => {
                     {sessionUser.role === "admin" && (
                       <>
                         <DropdownMenuItem asChild>
-                          <Link href="/admin" className="cursor-pointer">
-                            Admin Dashboard
+                          <Link
+                            href="/admin"
+                            className="cursor-pointer flex items-center gap-2"
+                          >
+                            <LayoutDashboard size={16} />
+                            <span>Admin Dashboard</span>
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -261,8 +265,12 @@ const Navbar = () => {
                           {sessionUser.role === "admin" && (
                             <>
                               <DropdownMenuItem asChild>
-                                <Link href="/admin" className="cursor-pointer">
-                                  Admin Dashboard
+                                <Link
+                                  href="/admin"
+                                  className="cursor-pointer flex items-center gap-2"
+                                >
+                                  <LayoutDashboard size={16} />
+                                  <span>Admin Dashboard</span>
                                 </Link>
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
