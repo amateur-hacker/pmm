@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     description:
       "Membership eligibility requirements and terms and conditions for joining Purvanchal Mitra Mahasabha. Learn about age requirements, citizenship, and community commitment expectations.",
     type: "website",
-    url: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app"}/terms`,
+    url: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/terms`,
   },
   twitter: {
     card: "summary_large_image",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       "Membership eligibility requirements and terms and conditions for joining Purvanchal Mitra Mahasabha. Learn about age requirements, citizenship, and community commitment expectations.",
   },
   alternates: {
-    canonical: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app"}/terms`,
+    canonical: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/terms`,
   },
 };
 

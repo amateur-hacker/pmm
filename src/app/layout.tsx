@@ -35,15 +35,13 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ||
-      "https://purvanchalmitramahasabha.vercel.app",
+    process.env.NEXT_PUBLIC_SITE_URL || "https://purvanchalmitramahasabha.in",
   ),
   openGraph: {
     type: "website",
     locale: "en_US",
     url:
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      "https://purvanchalmitramahasabha.vercel.app",
+      process.env.NEXT_PUBLIC_SITE_URL || "https://purvanchalmitramahasabha.in",
     title: "Purvanchal Mitra Mahasabha",
     description:
       "Official website of Purvanchal Mitra Mahasabha (Regd.) - A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
@@ -79,8 +77,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical:
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      "https://purvanchalmitramahasabha.vercel.app",
+      process.env.NEXT_PUBLIC_SITE_URL || "https://purvanchalmitramahasabha.in",
   },
 };
 

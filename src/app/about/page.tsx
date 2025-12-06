@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     description:
       "Learn about Purvanchal Mitra Mahasabha (Regd.), a socially committed NGO working for community development, cultural preservation, and social welfare in eastern India.",
     type: "website",
-    url: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app"}/about`,
+    url: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/about`,
   },
   twitter: {
     card: "summary_large_image",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       "Learn about Purvanchal Mitra Mahasabha (Regd.), a socially committed NGO working for community development, cultural preservation, and social welfare in eastern India.",
   },
   alternates: {
-    canonical: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app"}/about`,
+    canonical: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/about`,
   },
 };
 

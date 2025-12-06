@@ -45,7 +45,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       title: blog.title,
       description: blog.excerpt || `${blog.content.substring(0, 160)}...`,
       type: "article",
-      url: `https://purvanchalmitramahasabha.vercel.app/blogs/${blog.id}`,
+      url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/blogs/${blog.id}`,
       images: blog.image
         ? [
             {
@@ -64,7 +64,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       images: blog.image ? [blog.image] : [],
     },
     alternates: {
-      canonical: `https://purvanchalmitramahasabha.vercel.app/blogs/${blog.id}`,
+      canonical: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/blogs/${blog.id}`,
     },
   };
 }

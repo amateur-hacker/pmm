@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     description:
       "Get in touch with Purvanchal Mitra Mahasabha (Regd.). Find our contact information, office location, phone numbers, and office hours for community development initiatives.",
     type: "website",
-    url: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app"}/contact`,
+    url: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/contact`,
   },
   twitter: {
     card: "summary_large_image",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       "Get in touch with Purvanchal Mitra Mahasabha (Regd.). Find our contact information, office location, phone numbers, and office hours for community development initiatives.",
   },
   alternates: {
-    canonical: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app"}/contact`,
+    canonical: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/contact`,
   },
 };
 

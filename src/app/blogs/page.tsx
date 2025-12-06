@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     description:
       "Read insights, updates, and stories from Purvanchal Mitra Mahasabha. Learn about our community development initiatives, social welfare activities, and cultural preservation efforts.",
     type: "website",
-    url: "https://purvanchalmitramahasabha.vercel.app/blogs",
+    url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/blogs`,
   },
   twitter: {
     card: "summary_large_image",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       "Read insights, updates, and stories from Purvanchal Mitra Mahasabha. Learn about our community development initiatives, social welfare activities, and cultural preservation efforts.",
   },
   alternates: {
-    canonical: "https://purvanchalmitramahasabha.vercel.app/blogs",
+    canonical: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/blogs`,
   },
 };
 
@@ -31,7 +31,7 @@ async function getBlogs(page: number = 1, searchQuery: string = "") {
   // This is a placeholder until we have the actual API implementation
   // For now, we'll return an empty array and handle the client-side fetch in a child component
   try {
-    let url = `${process.env.NEXT_PUBLIC_SITE_URL || "https://purvanchalmitramahasabha.vercel.app"}/api/blogs?page=${page}&limit=10`;
+    let url = `${process.env.NEXT_PUBLIC_SITE_URL || "https://purvanchalmitramahasabha.in"}/api/blogs?page=${page}&limit=10`;
     if (searchQuery) {
       url += `&search=${encodeURIComponent(searchQuery)}`;
     }

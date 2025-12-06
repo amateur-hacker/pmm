@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/admin/",
     },
-    host: process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app",
-    sitemap: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app"}/sitemap.xml`,
+    host: process.env.SITE_URL || "https://purvanchalmitramahasabha.in",
+    sitemap: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/sitemap.xml`,
   };
 }

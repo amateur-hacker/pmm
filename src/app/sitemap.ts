@@ -16,8 +16,7 @@ export default async function sitemap() {
     .orderBy(desc(blogs.updatedAt));
 
   // Base site URL
-  const siteUrl =
-    process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app";
+  const siteUrl = process.env.SITE_URL || "https://purvanchalmitramahasabha.in";
 
   // Generate sitemap entries
   const blogEntries = publishedBlogs.map((blog) => ({

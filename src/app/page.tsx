@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description:
       "A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
     type: "website",
-    url: process.env.SITE_URL || "https://purvanchalmitramahasabha.vercel.app",
+    url: process.env.SITE_URL || "https://purvanchalmitramahasabha.in",
   },
   twitter: {
     card: "summary_large_image",
