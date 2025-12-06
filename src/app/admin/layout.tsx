@@ -1,27 +1,20 @@
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  robots: {
-    index: false,
-    follow: false,
-    googleBot: {
-      index: false,
-      follow: false,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    }
-  }
-};
+import AdminAuthGuard from "@/components/AdminAuthGuard";
+import { Suspense } from "react";
 
 export default function AdminLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <>
-      {children}
-    </>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-lg">Checking Admin Access...</div>
+        </div>
+      }
+    >
+      <AdminAuthGuard>{children}</AdminAuthGuard>
+    </Suspense>
   );
 }

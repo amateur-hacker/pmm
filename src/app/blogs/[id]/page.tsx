@@ -1,14 +1,14 @@
-import { getDb } from "@/lib/db";
-import { blogs } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
-import Image from "next/image";
-import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getDb } from "@/lib/db";
+import { blogs } from "@/lib/db/schema";
 import { MarkdownViewer } from "./MarkdownViewer";
-import { Metadata } from 'next';
 
 async function getBlog(id: string) {
   try {
@@ -33,37 +33,39 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   if (!blog) {
     return {
       title: "Blog Not Found",
-      description: "The requested blog post could not be found."
+      description: "The requested blog post could not be found.",
     };
   }
 
   return {
     title: `${blog.title} - Purvanchal Mitra Mahasabha Blog`,
-    description: blog.excerpt || blog.content.substring(0, 160) + '...',
+    description: blog.excerpt || `${blog.content.substring(0, 160)}...`,
     keywords: `${blog.title}, Purvanchal Mitra Mahasabha, community development, social welfare`,
     openGraph: {
       title: blog.title,
-      description: blog.excerpt || blog.content.substring(0, 160) + '...',
-      type: 'article',
+      description: blog.excerpt || `${blog.content.substring(0, 160)}...`,
+      type: "article",
       url: `https://purvanchalmitramahasabha.vercel.app/blogs/${blog.id}`,
-      images: blog.image ? [
-        {
-          url: blog.image,
-          width: 1200,
-          height: 630,
-          alt: blog.title,
-        },
-      ] : [],
+      images: blog.image
+        ? [
+            {
+              url: blog.image,
+              width: 1200,
+              height: 630,
+              alt: blog.title,
+            },
+          ]
+        : [],
     },
     twitter: {
       card: "summary_large_image",
       title: blog.title,
-      description: blog.excerpt || blog.content.substring(0, 160) + '...',
+      description: blog.excerpt || `${blog.content.substring(0, 160)}...`,
       images: blog.image ? [blog.image] : [],
     },
     alternates: {
       canonical: `https://purvanchalmitramahasabha.vercel.app/blogs/${blog.id}`,
-    }
+    },
   };
 }
 
@@ -130,4 +132,3 @@ export default async function BlogDetailPage(props: Props) {
     </div>
   );
 }
-

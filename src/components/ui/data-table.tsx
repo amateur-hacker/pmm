@@ -1,16 +1,25 @@
 "use client";
 
-import React from "react";
 import {
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getFilteredRowModel,
-  useReactTable,
+  getPaginationRowModel,
   getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
-
+import { ChevronLeftIcon, ChevronRightIcon, RotateCcwIcon } from "lucide-react";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -19,22 +28,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  RotateCcwIcon,
-} from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,7 +46,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [globalFilter, setGlobalFilter] = React.useState("");
-  const [pageSize, setPageSize] = React.useState(10);
+  const [pageSize, _setPageSize] = React.useState(10);
 
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -90,7 +83,9 @@ export function DataTable<TData, TValue>({
   // Function to get selected row IDs
   const getSelectedIds = () => {
     const selectedRows = table.getSelectedRowModel().flatRows;
-    return selectedRows.map(row => row.original as any).map(item => item.id);
+    return selectedRows
+      .map((row) => row.original as any)
+      .map((item) => item.id);
   };
 
   const handleBulkDelete = () => {
@@ -126,16 +121,17 @@ export function DataTable<TData, TValue>({
               <RotateCcwIcon className="h-3.5 w-3.5" />
               <span className="sr-only">Reset</span>
             </Button>
-            {onBulkDelete && table.getSelectedRowModel().flatRows.length > 0 && (
-              <Button
-                variant="destructive"
-                size="sm"
-                className="h-9"
-                onClick={handleBulkDelete}
-              >
-                Delete Selected
-              </Button>
-            )}
+            {onBulkDelete &&
+              table.getSelectedRowModel().flatRows.length > 0 && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="h-9"
+                  onClick={handleBulkDelete}
+                >
+                  Delete Selected
+                </Button>
+              )}
           </div>
         </div>
         <div className="flex items-center space-x-2">
@@ -171,7 +167,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -190,7 +186,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

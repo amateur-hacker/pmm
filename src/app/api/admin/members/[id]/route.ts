@@ -1,10 +1,8 @@
-import { NextRequest } from "next/server";
+import { eq } from "drizzle-orm";
+import type { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { members } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { verifyAdminToken } from "@/lib/auth";
-import { cookies } from "next/headers";
-import { v4 as uuidv4 } from "uuid";
 
 export async function GET(
   request: NextRequest,
@@ -12,23 +10,13 @@ export async function GET(
 ) {
   const db = getDb();
 
-  // Check for admin authentication
-  // First try to get token from Authorization header, then from cookie
-  const authHeader = request.headers.get("authorization");
-  let token = authHeader?.startsWith("Bearer ")
-    ? authHeader.substring(7)
-    : authHeader;
+  // Get session to verify admin access
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
 
-  if (!token) {
-    // Try getting token from cookies
-    const cookieStore = await cookies();
-    token = cookieStore.get("adminToken")?.value || null;
-  }
-
-  const adminToken = await verifyAdminToken(token || undefined);
-
-  if (!adminToken) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.session || session.user.role !== "admin") {
+    return new Response("Unauthorized", { status: 403 });
   }
 
   try {
@@ -63,23 +51,13 @@ export async function PUT(
 ) {
   const db = getDb();
 
-  // Check for admin authentication
-  // First try to get token from Authorization header, then from cookie
-  const authHeader = request.headers.get("authorization");
-  let token = authHeader?.startsWith("Bearer ")
-    ? authHeader.substring(7)
-    : authHeader;
+  // Get session to verify admin access
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
 
-  if (!token) {
-    // Try getting token from cookies
-    const cookieStore = await cookies();
-    token = cookieStore.get("adminToken")?.value || null;
-  }
-
-  const adminToken = await verifyAdminToken(token || undefined);
-
-  if (!adminToken) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.session || session.user.role !== "admin") {
+    return new Response("Unauthorized", { status: 403 });
   }
 
   try {
@@ -141,23 +119,13 @@ export async function DELETE(
 ) {
   const db = getDb();
 
-  // Check for admin authentication
-  // First try to get token from Authorization header, then from cookie
-  const authHeader = request.headers.get("authorization");
-  let token = authHeader?.startsWith("Bearer ")
-    ? authHeader.substring(7)
-    : authHeader;
+  // Get session to verify admin access
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
 
-  if (!token) {
-    // Try getting token from cookies
-    const cookieStore = await cookies();
-    token = cookieStore.get("adminToken")?.value || null;
-  }
-
-  const adminToken = await verifyAdminToken(token || undefined);
-
-  if (!adminToken) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.session || session.user.role !== "admin") {
+    return new Response("Unauthorized", { status: 403 });
   }
 
   try {
@@ -177,4 +145,3 @@ export async function DELETE(
     return Response.json({ error: "Failed to delete member" }, { status: 500 });
   }
 }
-

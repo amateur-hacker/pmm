@@ -1,19 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
-  Search,
-  MapPin,
-  Phone,
-  Mail,
   GraduationCap,
   Heart,
+  Mail,
+  MapPin,
+  Phone,
+  Search,
 } from "lucide-react";
-import { useQueryState } from "nuqs";
 import Image from "next/image";
+import { useQueryState } from "nuqs";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 interface Member {
@@ -307,4 +306,3 @@ const InfiniteMemberList = ({ initialData }: InfiniteMemberListProps) => {
 };
 
 export default InfiniteMemberList;
-

@@ -1,5 +1,5 @@
-import { Phone, Mail, MapPin, Calendar } from "lucide-react";
-import { Metadata } from "next";
+import { Calendar, Mail, MapPin, Phone } from "lucide-react";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Contact Purvanchal Mitra Mahasabha - NGO in India",
@@ -132,4 +132,3 @@ export default function ContactPage() {
     </div>
   );
 }
-

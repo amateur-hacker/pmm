@@ -1,12 +1,21 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Calendar,
+  GraduationCap,
+  Image as ImageIcon,
+  Mail,
+  MapPin,
+  Phone,
+  User,
+} from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -14,33 +23,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import { Checkbox } from "@/components/ui/checkbox";
 import { DatePicker } from "@/components/ui/date-picker";
 import { FileUpload } from "@/components/ui/file-upload";
-
 import {
   Form,
+  FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
-  FormDescription,
   FormMessage,
 } from "@/components/ui/form";
-
-import Link from "next/link";
-import { toast } from "sonner";
-
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar,
-  GraduationCap,
-  Image as ImageIcon,
-} from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 // ---------------- SCHEMA ----------------
 const memberSchema = z.object({
@@ -120,7 +115,7 @@ export default function FormPageClient() {
       );
       form.reset();
       setExistingMember(false);
-    } catch (error) {
+    } catch (_error) {
       toast.error(
         "Something went wrong on our side. Please try again — we really want to get you onboard 🙏",
       );
@@ -406,4 +401,3 @@ export default function FormPageClient() {
     </div>
   );
 }
-

@@ -1,5 +1,5 @@
 import { Handshake } from "lucide-react";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About Purvanchal Mitra Mahasabha - NGO in India",
@@ -95,4 +95,3 @@ export default function AboutPage() {
     </div>
   );
 }
-

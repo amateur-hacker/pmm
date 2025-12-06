@@ -1,7 +1,7 @@
-import { NextRequest } from "next/server";
+import { and, desc, type SQL, sql } from "drizzle-orm";
+import type { NextRequest } from "next/server";
 import { getDb } from "@/lib/db";
 import { members } from "@/lib/db/schema";
-import { eq, desc, and, sql, SQL } from "drizzle-orm";
 
 const db = getDb();
 

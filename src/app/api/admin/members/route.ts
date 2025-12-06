@@ -1,38 +1,42 @@
-import { NextRequest } from "next/server";
+import { and, desc, type SQL, sql } from "drizzle-orm";
+import type { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { members } from "@/lib/db/schema";
-import { eq, desc, and, sql, SQL } from "drizzle-orm";
-import { verifyAdminToken } from "@/lib/auth";
-import { cookies } from "next/headers";
 
 const db = getDb();
 
 export async function GET(request: NextRequest) {
   try {
+    // Get session to verify admin access
+    const session = await auth.api.getSession({
+      headers: request.headers,
+    });
+
+    if (!session?.session || session.user.role !== "admin") {
+      return new Response("Unauthorized", { status: 403 });
+    }
+
     const url = new URL(request.url);
+
+    // Check if getAll parameter is true (for admin dashboard)
+    const getAll = url.searchParams.get("getAll") === "true";
+
+    if (getAll) {
+      // Admin requesting all members without pagination
+      const allMembersQuery = db
+        .select()
+        .from(members)
+        .orderBy(desc(members.createdAt));
+
+      const items = await allMembersQuery;
+      return Response.json(items);
+    }
 
     const page = Number.parseInt(url.searchParams.get("page") || "1", 10);
     const limit = Number.parseInt(url.searchParams.get("limit") || "10", 10);
     const offset = (page - 1) * limit;
     const search = url.searchParams.get("search")?.trim() || "";
-
-    // ------------------------
-    // Admin Auth
-    // ------------------------
-    const authHeader = request.headers.get("authorization");
-    let token = authHeader?.startsWith("Bearer ")
-      ? authHeader.slice(7)
-      : authHeader || null;
-
-    if (!token) {
-      const cookieStore = await cookies();
-      token = cookieStore.get("adminToken")?.value || null;
-    }
-
-    const isAdmin = !!(await verifyAdminToken(token ?? undefined));
-    if (!isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
     // ------------------------
     // Conditions Array
@@ -53,23 +57,6 @@ export async function GET(request: NextRequest) {
     }
 
     const finalWhere = conditions.length > 0 ? and(...conditions) : undefined;
-
-    // Check if getAll parameter is true (for admin dashboard)
-    const getAll = url.searchParams.get("getAll") === "true";
-
-    if (getAll) {
-      // Admin requesting all members without pagination
-      const allMembersQuery = finalWhere
-        ? db
-            .select()
-            .from(members)
-            .where(finalWhere)
-            .orderBy(desc(members.createdAt))
-        : db.select().from(members).orderBy(desc(members.createdAt));
-
-      const items = await allMembersQuery;
-      return Response.json(items);
-    }
 
     // ------------------------
     // MAIN PAGINATED LIST
@@ -117,23 +104,13 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  // Check for admin authentication
-  // First try to get token from Authorization header, then from cookie
-  const authHeader = request.headers.get("authorization");
-  let token = authHeader?.startsWith("Bearer ")
-    ? authHeader.substring(7)
-    : authHeader;
+  // Get session to verify admin access
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
 
-  if (!token) {
-    // Try getting token from cookies
-    const cookieStore = await cookies();
-    token = cookieStore.get("adminToken")?.value || null;
-  }
-
-  const adminToken = await verifyAdminToken(token || undefined);
-
-  if (!adminToken) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.session || session.user.role !== "admin") {
+    return new Response("Unauthorized", { status: 403 });
   }
 
   try {
@@ -178,4 +155,3 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Failed to add member" }, { status: 500 });
   }
 }
-

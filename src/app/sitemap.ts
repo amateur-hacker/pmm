@@ -1,6 +1,6 @@
+import { desc, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { blogs } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
 
 export default async function sitemap() {
   const db = getDb();
@@ -70,4 +70,3 @@ export default async function sitemap() {
   // Combine static pages and blog entries
   return [...staticPages, ...blogEntries];
 }
-

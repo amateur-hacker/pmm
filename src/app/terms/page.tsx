@@ -1,5 +1,5 @@
-import { FileText, CheckCircle, AlertCircle } from "lucide-react";
-import { Metadata } from "next";
+import { AlertCircle, CheckCircle, FileText } from "lucide-react";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms and Conditions - Purvanchal Mitra Mahasabha",
@@ -148,4 +148,3 @@ export default function TermsPage() {
     </div>
   );
 }
-

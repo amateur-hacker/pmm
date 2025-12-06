@@ -1,40 +1,35 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { getCookie, deleteCookie } from "cookies-next/client";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
+import { getCookie } from "cookies-next/client";
 import {
   ArrowLeft,
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  GraduationCap,
   Calendar,
+  GraduationCap,
+  Mail,
+  MapPin,
+  Phone,
+  User,
 } from "lucide-react";
-
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePicker } from "@/components/ui/date-picker";
 import { FileUpload } from "@/components/ui/file-upload";
-
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
-  FormDescription,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 // ----------------- SCHEMA --------------------
 const memberSchema = z.object({
@@ -46,7 +41,7 @@ const memberSchema = z.object({
     .string()
     .min(10, { message: "Mobile number must be at least 10 digits" }),
   email: z.string().email({ message: "Invalid email address" }),
-  dob: z.string().refine((date) => !isNaN(Date.parse(date)), {
+  dob: z.string().refine((date) => !Number.isNaN(Date.parse(date)), {
     message: "Invalid date of birth",
   }),
   education: z.string().min(2, { message: "Education information required" }),
@@ -454,4 +449,3 @@ export function EditMemberPageClient(props: Props) {
     </div>
   );
 }
-

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Smartphone } from 'lucide-react';
-import { usePWAInstall } from 'react-use-pwa-install';
-import { useEffect, useState } from 'react';
+import { Smartphone } from "lucide-react";
+import { useEffect, useState } from "react";
+import { usePWAInstall } from "react-use-pwa-install";
+import { Button } from "@/components/ui/button";
 
 export function PWAInstallButton() {
   const [isClient, setIsClient] = useState(false);

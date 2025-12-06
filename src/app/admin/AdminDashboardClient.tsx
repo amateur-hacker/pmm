@@ -1,11 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import type { ColumnDef } from "@tanstack/react-table";
+import { Edit, Eye, Plus, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, Edit, Trash2, Plus, LogOut } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DataTable } from "@/components/ui/data-table";
 import {
   Dialog,
   DialogContent,
@@ -13,13 +17,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import Link from "next/link";
-import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
 
 interface Blog {
   id: string;
@@ -115,22 +114,6 @@ export function AdminDashboardClient() {
     fetchMembers();
     fetchBlogs();
   }, [router]);
-
-  const handleLogout = async () => {
-    try {
-      // Call the logout API to properly delete the server-side cookie
-      await fetch("/api/admin/logout", {
-        method: "POST",
-        credentials: "include", // Include cookies
-      });
-    } catch (error) {
-      console.error("Logout error:", error);
-      // Even if API call fails, still redirect to login page
-    } finally {
-      // Redirect to login page regardless of API response
-      router.push("/admin/login");
-    }
-  };
 
   const handleDeleteBlog = async (id: string) => {
     try {
@@ -446,19 +429,7 @@ export function AdminDashboardClient() {
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <div className="flex space-x-2">
-            <Button
-              variant="outline"
-              onClick={handleLogout}
-              className="flex items-center"
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </Button>
-          </div>
-        </div>
+        <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
         <Tabs defaultValue="members" className="w-full">
           <TabsList className="grid w-full grid-cols-2">

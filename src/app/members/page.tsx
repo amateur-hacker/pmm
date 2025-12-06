@@ -1,5 +1,4 @@
-import { Metadata } from "next";
-import { use } from "react";
+import type { Metadata } from "next";
 import InfiniteMemberList from "@/components/members/infinite-member-list";
 
 export const metadata: Metadata = {
@@ -97,4 +96,3 @@ export default async function PublicMembersPage({
     </div>
   );
 }
-

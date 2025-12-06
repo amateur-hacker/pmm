@@ -1,9 +1,8 @@
-import { NextRequest } from "next/server";
+import { and, desc, eq, type SQL, sql } from "drizzle-orm";
+import type { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { blogs } from "@/lib/db/schema";
-import { eq, desc, and, sql, SQL } from "drizzle-orm";
-import { verifyAdminToken } from "@/lib/auth";
-import { cookies } from "next/headers";
 
 const db = getDb();
 
@@ -17,30 +16,12 @@ export async function GET(request: NextRequest) {
     const search = url.searchParams.get("search")?.trim() || "";
 
     // ------------------------
-    // Admin Auth
-    // ------------------------
-    const authHeader = request.headers.get("authorization");
-    let token = authHeader?.startsWith("Bearer ")
-      ? authHeader.slice(7)
-      : authHeader || null;
-
-    if (!token) {
-      const cookieStore = await cookies();
-      token = cookieStore.get("adminToken")?.value || null;
-    }
-
-    // ------------------------
     // Conditions Array
     // ------------------------
     const conditions: SQL<unknown>[] = [];
 
-    // Check if user is admin
-    const isAdmin = !!(await verifyAdminToken(token ?? undefined));
-
-    // Only add published condition if user is not an admin
-    if (!isAdmin) {
-      conditions.push(eq(blogs.published, 1));
-    }
+    // Always show only published blogs
+    conditions.push(eq(blogs.published, 1));
 
     if (search) {
       const like = `%${search}%`;
@@ -55,23 +36,6 @@ export async function GET(request: NextRequest) {
     }
 
     const finalWhere = conditions.length > 0 ? and(...conditions) : undefined;
-
-    // Check if getAll parameter is true (for admin dashboard)
-    const getAll = url.searchParams.get("getAll") === "true";
-
-    if (getAll && isAdmin) {
-      // Admin requesting all blogs without pagination
-      const allBlogsQuery = finalWhere
-        ? db
-            .select()
-            .from(blogs)
-            .where(finalWhere)
-            .orderBy(desc(blogs.createdAt))
-        : db.select().from(blogs).orderBy(desc(blogs.createdAt));
-
-      const items = await allBlogsQuery;
-      return Response.json(items);
-    }
 
     // ------------------------
     // MAIN PAGINATED LIST
@@ -120,19 +84,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const authHeader = request.headers.get("authorization");
-    let token = authHeader?.startsWith("Bearer ")
-      ? authHeader.slice(7)
-      : authHeader || null;
+    // Get session to verify admin access
+    const session = await auth.api.getSession({
+      headers: request.headers,
+    });
 
-    if (!token) {
-      const cookieStore = await cookies();
-      token = cookieStore.get("adminToken")?.value || null;
-    }
-
-    const isAdmin = !!(await verifyAdminToken(token ?? undefined));
-    if (!isAdmin) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    if (!session?.session || session.user.role !== "admin") {
+      return new Response("Unauthorized", { status: 403 });
     }
 
     const { title, content, excerpt, author, published, image } =

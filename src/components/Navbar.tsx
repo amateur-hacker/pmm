@@ -1,15 +1,29 @@
 "use client";
 
+import { LogOut, Menu, User } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import { PWAInstallButton } from "@/components/PWAInstallButton";
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import type { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
+import { Skeleton } from "./ui/skeleton";
 
 const Navbar = () => {
   const pathname = usePathname();
+  const { data: session, isPending, error, refetch } = authClient.useSession();
 
   // Helper function to determine if a link is active
   const isActive = (href: string) => {
@@ -18,7 +32,7 @@ const Navbar = () => {
     }
     return pathname.startsWith(href);
   };
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [_isMenuOpen, _setIsMenuOpen] = useState(false);
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -28,6 +42,14 @@ const Navbar = () => {
     { name: "About Us", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    refetch(); // Refetch the session after sign out
+  };
+
+  const sessionUser =
+    (session?.user as typeof auth.$Infer.Session.user) ?? null;
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -63,57 +85,224 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
+
+            {/* Authentication buttons */}
+            {isPending ? (
+              <Skeleton className="h-8 w-8 rounded-full" />
+            ) : sessionUser ? (
+              <div className="flex items-center space-x-4">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="flex items-center gap-2 cursor-pointer"
+                      type="button"
+                      title="Open User Menu"
+                    >
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={
+                            sessionUser.image ||
+                            "https://res.cloudinary.com/ahcloud/image/upload/v1747277562/images/default-profile_bpnjdl_dzyvud.png"
+                          }
+                          alt={sessionUser.name}
+                        />
+                        <AvatarFallback>
+                          {sessionUser.name.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <div className="flex flex-col items-center">
+                      <div className="flex gap-1.5 px-2 py-1.5">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage
+                            src={
+                              sessionUser.image ||
+                              "https://res.cloudinary.com/ahcloud/image/upload/v1747277562/images/default-profile_bpnjdl_dzyvud.png"
+                            }
+                            alt={sessionUser.name}
+                          />
+                          <AvatarFallback>
+                            {sessionUser.name.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <DropdownMenuLabel className="truncate">
+                          {sessionUser.name}
+                        </DropdownMenuLabel>
+                      </div>
+                    </div>
+
+                    <DropdownMenuSeparator />
+
+                    {sessionUser.role === "admin" && (
+                      <>
+                        <DropdownMenuItem asChild>
+                          <Link href="/admin" className="cursor-pointer">
+                            Admin Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+
+                    <DropdownMenuItem
+                      onClick={handleSignOut}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <LogOut size={16} />
+                      <span>Sign Out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={async () => {
+                  await authClient.signIn.social({
+                    provider: "google",
+                    callbackURL: "/", // Redirect to home after sign in
+                  });
+                }}
+              >
+                <User className="h-4 w-4 mr-2" />
+                Sign In
+              </Button>
+            )}
+
             <PWAInstallButton />
           </div>
 
-          {/* Mobile menu button - moved PWA button inside the menu */}
+          {/* Mobile menu button - using Sheet component */}
           <div className="flex items-center lg:hidden">
-            <button
-              type="button"
-              className="inline-flex items-center justify-center rounded-md p-2 text-foreground hover:text-primary focus:outline-none"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-foreground">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-full flex flex-col px-3">
+                <div className="flex-1 flex flex-col space-y-4 overflow-y-auto">
+                  <div className="flex flex-col space-y-2 mt-16">
+                    {navItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className={`py-2 px-3 rounded-md text-base font-medium ${
+                          isActive(item.href)
+                            ? "text-primary bg-primary/10"
+                            : "text-foreground hover:text-primary hover:bg-accent"
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+
+                  <div className="mt-auto">
+                    {/* Mobile auth buttons - same as large device */}
+                    {isPending ? (
+                      <div className="py-4 rounded-md text-base font-medium bg-gray-100 animate-pulse flex justify-center">
+                        Loading...
+                      </div>
+                    ) : session ? (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            className="w-full flex items-center gap-2 cursor-pointer py-2 px-3 rounded-md text-foreground hover:text-primary hover:bg-accent"
+                            type="button"
+                            title="Open User Menu"
+                          >
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage
+                                src={
+                                  sessionUser.image ||
+                                  "https://res.cloudinary.com/ahcloud/image/upload/v1747277562/images/default-profile_bpnjdl_dzyvud.png"
+                                }
+                                alt={sessionUser.name}
+                              />
+                              <AvatarFallback>
+                                {sessionUser.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="text-left flex-1 text-sm font-medium">
+                              {sessionUser.name}
+                            </span>
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align="end"
+                          className="w-full min-w-[200px]"
+                        >
+                          <div className="flex flex-col items-center">
+                            <div className="flex gap-1.5 px-2 py-1.5">
+                              <Avatar className="h-8 w-8">
+                                <AvatarImage
+                                  src={
+                                    sessionUser.image ||
+                                    "https://res.cloudinary.com/ahcloud/image/upload/v1747277562/images/default-profile_bpnjdl_dzyvud.png"
+                                  }
+                                  alt={sessionUser.name}
+                                />
+                                <AvatarFallback>
+                                  {sessionUser.name.slice(0, 2).toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <DropdownMenuLabel className="truncate">
+                                {sessionUser.name}
+                              </DropdownMenuLabel>
+                            </div>
+                          </div>
+
+                          <DropdownMenuSeparator />
+
+                          {sessionUser.role === "admin" && (
+                            <>
+                              <DropdownMenuItem asChild>
+                                <Link href="/admin" className="cursor-pointer">
+                                  Admin Dashboard
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                            </>
+                          )}
+
+                          <DropdownMenuItem
+                            onClick={handleSignOut}
+                            className="flex items-center gap-2 cursor-pointer"
+                          >
+                            <LogOut size={16} />
+                            <span>Sign Out</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ) : (
+                      <button
+                        type="submit"
+                        className="w-full text-left py-2 px-3 rounded-md text-base font-medium text-foreground hover:text-primary hover:bg-accent flex items-center"
+                        onClick={async () => {
+                          await authClient.signIn.social({
+                            provider: "google",
+                            callbackURL: "/", // Redirect to home after sign in
+                          });
+                        }}
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        <span>Sign In</span>
+                      </button>
+                    )}
+
+                    <div className="pt-4">
+                      <PWAInstallButton />
+                    </div>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="lg:hidden border-t py-4"
-            >
-              <div className="space-y-1 px-2 pt-2 pb-3">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      isActive(item.href)
-                        ? "text-primary bg-primary/10"
-                        : "text-foreground hover:text-primary hover:bg-accent"
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-                <div className="px-3 pt-2">
-                  <PWAInstallButton />
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </nav>
   );

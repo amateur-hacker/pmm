@@ -1,11 +1,12 @@
-import { drizzle } from 'drizzle-orm/neon-http';
-import { neon } from '@neondatabase/serverless';
-import * as schema from './schema';
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
+import * as schema from "./schema";
 
+console.log(process.env);
 // Create database connection function to ensure env is available at runtime
 export function getDb() {
   if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL is not set');
+    throw new Error("DATABASE_URL is not set");
   }
   const sql = neon(process.env.DATABASE_URL);
   return drizzle(sql, { schema });

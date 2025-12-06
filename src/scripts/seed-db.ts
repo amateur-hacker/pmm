@@ -1,17 +1,17 @@
-import { getDb } from '@/lib/db';
-import { members, blogs } from '@/lib/db/schema';
-import { v4 as uuidv4 } from 'uuid';
-import { generateMockMembers, generateMockBlogs } from '@/lib/mock-data';
-import { config } from 'dotenv';
+import { config } from "dotenv";
+import { v4 as uuidv4 } from "uuid";
+import { getDb } from "@/lib/db";
+import { blogs, members } from "@/lib/db/schema";
+import { generateMockBlogs, generateMockMembers } from "@/lib/mock-data";
 
 // Load environment variables
-config({ path: '.env.local' });
+config({ path: ".env.local" });
 
 async function seedDatabase() {
   const db = getDb();
 
   try {
-    console.log('Starting to seed the database...');
+    console.log("Starting to seed the database...");
 
     // Generate mock data
     const mockMembers = generateMockMembers(50);
@@ -59,9 +59,9 @@ async function seedDatabase() {
     }
 
     console.log(`Inserted ${mockBlogs.length} blogs`);
-    console.log('Database seeding completed successfully!');
+    console.log("Database seeding completed successfully!");
   } catch (error) {
-    console.error('Error seeding database:', error);
+    console.error("Error seeding database:", error);
   }
 }
 

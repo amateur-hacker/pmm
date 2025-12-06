@@ -1,5 +1,4 @@
-import { Metadata } from "next";
-import { use } from "react";
+import type { Metadata } from "next";
 import InfiniteBlogList from "@/components/blogs/infinite-blog-list";
 
 export const metadata: Metadata = {
