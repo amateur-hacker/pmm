@@ -1,3 +1,9 @@
+"use client";
+
+import { User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
+
 export default function UnauthorizedPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -14,12 +20,18 @@ export default function UnauthorizedPage() {
           <p className="text-gray-600">
             Contact your administrator if you believe this is an error.
           </p>
-          <a
-            href="/login"
-            className="mt-4 inline-block w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+          <Button
+            className="mt-4 w-full"
+            onClick={async () => {
+              await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/",
+              });
+            }}
           >
-            Go to Login
-          </a>
+            <User className="h-4 w-4 mr-2" />
+            Sign In
+          </Button>
         </div>
       </div>
     </div>
