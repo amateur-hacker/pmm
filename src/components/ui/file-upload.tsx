@@ -64,7 +64,7 @@ export function FileUpload({ value, onChange, disabled }: FileUploadProps) {
 
   if (file || value) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 overflow-hidden">
         <div className="flex-1 bg-secondary p-3 rounded-md text-sm truncate">
           {file ? file.name : value?.split("/").pop()}
         </div>

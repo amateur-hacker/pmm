@@ -54,7 +54,7 @@ const memberSchema = z.object({
   permanentAddress: z
     .string()
     .min(5, { message: "Permanent address must be at least 5 characters" }),
-  image: z.string().optional(),
+  image: z.string().min(1, { message: "Image is required" }),
   terms: z.boolean().refine((v) => v === true, {
     message: "You must accept the Terms and Conditions",
   }),
@@ -185,6 +185,8 @@ export default function FormPageClient() {
                         <FormControl>
                           <Input
                             placeholder="Enter your mobile number"
+                            min={10}
+                            max={10}
                             {...field}
                           />
                         </FormControl>
@@ -278,7 +280,7 @@ export default function FormPageClient() {
                         <FormLabel>
                           <div className="flex items-center gap-2">
                             <ImageIcon className="h-4 w-4 text-muted-foreground" />
-                            Image (Optional)
+                            Image <span className="text-destructive">*</span>
                           </div>
                         </FormLabel>
                         <FormControl>

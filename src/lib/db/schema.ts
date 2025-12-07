@@ -17,7 +17,7 @@ export const members = pgTable("members", {
   dob: date("dob"),
   education: varchar("education", { length: 255 }),
   permanentAddress: text("permanent_address"),
-  image: varchar("image", { length: 500 }), // Optional image URL
+  image: varchar("image", { length: 500 }), // Required image URL
   donated: integer("donated").default(0), // Donated field with default value of 0
   type: varchar("type", { length: 50 }).default("member").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
