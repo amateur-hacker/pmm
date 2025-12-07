@@ -49,25 +49,9 @@ export function MemberDetailPageClient(props: Props) {
 
       const fetchMember = async () => {
         try {
-          const response = await fetch(`/api/admin/members/${memberId}`, {
-            credentials: "include", // Include cookies by default
-          });
+          const response = await fetch(`/api/admin/members/${memberId}`);
 
           if (!response.ok) {
-            if (response.status === 401) {
-              // Call logout API to properly delete the server-side cookie
-              await fetch("/api/admin/logout", {
-                method: "POST",
-                credentials: "include",
-              });
-              router.push("/admin/login");
-              return;
-            }
-            if (response.status === 404) {
-              toast.error("Member not found.");
-              router.push("/admin");
-              return;
-            }
             throw new Error("Failed to fetch member");
           }
 
@@ -85,7 +69,7 @@ export function MemberDetailPageClient(props: Props) {
     };
 
     extractParams();
-  }, [props.params, router]);
+  }, [props.params]);
 
   // Authentication check is handled on the server side now
 

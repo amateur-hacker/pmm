@@ -89,7 +89,7 @@ export function generateMockMembers(count: number = 50) {
       donated: Math.floor(Math.random() * 50000),
       type: "member",
       createdAt: new Date(
-        Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000),
+        Date.now() - Math.floor(Math.random() * 13 * 365 * 24 * 60 * 60 * 1000),
       ).toISOString(),
       updatedAt: new Date().toISOString(),
     });
@@ -97,61 +97,59 @@ export function generateMockMembers(count: number = 50) {
   return members;
 }
 
-// Function to generate mock blogs data
-export function generateMockBlogs(count: number = 50) {
-  const blogs = [];
+// Function to generate mock events data
+export function generateMockEvents(count: number = 50) {
+  const events = [];
   const titles = [
-    "Community Development Initiatives",
-    "Education for All Program",
-    "Healthcare Awareness Campaign",
-    "Women Empowerment Projects",
-    "Agricultural Support Programs",
-    "Youth Development Activities",
-    "Environmental Conservation Efforts",
-    "Cultural Preservation Activities",
-    "Disaster Relief Operations",
-    "Infrastructure Development in Villages",
-    "Microfinance for Women",
-    "Digital Literacy Programs",
-    "Clean Water Initiatives",
-    "Sanitation Projects",
-    "Skill Development Workshops",
-    "Senior Care Services",
-    "Child Welfare Programs",
-    "Sports and Recreation Activities",
-    "Festivals and Cultural Events",
-    "Rural Employment Programs",
-    "Health Camps in Villages",
-    "Education Scholarship Programs",
-    "Senior Citizens Support",
-    "Rural Road Development",
-    "Vocational Training Centers",
-    "Women's Self-Help Groups",
-    "Environmental Clean-up Drives",
-    "Tree Plantation Campaigns",
-    "Renewable Energy Projects",
-    "Organic Farming Promotion",
-    "Support for Senior Farmers",
-    "Youth Skill Development",
-    "Community Kitchen Initiatives",
-    "Rural Healthcare Services",
-    "Literacy Programs",
-    "Women Safety Initiatives",
-    "Youth Sports Competitions",
-    "Community Gardens",
-    "Rural Internet Access",
-    "Elderly Care Centers",
-    "Community Radio Programs",
-    "Traditional Art Preservation",
-    "Cultural Heritage Projects",
-    "Rural Tourism Development",
-    "Support for Artisans",
-    "Traditional Medicine Practices",
-    "Community Festivals",
-    "Rural Banking Services",
-    "Support for Small Businesses",
-    "Traditional Craft Promotion",
-    "Community Disaster Preparedness",
+    "Annual Chhath Puja Celebration",
+    "Community Health Camp",
+    "Youth Leadership Workshop",
+    "Women's Empowerment Seminar",
+    "Agricultural Training Program",
+    "Environmental Awareness Drive",
+    "Cultural Heritage Festival",
+    "Disaster Relief Distribution",
+    "Village Infrastructure Meeting",
+    "Microfinance Awareness Session",
+    "Digital Literacy Workshop",
+    "Clean Water Project Launch",
+    "Sanitation Awareness Campaign",
+    "Skill Development Training",
+    "Senior Citizens Meet",
+    "Child Education Fair",
+    "Sports Day Celebration",
+    "Ram Leela Performance",
+    "Employment Fair",
+    "Free Medical Camp",
+    "Scholarship Distribution",
+    "Elderly Care Workshop",
+    "Road Safety Awareness",
+    "Vocational Training Demo",
+    "Self-Help Group Meeting",
+    "Tree Plantation Drive",
+    "Solar Panel Installation",
+    "Organic Farming Seminar",
+    "Farmer's Market",
+    "Youth Career Counseling",
+    "Community Kitchen Launch",
+    "Healthcare Awareness Talk",
+    "Literacy Mission Kickoff",
+    "Women Safety Workshop",
+    "Inter-Village Sports Tournament",
+    "Community Garden Inauguration",
+    "Internet Literacy Program",
+    "Senior Citizen's Day",
+    "Community Radio Launch",
+    "Traditional Art Exhibition",
+    "Heritage Walk",
+    "Rural Tourism Promotion",
+    "Artisan Support Program",
+    "Ayurveda Awareness Camp",
+    "Festival Celebration",
+    "Financial Literacy Workshop",
+    "Entrepreneurship Training",
+    "Craft Fair",
+    "Disaster Preparedness Drill",
   ];
 
   const authors = [
@@ -200,22 +198,35 @@ export function generateMockBlogs(count: number = 50) {
     const excerpt =
       excerptTemplates[Math.floor(Math.random() * excerptTemplates.length)];
 
-    blogs.push({
-      id: `blog-${i + 1}`,
+    // Generate createdAt first (from last 13 years)
+    const createdAt = new Date(
+      Date.now() - Math.floor(Math.random() * 13 * 365 * 24 * 60 * 60 * 1000),
+    );
+
+    const published = Math.random() > 0.2 ? 1 : 0; // 80% chance of being published
+
+    // If published, publishedAt should be createdAt or later
+    let publishedAt = null;
+    if (published) {
+      // publishedAt is createdAt plus some random time up to 30 days later
+      publishedAt = new Date(
+        createdAt.getTime() +
+          Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000),
+      ).toISOString();
+    }
+
+    events.push({
+      id: `event-${i + 1}`,
       title: `${title} - Part ${i + 1}`,
       content,
       excerpt,
       author: authors[Math.floor(Math.random() * authors.length)],
-      published: Math.random() > 0.2 ? 1 : 0, // 80% chance of being published
-      publishedAt: new Date(
-        Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000),
-      ).toISOString(),
+      published,
+      publishedAt,
       image: `https://picsum.photos/seed/${i}/600/400`,
-      createdAt: new Date(
-        Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000),
-      ).toISOString(),
+      createdAt: createdAt.toISOString(),
       updatedAt: new Date().toISOString(),
     });
   }
-  return blogs;
+  return events;
 }

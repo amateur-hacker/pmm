@@ -40,10 +40,6 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center">
-                <Calendar className="h-4 w-4 mr-2 text-primary" />
-                <span>Regd. no: S/00589NE/2012</span>
-              </div>
-              <div className="flex items-center">
                 <MapPin className="h-4 w-4 mr-2 text-primary" />
                 <span>E-1/3 Mukund Vihar Karawal Nagar Delhi-90</span>
               </div>

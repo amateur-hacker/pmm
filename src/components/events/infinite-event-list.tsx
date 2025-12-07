@@ -10,23 +10,30 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-interface Blog {
+interface Event {
   id: string;
   title: string;
   content: string;
   excerpt: string | null;
   author: string;
-  published: number; // 0 for draft, 1 for published
-  publishedAt: string | null;
+  published: number;
+  publishedAt: string;
   image: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
-interface BlogListProps {
+interface EventListProps {
   initialData: {
-    items: Blog[];
+    items: Event[];
     hasMore: boolean;
   };
   initialSearchQuery?: string;
@@ -34,9 +41,9 @@ interface BlogListProps {
 
 const PAGE_LIMIT = 10;
 
-const InfiniteBlogList = ({ initialData }: BlogListProps) => {
+const InfiniteEventList = ({ initialData }: EventListProps) => {
   // state
-  const [blogs, setBlogs] = useState<Blog[]>(initialData.items || []);
+  const [events, setEvents] = useState<Event[]>(initialData.items || []);
   const [hasMore, setHasMore] = useState<boolean>(initialData.hasMore ?? false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -50,6 +57,11 @@ const InfiniteBlogList = ({ initialData }: BlogListProps) => {
   const [searchQuery, setSearchQuery] = useQueryState("search", {
     defaultValue: "",
   });
+  const [yearFilter, setYearFilter] = useState<string>("all");
+
+  // Calculate years of experience: 13+ for 2025, +1 each year after
+  const currentYear = new Date().getFullYear();
+  const yearsOfExperience = 13 + Math.max(0, currentYear - 2025);
 
   // debounce timer for search
   const searchDebounceRef = useRef<number | null>(null);
@@ -58,19 +70,20 @@ const InfiniteBlogList = ({ initialData }: BlogListProps) => {
   const abortRef = useRef<AbortController | null>(null);
 
   // Helper: build API URL
-  const buildUrl = useCallback((p: number, q?: string) => {
+  const buildUrl = useCallback((p: number, q?: string, year?: string) => {
     const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
     const params = new URLSearchParams({
       page: String(p),
       limit: String(PAGE_LIMIT),
     });
     if (q) params.set("search", q);
-    return `${base}/api/blogs?${params.toString()}`;
+    if (year && year !== "all") params.set("year", year);
+    return `${base}/api/events?${params.toString()}`;
   }, []);
 
   // Fetch a page (pageNumber starts at 1)
   const fetchPage = useCallback(
-    async (pageNumber: number, q?: string) => {
+    async (pageNumber: number, q?: string, year?: string) => {
       // cancel previous
       abortRef.current?.abort();
       const controller = new AbortController();
@@ -78,16 +91,16 @@ const InfiniteBlogList = ({ initialData }: BlogListProps) => {
 
       setLoading(true);
       try {
-        const url = buildUrl(pageNumber, q);
+        const url = buildUrl(pageNumber, q, year);
         const res = await fetch(url, {
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
         });
 
         if (!res.ok) {
-          throw new Error(`Failed to fetch blogs (status ${res.status})`);
+          throw new Error(`Failed to fetch events (status ${res.status})`);
         }
-        const data: { items: Blog[]; hasMore: boolean } = await res.json();
+        const data: { items: Event[]; hasMore: boolean } = await res.json();
 
         return data;
       } catch (err) {
@@ -96,7 +109,7 @@ const InfiniteBlogList = ({ initialData }: BlogListProps) => {
           return null;
         }
         console.error("fetchPage error:", err);
-        toast.error("Failed to load blogs");
+        toast.error("Failed to load events");
         return null;
       } finally {
         setLoading(false);
@@ -110,10 +123,14 @@ const InfiniteBlogList = ({ initialData }: BlogListProps) => {
     if (loading || !hasMore) return;
 
     const nextPage = page + 1;
-    const data = await fetchPage(nextPage, searchQuery || undefined);
+    const data = await fetchPage(
+      nextPage,
+      searchQuery || undefined,
+      yearFilter,
+    );
     if (!data) return;
 
-    setBlogs((prev) => {
+    setEvents((prev) => {
       // filter duplicates and append
       const newItems = data.items.filter(
         (nb) => !prev.some((pb) => pb.id === nb.id),
@@ -135,11 +152,11 @@ const InfiniteBlogList = ({ initialData }: BlogListProps) => {
     // debounce 300ms
     searchDebounceRef.current = window.setTimeout(async () => {
       // fetch page 1 with new query
-      const data = await fetchPage(1, searchQuery || undefined);
+      const data = await fetchPage(1, searchQuery || undefined, yearFilter);
       console.log(data);
       if (!data) return;
 
-      setBlogs(data.items);
+      setEvents(data.items);
       setHasMore(data.hasMore);
       setPage(1);
 
@@ -155,6 +172,23 @@ const InfiniteBlogList = ({ initialData }: BlogListProps) => {
       abortRef.current?.abort();
     };
   }, [searchQuery, fetchPage]);
+
+  // When yearFilter changes: reset list and fetch page 1
+  useEffect(() => {
+    const fetchNewYear = async () => {
+      setLoading(true);
+      const data = await fetchPage(1, searchQuery || undefined, yearFilter);
+      if (!data) {
+        setLoading(false);
+        return;
+      }
+      setEvents(data.items);
+      setHasMore(data.hasMore);
+      setPage(1);
+      setLoading(false);
+    };
+    fetchNewYear();
+  }, [yearFilter, fetchPage, searchQuery]);
 
   // IntersectionObserver setup — observes sentinelRef and calls loadMore when visible
   useEffect(() => {
@@ -196,24 +230,42 @@ const InfiniteBlogList = ({ initialData }: BlogListProps) => {
 
   return (
     <div>
-      {/* Search Bar */}
-      <div className="mb-8 max-w-2xl mx-auto">
+      {/* Search and Filter */}
+      <div className="mb-8 max-w-2xl mx-auto space-y-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             type="text"
-            placeholder="Search blogs..."
+            placeholder="Search events..."
             value={searchQuery ?? ""}
             onChange={handleSearchChange}
             className="pl-10 pr-4 py-3 text-lg"
           />
         </div>
+        <div className="flex justify-center">
+          <Select value={yearFilter} onValueChange={setYearFilter}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filter by year" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Years</SelectItem>
+              {Array.from({ length: yearsOfExperience }, (_, i) => {
+                const year = new Date().getFullYear() - i;
+                return (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {blogs.map((blog) => (
-          <div key={blog.id} className="overflow-hidden">
-            <BlogCard blog={blog} />
+        {events.map((event) => (
+          <div key={event.id} className="overflow-hidden">
+            <EventCard event={event} />
           </div>
         ))}
       </div>
@@ -227,7 +279,7 @@ const InfiniteBlogList = ({ initialData }: BlogListProps) => {
         </div>
       )}
 
-      {!loading && !hasMore && blogs.length === 0 && (
+      {!loading && !hasMore && events.length === 0 && (
         <div className="text-center text-muted-foreground mt-8">
           No results found.
         </div>
@@ -236,14 +288,14 @@ const InfiniteBlogList = ({ initialData }: BlogListProps) => {
   );
 };
 
-const BlogCard = ({ blog }: { blog: Blog }) => {
+const EventCard = ({ event }: { event: Event }) => {
   return (
     <Card className="overflow-hidden h-full flex flex-col">
-      {blog.image && (
+      {event.image && (
         <div className="h-48 overflow-hidden relative">
           <Image
-            src={blog.image}
-            alt={blog.title}
+            src={event.image}
+            alt={event.title}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -253,31 +305,31 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
       <CardHeader className="flex-1">
         <div className="flex justify-between items-start mb-2">
           <Badge variant="secondary" className="text-xs">
-            {blog.published ? "Published" : "Draft"}
+            {event.published ? "Published" : "Draft"}
           </Badge>
           <div className="flex items-center text-sm text-muted-foreground ml-2">
             <CalendarIcon className="h-4 w-4 mr-1" />
-            <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
+            <span>{new Date(event.publishedAt).toLocaleDateString()}</span>
           </div>
         </div>
         <CardTitle className="text-xl line-clamp-2 mb-2">
-          {blog.title}
+          {event.title}
         </CardTitle>
         <div className="flex items-center text-sm text-muted-foreground">
           <UserIcon className="h-4 w-4 mr-1" />
-          <span>{blog.author}</span>
+          <span>{event.author}</span>
         </div>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
         <div className="prose prose-sm max-w-none mb-4 flex-1 line-clamp-3">
-          {blog.excerpt ?? `${blog.content.slice(0, 150)}...`}
+          {event.excerpt ?? `${event.content.slice(0, 150)}...`}
         </div>
         <Button variant="outline" className="cursor-pointer" asChild>
-          <Link href={`/blogs/${blog.id}`}>Read More</Link>
+          <Link href={`/events/${event.id}`}>Read More</Link>
         </Button>
       </CardContent>
     </Card>
   );
 };
 
-export default InfiniteBlogList;
+export default InfiniteEventList;

@@ -29,9 +29,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { authClient } from "@/lib/auth-client";
 
 // ----------------- SCHEMA --------------------
-const blogSchema = z.object({
+const eventSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters" }),
   content: z
     .string()
@@ -44,7 +45,7 @@ const blogSchema = z.object({
   image: z.string().optional(),
 });
 
-interface Blog {
+interface Event {
   id: string;
   title: string;
   content: string;
@@ -62,12 +63,12 @@ type Props = {
 };
 
 // ----------------- COMPONENT --------------------
-export function EditBlogPageClient(props: Props) {
-  const [blog, setBlog] = useState<Blog | null>(null);
+export function EditEventPageClient(props: Props) {
+  const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const form = useForm({
-    resolver: zodResolver(blogSchema),
+    resolver: zodResolver(eventSchema),
     defaultValues: {
       title: "",
       content: "",
@@ -80,35 +81,24 @@ export function EditBlogPageClient(props: Props) {
 
   const { control, handleSubmit, setValue, watch } = form;
 
-  const blogIdRef = useRef<string | null>(null);
+  const eventIdRef = useRef<string | null>(null);
 
-  // Load Blog
+  // Load Event
   useEffect(() => {
     const load = async () => {
       const { id } = await props.params;
-      const blogId = id; // UUID is a string, no need to convert
+      const eventId = id; // UUID is a string, no need to convert
 
       try {
-        const res = await fetch(`/api/blogs/${blogId}`, {
-          credentials: "include", // Include cookies by default
-        });
+        const res = await fetch(`/api/events/${eventId}`);
 
         if (!res.ok) {
-          if (res.status === 401) {
-            // Call logout API to properly delete the server-side cookie
-            await fetch("/api/admin/logout", {
-              method: "POST",
-              credentials: "include",
-            });
-            return router.push("/admin/login");
-          }
-          toast.error("Blog not found");
-          return router.push("/admin");
+          throw new Error("Event not found");
         }
 
         const data = await res.json();
-        setBlog(data);
-        blogIdRef.current = data.id;
+        setEvent(data);
+        eventIdRef.current = data.id;
 
         setValue("title", data.title);
         setValue("content", data.content);
@@ -118,21 +108,21 @@ export function EditBlogPageClient(props: Props) {
         setValue("image", data.image || "");
       } catch (err) {
         console.error(err);
-        toast.error("Failed to load blog details.");
+        toast.error("Failed to load event details.");
       } finally {
         setLoading(false);
       }
     };
 
     load();
-  }, [props.params, router, setValue]);
+  }, [props.params, setValue]);
 
   // Submit Handler
-  const onSubmit = async (data: z.infer<typeof blogSchema>) => {
+  const onSubmit = async (data: z.infer<typeof eventSchema>) => {
     try {
-      if (!blogIdRef.current) throw new Error("Invalid blog ID");
+      if (!eventIdRef.current) throw new Error("Invalid event ID");
 
-      const res = await fetch(`/api/blogs/${blogIdRef.current}`, {
+      const res = await fetch(`/api/events/${eventIdRef.current}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -142,26 +132,17 @@ export function EditBlogPageClient(props: Props) {
           published: data.published ? 1 : 0,
           image: data.image || null,
         }),
-        credentials: "include", // Include cookies by default
       });
 
       if (!res.ok) {
-        if (res.status === 401) {
-          // Call logout API to properly delete the server-side cookie
-          await fetch("/api/admin/logout", {
-            method: "POST",
-            credentials: "include",
-          });
-          return router.push("/admin/login");
-        }
         throw new Error("Failed to update");
       }
 
-      toast.success("Blog updated successfully!");
+      toast.success("Event updated successfully!");
       router.push("/admin");
     } catch (err) {
       console.error(err);
-      toast.error("Failed to update blog");
+      toast.error("Failed to update event");
     }
   };
 
@@ -173,10 +154,10 @@ export function EditBlogPageClient(props: Props) {
     );
   }
 
-  if (!blog) {
+  if (!event) {
     return (
       <div className="min-h-screen flex items-center justify-center text-lg">
-        Blog not found
+        Event not found
       </div>
     );
   }
@@ -195,7 +176,7 @@ export function EditBlogPageClient(props: Props) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Edit Blog</CardTitle>
+            <CardTitle className="text-2xl">Edit Event</CardTitle>
           </CardHeader>
 
           <CardContent>
@@ -215,7 +196,7 @@ export function EditBlogPageClient(props: Props) {
                           </div>
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter blog title" {...field} />
+                          <Input placeholder="Enter event title" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -258,7 +239,7 @@ export function EditBlogPageClient(props: Props) {
                         <div className="space-y-1 leading-none">
                           <FormLabel>Published</FormLabel>
                           <FormDescription>
-                            Check this to publish the blog for public viewing
+                            Check this to publish the event for public viewing
                           </FormDescription>
                         </div>
                       </FormItem>
@@ -302,7 +283,7 @@ export function EditBlogPageClient(props: Props) {
                       </FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Enter a short description of the blog (optional)"
+                          placeholder="Enter a short description of the event (optional)"
                           {...field}
                           rows={3}
                         />
@@ -326,7 +307,7 @@ export function EditBlogPageClient(props: Props) {
                       </FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Enter blog content in markdown format"
+                          placeholder="Enter event content in markdown format"
                           {...field}
                           rows={12}
                         />
@@ -341,7 +322,7 @@ export function EditBlogPageClient(props: Props) {
                     <Link href="/admin">Cancel</Link>
                   </Button>
 
-                  <Button type="submit">Update Blog</Button>
+                  <Button type="submit">Update Event</Button>
                 </div>
               </form>
             </Form>

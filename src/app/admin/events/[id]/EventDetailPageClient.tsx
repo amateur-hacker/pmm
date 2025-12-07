@@ -12,13 +12,14 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { authClient } from "@/lib/auth-client";
 
 interface Blog {
   id: string;
@@ -37,8 +38,8 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-export function BlogDetailPageClient(props: Props) {
-  const [blog, setBlog] = useState<Blog | null>(null);
+export function EventDetailPageClient(props: Props) {
+  const [event, setEvent] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -46,37 +47,21 @@ export function BlogDetailPageClient(props: Props) {
   useEffect(() => {
     const extractParams = async () => {
       const { id } = await props.params;
-      const blogId = id;
+      const eventId = id;
 
       const fetchBlog = async () => {
         try {
-          const response = await fetch(`/api/blogs/${blogId}`, {
-            credentials: "include", // Include cookies by default
-          });
+          const response = await fetch(`/api/events/${eventId}`);
 
           if (!response.ok) {
-            if (response.status === 401) {
-              // Call logout API to properly delete the server-side cookie
-              await fetch("/api/admin/logout", {
-                method: "POST",
-                credentials: "include",
-              });
-              router.push("/admin/login");
-              return;
-            }
-            if (response.status === 404) {
-              toast.error("Blog not found.");
-              router.push("/admin");
-              return;
-            }
-            throw new Error("Failed to fetch blog");
+            throw new Error("Failed to fetch event");
           }
 
           const data = await response.json();
-          setBlog(data);
+          setEvent(data);
         } catch (error) {
-          console.error("Error fetching blog:", error);
-          toast.error("Failed to load blog details. Please try again.");
+          console.error("Error fetching event:", error);
+          toast.error("Failed to load event details. Please try again.");
         } finally {
           setLoading(false);
         }
@@ -86,7 +71,7 @@ export function BlogDetailPageClient(props: Props) {
     };
 
     extractParams();
-  }, [props.params, router]);
+  }, [props.params]);
 
   if (loading) {
     return (
@@ -96,7 +81,7 @@ export function BlogDetailPageClient(props: Props) {
     );
   }
 
-  if (!blog) {
+  if (!event) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Blog not found</div>
@@ -119,9 +104,9 @@ export function BlogDetailPageClient(props: Props) {
         <Card>
           <CardHeader>
             <div className="flex justify-between items-start">
-              <CardTitle className="text-2xl">{blog.title}</CardTitle>
+              <CardTitle className="text-2xl">{event.title}</CardTitle>
               <div>
-                {blog.published === 1 ? (
+                {event.published === 1 ? (
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Published
@@ -144,7 +129,7 @@ export function BlogDetailPageClient(props: Props) {
                     <h3 className="text-sm font-medium text-muted-foreground">
                       Author
                     </h3>
-                    <p className="font-medium">{blog.author}</p>
+                    <p className="font-medium">{event.author}</p>
                   </div>
                 </div>
 
@@ -155,12 +140,12 @@ export function BlogDetailPageClient(props: Props) {
                       Created Date
                     </h3>
                     <p className="font-medium">
-                      {new Date(blog.createdAt).toLocaleDateString()}
+                      {new Date(event.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
 
-                {blog.publishedAt && (
+                {event.publishedAt && (
                   <div className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-muted-foreground mr-3" />
                     <div>
@@ -168,7 +153,7 @@ export function BlogDetailPageClient(props: Props) {
                         Published Date
                       </h3>
                       <p className="font-medium">
-                        {new Date(blog.publishedAt).toLocaleDateString()}
+                        {new Date(event.publishedAt).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
@@ -183,21 +168,21 @@ export function BlogDetailPageClient(props: Props) {
                       Excerpt
                     </h3>
                     <p className="font-medium">
-                      {blog.excerpt || "No excerpt available"}
+                      {event.excerpt || "No excerpt available"}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {blog.image && (
+            {event.image && (
               <div className="mb-6 relative h-64">
                 <h3 className="text-sm font-medium text-muted-foreground mb-2">
                   Featured Image
                 </h3>
                 <Image
-                  src={blog.image}
-                  alt="Blog featured img"
+                  src={event.image}
+                  alt="Event featured img"
                   fill
                   className="object-cover rounded-md border"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -210,14 +195,14 @@ export function BlogDetailPageClient(props: Props) {
                 Content
               </h3>
               <div className="prose max-w-none dark:prose-invert">
-                <Markdown remarkPlugins={[remarkGfm]}>{blog.content}</Markdown>
+                <Markdown remarkPlugins={[remarkGfm]}>{event.content}</Markdown>
               </div>
             </div>
 
             <div className="flex space-x-4 mt-8 pt-6 border-t">
               <Button asChild className="cursor-pointer">
                 <Link
-                  href={`/blogs/${blog.id}`}
+                  href={`/events/${event.id}`}
                   target="_blank"
                   className="flex items-center"
                 >
@@ -227,11 +212,11 @@ export function BlogDetailPageClient(props: Props) {
               </Button>
               <Button asChild className="cursor-pointer">
                 <Link
-                  href={`/admin/blogs/${blog.id}/edit`}
+                  href={`/admin/events/${event.id}/edit`}
                   className="flex items-center"
                 >
                   <Edit className="h-4 w-4 mr-2" />
-                  Edit Blog
+                  Edit Event
                 </Link>
               </Button>
             </div>

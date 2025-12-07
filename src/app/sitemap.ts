@@ -1,27 +1,27 @@
 import { desc, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
-import { blogs } from "@/lib/db/schema";
+import { events } from "@/lib/db/schema";
 
 export default async function sitemap() {
   const db = getDb();
 
-  // Get all published blogs from the database
-  const publishedBlogs = await db
+  // Get all published events from the database
+  const publishedEvents = await db
     .select({
-      id: blogs.id,
-      updatedAt: blogs.updatedAt,
+      id: events.id,
+      updatedAt: events.updatedAt,
     })
-    .from(blogs)
-    .where(eq(blogs.published, 1)) // Only published blogs
-    .orderBy(desc(blogs.updatedAt));
+    .from(events)
+    .where(eq(events.published, 1)) // Only published events
+    .orderBy(desc(events.updatedAt));
 
   // Base site URL
   const siteUrl = process.env.SITE_URL || "https://purvanchalmitramahasabha.in";
 
   // Generate sitemap entries
-  const blogEntries = publishedBlogs.map((blog) => ({
-    url: `${siteUrl}/blogs/${blog.id}`,
-    lastModified: blog.updatedAt,
+  const eventEntries = publishedEvents.map((event) => ({
+    url: `${siteUrl}/events/${event.id}`,
+    lastModified: event.updatedAt,
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
@@ -59,13 +59,13 @@ export default async function sitemap() {
       priority: 0.8,
     },
     {
-      url: `${siteUrl}/blogs`,
+      url: `${siteUrl}/events`,
       lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.8,
     },
   ];
 
-  // Combine static pages and blog entries
-  return [...staticPages, ...blogEntries];
+  // Combine static pages and event entries
+  return [...staticPages, ...eventEntries];
 }

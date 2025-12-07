@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "shadcn": {
+      "type": "local",
+      "command": ["bunx", "shadcn@latest", "mcp"]
+    },
+    "next-devtools": {
+      "type": "local",
+      "command": ["bunx", "-y", "next-devtools-mcp@latest"]
+    },
+    "@magicuidesign/mcp": {
+      "type": "local",
+      "command": ["bunx", "-y", "@magicuidesign/mcp@latest"]
+    }
+  }
+}

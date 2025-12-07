@@ -19,8 +19,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { authClient } from "@/lib/auth-client";
 
-interface Blog {
+interface Event {
   id: string;
   title: string;
   content: string;
@@ -50,13 +51,13 @@ interface Member {
 
 export function AdminDashboardClient() {
   const [members, setMembers] = useState<Member[]>([]);
-  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
   const [deleteItemType, setDeleteItemType] = useState<
-    "member" | "blog" | "member-bulk" | "blog-bulk" | null
+    "member" | "event" | "member-bulk" | "event-bulk" | null
   >(null);
   const [deleteItemName, setDeleteItemName] = useState<string | null>(null);
 
@@ -85,9 +86,9 @@ export function AdminDashboardClient() {
       }
     };
 
-    const fetchBlogs = async () => {
+    const fetchEvents = async () => {
       try {
-        const response = await fetch("/api/blogs?getAll=true", {
+        const response = await fetch("/api/events?getAll=true", {
           credentials: "include", // Include cookies by default
         });
 
@@ -96,28 +97,28 @@ export function AdminDashboardClient() {
             router.push("/admin/login");
             return;
           }
-          throw new Error("Failed to fetch blogs");
+          throw new Error("Failed to fetch events");
         }
 
         const data = await response.json();
         // Handle both paginated and non-paginated responses
-        const blogsData = Array.isArray(data) ? data : data.items || [];
-        setBlogs(blogsData);
+        const eventsData = Array.isArray(data) ? data : data.items || [];
+        setEvents(eventsData);
       } catch (error) {
-        console.error("Error fetching blogs:", error);
-        toast.error("Failed to load blogs. Please try again.");
+        console.error("Error fetching events:", error);
+        toast.error("Failed to load events. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchMembers();
-    fetchBlogs();
+    fetchEvents();
   }, [router]);
 
-  const handleDeleteBlog = async (id: string) => {
+  const handleDeleteEvent = async (id: string) => {
     try {
-      const response = await fetch(`/api/blogs/${id}`, {
+      const response = await fetch(`/api/events/${id}`, {
         method: "DELETE",
         credentials: "include", // Include cookies by default
       });
@@ -127,15 +128,15 @@ export function AdminDashboardClient() {
           router.push("/admin/login");
           return;
         }
-        throw new Error("Failed to delete blog");
+        throw new Error("Failed to delete event");
       }
 
       // Update local state
-      setBlogs(blogs.filter((blog) => blog.id !== id));
-      toast("Blog deleted successfully.");
+      setEvents(events.filter((event) => event.id !== id));
+      toast("Event deleted successfully.");
     } catch (error) {
-      console.error("Error deleting blog:", error);
-      toast("Failed to delete blog. Please try again.");
+      console.error("Error deleting event:", error);
+      toast("Failed to delete event. Please try again.");
     }
   };
 
@@ -182,22 +183,22 @@ export function AdminDashboardClient() {
     }
   };
 
-  const handleBulkDeleteBlogs = async (ids: string[]) => {
+  const handleBulkDeleteEvents = async (ids: string[]) => {
     try {
-      // Delete each selected blog
+      // Delete each selected event
       for (const id of ids) {
-        await fetch(`/api/blogs/${id}`, {
+        await fetch(`/api/events/${id}`, {
           method: "DELETE",
           credentials: "include", // Include cookies by default
         });
       }
 
-      // Update local state to remove deleted blogs
-      setBlogs(blogs.filter((blog) => !ids.includes(blog.id)));
-      toast(`${ids.length} blog(s) deleted successfully.`);
+      // Update local state to remove deleted events
+      setEvents(events.filter((event) => !ids.includes(event.id)));
+      toast(`${ids.length} event(s) deleted successfully.`);
     } catch (error) {
-      console.error("Error deleting blogs:", error);
-      toast("Failed to delete some blogs. Please try again.");
+      console.error("Error deleting events:", error);
+      toast("Failed to delete some events. Please try again.");
     }
   };
 
@@ -303,8 +304,8 @@ export function AdminDashboardClient() {
     },
   ];
 
-  // Define blog columns for the data table
-  const blogColumns: ColumnDef<Blog>[] = [
+  // Define event columns for the data table
+  const eventColumns: ColumnDef<Event>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -364,7 +365,7 @@ export function AdminDashboardClient() {
     {
       id: "actions",
       cell: ({ row }) => {
-        const blog = row.original;
+        const event = row.original;
 
         return (
           <div className="flex space-x-2">
@@ -374,7 +375,7 @@ export function AdminDashboardClient() {
               size="sm"
               className="text-green-600 hover:text-green-600 cursor-pointer"
             >
-              <Link href={`/admin/blogs/${blog.id}`}>
+              <Link href={`/admin/events/${event.id}`}>
                 <Eye className="h-4 w-4" />
               </Link>
             </Button>
@@ -384,7 +385,7 @@ export function AdminDashboardClient() {
               size="sm"
               className="text-blue-600 hover:text-blue-600 cursor-pointer"
             >
-              <Link href={`/admin/blogs/${blog.id}/edit`}>
+              <Link href={`/admin/events/${event.id}/edit`}>
                 <Edit className="h-4 w-4" />
               </Link>
             </Button>
@@ -392,9 +393,9 @@ export function AdminDashboardClient() {
               variant="outline"
               size="sm"
               onClick={() => {
-                setDeleteItemId(blog.id);
-                setDeleteItemType("blog");
-                setDeleteItemName(blog.title);
+                setDeleteItemId(event.id);
+                setDeleteItemType("event");
+                setDeleteItemName(event.title);
                 setDeleteDialogOpen(true);
               }}
               className="text-destructive hover:text-destructive cursor-pointer"
@@ -418,10 +419,10 @@ export function AdminDashboardClient() {
   // Function to handle bulk delete with dialog
   const handleBulkDeleteWithDialog = (
     ids: string[],
-    type: "member" | "blog",
+    type: "member" | "event",
   ) => {
     setDeleteItemId(ids.join(",")); // Store multiple IDs as a comma-separated string
-    setDeleteItemType(`${type}-bulk` as "member-bulk" | "blog-bulk"); // Mark as bulk operation
+    setDeleteItemType(`${type}-bulk` as "member-bulk" | "event-bulk"); // Mark as bulk operation
     setDeleteItemName(`${ids.length} ${type}${ids.length > 1 ? "s" : ""}`);
     setDeleteDialogOpen(true);
   };
@@ -434,7 +435,7 @@ export function AdminDashboardClient() {
         <Tabs defaultValue="members" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="members">Members</TabsTrigger>
-            <TabsTrigger value="blogs">Blogs</TabsTrigger>
+            <TabsTrigger value="events">Events</TabsTrigger>
           </TabsList>
 
           <TabsContent value="members" className="space-y-4">
@@ -463,32 +464,32 @@ export function AdminDashboardClient() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="blogs" className="space-y-4">
+          <TabsContent value="events" className="space-y-4">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Blogs Management</h2>
+              <h2 className="text-xl font-semibold">Events Management</h2>
               <Button className="cursor-pointer" asChild>
-                <Link href="/admin/blogs/new" className="flex items-center">
+                <Link href="/admin/events/new" className="flex items-center">
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Blog
+                  Add Event
                 </Link>
               </Button>
             </div>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Blogs List</CardTitle>
+                <CardTitle>Events List</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Total: {blogs.length} blogs
+                  Total: {events.length} events
                 </p>
               </CardHeader>
               <CardContent>
                 <DataTable
-                  columns={blogColumns}
-                  data={blogs}
+                  columns={eventColumns}
+                  data={events}
                   searchKey="title"
-                  placeholder="Search blogs..."
+                  placeholder="Search events..."
                   onBulkDelete={(ids) =>
-                    handleBulkDeleteWithDialog(ids, "blog")
+                    handleBulkDeleteWithDialog(ids, "event")
                   }
                 />
               </CardContent>
@@ -503,7 +504,7 @@ export function AdminDashboardClient() {
               <DialogTitle>Confirm Delete</DialogTitle>
               <DialogDescription>
                 {deleteItemType === "member-bulk" ||
-                deleteItemType === "blog-bulk"
+                deleteItemType === "event-bulk"
                   ? `Are you sure you want to delete ${deleteItemName}? This action cannot be undone.`
                   : `Are you sure you want to delete ${deleteItemName}? This action cannot be undone.`}
               </DialogDescription>
@@ -523,10 +524,10 @@ export function AdminDashboardClient() {
                     const ids = deleteItemId.split(",");
                     handleBulkDeleteMembers(ids);
                     setDeleteDialogOpen(false);
-                  } else if (deleteItemType === "blog-bulk" && deleteItemId) {
-                    // Handle bulk delete for blogs
+                  } else if (deleteItemType === "event-bulk" && deleteItemId) {
+                    // Handle bulk delete for events
                     const ids = deleteItemId.split(",");
-                    handleBulkDeleteBlogs(ids);
+                    handleBulkDeleteEvents(ids);
                     setDeleteDialogOpen(false);
                   } else if (
                     deleteItemType === "member" &&
@@ -537,12 +538,12 @@ export function AdminDashboardClient() {
                     handleDeleteMember(deleteItemId);
                     setDeleteDialogOpen(false);
                   } else if (
-                    deleteItemType === "blog" &&
+                    deleteItemType === "event" &&
                     deleteItemId &&
                     !deleteItemId.includes(",")
                   ) {
-                    // Handle single blog delete
-                    handleDeleteBlog(deleteItemId);
+                    // Handle single event delete
+                    handleDeleteEvent(deleteItemId);
                     setDeleteDialogOpen(false);
                   }
                 }}

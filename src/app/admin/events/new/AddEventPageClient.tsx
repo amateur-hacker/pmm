@@ -30,7 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 // ----------------- SCHEMA --------------------
-const blogSchema = z.object({
+const eventSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters" }),
   content: z
     .string()
@@ -43,13 +43,13 @@ const blogSchema = z.object({
   image: z.string().optional(),
 });
 
-type FormData = z.infer<typeof blogSchema>;
+type FormData = z.infer<typeof eventSchema>;
 
 // ----------------- COMPONENT --------------------
-export function AddBlogPageClient() {
+export function AddEventPageClient() {
   const router = useRouter();
   const form = useForm({
-    resolver: zodResolver(blogSchema),
+    resolver: zodResolver(eventSchema),
     defaultValues: {
       title: "",
       content: "",
@@ -65,7 +65,7 @@ export function AddBlogPageClient() {
   // Submit Handler
   const onSubmit = async (data: FormData) => {
     try {
-      const res = await fetch("/api/blogs", {
+      const res = await fetch("/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,26 +75,17 @@ export function AddBlogPageClient() {
           published: data.published ? 1 : 0,
           image: data.image || null,
         }),
-        credentials: "include", // Include cookies by default
       });
 
       if (!res.ok) {
-        if (res.status === 401) {
-          // Call logout API to properly delete the server-side cookie
-          await fetch("/api/admin/logout", {
-            method: "POST",
-            credentials: "include",
-          });
-          return router.push("/admin/login");
-        }
-        throw new Error("Failed to create blog");
+        throw new Error("Failed to create event");
       }
 
-      toast.success("Blog created successfully!");
+      toast.success("Event created successfully!");
       router.push("/admin");
     } catch (err) {
       console.error(err);
-      toast.error("Failed to create blog");
+      toast.error("Failed to create event");
     }
   };
 
@@ -112,7 +103,7 @@ export function AddBlogPageClient() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Create New Blog</CardTitle>
+            <CardTitle className="text-2xl">Create New Event</CardTitle>
           </CardHeader>
 
           <CardContent>
@@ -132,7 +123,7 @@ export function AddBlogPageClient() {
                           </div>
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter blog title" {...field} />
+                          <Input placeholder="Enter event title" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -174,7 +165,7 @@ export function AddBlogPageClient() {
                         <div className="space-y-1 leading-none">
                           <FormLabel>Published</FormLabel>
                           <FormDescription>
-                            Check this to publish the blog for public viewing
+                            Check this to publish the event for public viewing
                           </FormDescription>
                         </div>
                       </FormItem>
@@ -218,7 +209,7 @@ export function AddBlogPageClient() {
                       </FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Enter a short description of the blog (optional)"
+                          placeholder="Enter a short description of the event (optional)"
                           {...field}
                           rows={3}
                         />
@@ -242,7 +233,7 @@ export function AddBlogPageClient() {
                       </FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Enter blog content in markdown format"
+                          placeholder="Enter event content in markdown format"
                           {...field}
                           rows={12}
                         />
@@ -257,7 +248,7 @@ export function AddBlogPageClient() {
                     <Link href="/admin">Cancel</Link>
                   </Button>
 
-                  <Button type="submit">Create Blog</Button>
+                  <Button type="submit">Create Event</Button>
                 </div>
               </form>
             </Form>

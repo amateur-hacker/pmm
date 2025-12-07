@@ -7,6 +7,7 @@ import {
   MapPin,
   Phone,
   Search,
+  User,
 } from "lucide-react";
 import Image from "next/image";
 import { useQueryState } from "nuqs";
@@ -231,7 +232,7 @@ const InfiniteMemberList = ({ initialData }: InfiniteMemberListProps) => {
               </div>
             ) : (
               <div className="bg-gray-100 border-2 border-dashed rounded-xl w-full h-48 flex items-center justify-center">
-                <span className="text-gray-500">No Image</span>
+                <User className="h-16 w-16 text-gray-400" />
               </div>
             )}
             <CardHeader>

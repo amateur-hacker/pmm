@@ -1,37 +1,37 @@
 import type { Metadata } from "next";
-import InfiniteBlogList from "@/components/blogs/infinite-blog-list";
+import InfiniteEventList from "@/components/events/infinite-event-list";
 
 export const metadata: Metadata = {
-  title: "Blog - Purvanchal Mitra Mahasabha",
+  title: "Events - Purvanchal Mitra Mahasabha",
   description:
     "Read insights, updates, and stories from Purvanchal Mitra Mahasabha. Learn about our community development initiatives, social welfare activities, and cultural preservation efforts.",
   keywords:
-    "NGO blog, Purvanchal Mitra Mahasabha blog, community development articles, social welfare updates, cultural preservation",
+    "NGO events, Purvanchal Mitra Mahasabha events, community development articles, social welfare updates, cultural preservation",
   openGraph: {
-    title: "Blog - Purvanchal Mitra Mahasabha",
+    title: "Events - Purvanchal Mitra Mahasabha",
     description:
       "Read insights, updates, and stories from Purvanchal Mitra Mahasabha. Learn about our community development initiatives, social welfare activities, and cultural preservation efforts.",
     type: "website",
-    url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/blogs`,
+    url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/events`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Blog - Purvanchal Mitra Mahasabha",
+    title: "Events - Purvanchal Mitra Mahasabha",
     description:
       "Read insights, updates, and stories from Purvanchal Mitra Mahasabha. Learn about our community development initiatives, social welfare activities, and cultural preservation efforts.",
   },
   alternates: {
-    canonical: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/blogs`,
+    canonical: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/events`,
   },
 };
 
 // We need server component for metadata, so we'll fetch data on the server
 // and pass it to a client component for the infinite scroll functionality
-async function getBlogs(page: number = 1, searchQuery: string = "") {
+async function getEvents(page: number = 1, searchQuery: string = "") {
   // This is a placeholder until we have the actual API implementation
   // For now, we'll return an empty array and handle the client-side fetch in a child component
   try {
-    let url = `${process.env.NEXT_PUBLIC_SITE_URL || "https://purvanchalmitramahasabha.in"}/api/blogs?page=${page}&limit=10`;
+    let url = `${process.env.NEXT_PUBLIC_SITE_URL || "https://purvanchalmitramahasabha.in"}/api/events?page=${page}&limit=10`;
     if (searchQuery) {
       url += `&search=${encodeURIComponent(searchQuery)}`;
     }
@@ -44,18 +44,18 @@ async function getBlogs(page: number = 1, searchQuery: string = "") {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch blogs");
+      throw new Error("Failed to fetch events");
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching blogs:", error);
+    console.error("Error fetching events:", error);
     return { items: [], hasMore: false };
   }
 }
 
-interface Blog {
+interface Event {
   id: string;
   title: string;
   content: string;
@@ -68,7 +68,7 @@ interface Blog {
   updatedAt: string;
 }
 
-export default async function PublicBlogsPage({
+export default async function PublicEventsPage({
   searchParams,
 }: {
   searchParams?: Promise<{
@@ -76,19 +76,19 @@ export default async function PublicBlogsPage({
   }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
-  const initialData = await getBlogs(1, resolvedSearchParams?.search || "");
+  const initialData = await getEvents(1, resolvedSearchParams?.search || "");
 
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">Our Blog</h1>
+          <h1 className="text-3xl font-bold">Our Events</h1>
           <p className="text-muted-foreground mt-2">
             Insights, updates, and stories from Purvanchal Mitra Mahasabha
           </p>
         </div>
 
-        <InfiniteBlogList initialData={initialData} />
+        <InfiniteEventList initialData={initialData} />
       </div>
     </div>
   );

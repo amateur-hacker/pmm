@@ -31,7 +31,7 @@ export const admins = pgTable("admins", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const blogs = pgTable("blogs", {
+export const events = pgTable("events", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   content: text("content").notNull(), // Markdown content

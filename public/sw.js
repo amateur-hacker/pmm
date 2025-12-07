@@ -5,7 +5,7 @@ const urlsToCache = [
   "/",
   "/about",
   "/members",
-  "/blogs",
+  "/events",
   "/contact",
   "/register-member",
   "/terms",

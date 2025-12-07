@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getCookie } from "cookies-next/client";
 import {
   ArrowLeft,
   Calendar,
@@ -30,6 +29,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 // ----------------- SCHEMA --------------------
 const memberSchema = z.object({
@@ -79,6 +79,7 @@ export function EditMemberPageClient(props: Props) {
   const [member, setMember] = useState<Member | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(memberSchema),
     defaultValues: {
@@ -93,9 +94,7 @@ export function EditMemberPageClient(props: Props) {
       donated: 0,
     },
   });
-
   const { control, handleSubmit, setValue } = form;
-
   const memberIdRef = useRef<string | null>(null);
 
   // Load Member
@@ -105,24 +104,13 @@ export function EditMemberPageClient(props: Props) {
       const memberId = id; // UUID is a string, no need to convert
 
       try {
-        const token = getCookie("adminToken");
-        if (!token) return router.push("/admin/login");
-
         const res = await fetch(`/api/admin/members/${memberId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          method: "DELETE",
+          credentials: "include",
         });
 
         if (!res.ok) {
-          if (res.status === 401) {
-            // Call logout API to properly delete the server-side cookie
-            await fetch("/api/admin/logout", {
-              method: "POST",
-              credentials: "include",
-            });
-            return router.push("/admin/login");
-          }
-          toast.error("Member not found");
-          return router.push("/admin");
+          throw new Error("Member not found");
         }
 
         const data = await res.json();
@@ -147,13 +135,12 @@ export function EditMemberPageClient(props: Props) {
     };
 
     load();
-  }, [props.params, router, setValue]);
+  }, [props.params, setValue]);
 
   // Submit Handler
   const onSubmit = async (data: z.infer<typeof memberSchema>) => {
     try {
-      const token = getCookie("adminToken");
-      if (!token) return router.push("/admin/login");
+      // Session check is done in useEffect
 
       if (!memberIdRef.current) throw new Error("Invalid member ID");
 
@@ -161,24 +148,12 @@ export function EditMemberPageClient(props: Props) {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          ...data,
-          image: data.image || null,
-          type: "member",
-        }),
+        credentials: "include",
+        body: JSON.stringify(data),
       });
 
       if (!res.ok) {
-        if (res.status === 401) {
-          // Call logout API to properly delete the server-side cookie
-          await fetch("/api/admin/logout", {
-            method: "POST",
-            credentials: "include",
-          });
-          return router.push("/admin/login");
-        }
         throw new Error("Failed to update");
       }
 
