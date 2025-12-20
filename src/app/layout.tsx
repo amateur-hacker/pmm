@@ -6,6 +6,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -97,6 +98,7 @@ export default function RootLayout({
           <Footer />
           <Toaster closeButton />
           <NextTopLoader color={"var(--primary)"} showSpinner={false} />
+          <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" />
         </NuqsAdapter>
       </body>
     </html>
