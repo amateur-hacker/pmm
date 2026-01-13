@@ -47,7 +47,7 @@ export default async function sitemap() {
       priority: 0.9,
     },
     {
-      url: `${siteUrl}/register-member`,
+      url: `${siteUrl}/membership`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.9,

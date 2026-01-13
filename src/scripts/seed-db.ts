@@ -24,7 +24,6 @@ async function seedDatabase() {
     // Insert members
     for (const member of mockMembers) {
       await db.insert(members).values({
-        id: uuidv4(), // Generate a new UUID for each member
         name: member.name,
         address: member.address,
         mobile: member.mobile,
@@ -32,9 +31,15 @@ async function seedDatabase() {
         dob: member.dob,
         education: member.education,
         permanentAddress: member.permanentAddress,
-        image: member.image,
+        image:
+          member.image ||
+          `https://picsum.photos/200/200?random=${Math.random()}`,
         donated: member.donated,
         type: member.type,
+        membershipStatus: member.membershipStatus || "active",
+        membershipStartDate: member.membershipStartDate
+          ? new Date(member.membershipStartDate)
+          : new Date(),
         createdAt: new Date(member.createdAt),
         updatedAt: new Date(member.updatedAt),
       });

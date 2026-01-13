@@ -59,9 +59,29 @@ const memberSchema = z.object({
     .string()
     .min(10, { message: "Mobile number must be at least 10 digits" }),
   email: z.email({ message: "Invalid email address" }),
-  dob: z.string().refine((date) => !Number.isNaN(Date.parse(date)), {
-    message: "Invalid date of birth",
-  }),
+  dob: z.string().refine(
+    (date) => {
+      const parsedDate = Date.parse(date);
+      if (Number.isNaN(parsedDate)) return false;
+
+      const birthDate = new Date(parsedDate);
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+
+      // Adjust age if birthday hasn't occurred this year
+      const adjustedAge =
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+          ? age - 1
+          : age;
+
+      return adjustedAge >= 18;
+    },
+    {
+      message: "You must be at least 18 years old to become a member",
+    },
+  ),
   education: z.string().min(2, { message: "Education information required" }),
   permanentAddress: z
     .string()
@@ -168,12 +188,16 @@ export default function FormPageClient() {
 
         const data = await res.json();
 
-        if (data?.order_status) {
-          console.log("Payment verified", data);
-          alert("Payment verified");
+        if (data?.order_status === "PAID") {
+          console.log("Payment verified successfully", data);
+          return { success: true, data };
+        } else {
+          console.log("Payment not successful", data);
+          return { success: false, data };
         }
       } catch (error) {
-        console.error(error);
+        console.error("Payment verification error:", error);
+        return { success: false, error };
       }
     };
 
@@ -236,14 +260,22 @@ export default function FormPageClient() {
       // Start the checkout process
       cashfree
         .checkout(checkoutOptions)
-        .then((result: any) => {
+        .then(async (result: any) => {
           if (result.error) {
             toast.error("Payment failed. Please try again.");
             setIsSubmitting(false);
           } else if (result.paymentDetails) {
-            // Payment successful - redirect to success page
-            // window.location.href = `/payment-success?order_id=${paymentData.order_id}`;
-            verifyPayment(orderId);
+            // Verify payment before redirecting to success page
+            const verificationResult = await verifyPayment(orderId);
+            if (verificationResult.success) {
+              // Payment verified successfully - redirect to success page
+              window.location.href = `/payment-success?order_id=${orderId}`;
+            } else {
+              toast.error(
+                "Payment verification failed. Please contact support if amount was deducted.",
+              );
+              setIsSubmitting(false);
+            }
           } else {
             // Payment was cancelled or closed
             setIsSubmitting(false);
@@ -272,13 +304,13 @@ export default function FormPageClient() {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold">
               {currentStep === "registration"
-                ? "Member Registration"
-                : "Make a Donation"}
+                ? "NGO Membership"
+                : "Membership Donation"}
             </CardTitle>
             <CardDescription>
               {currentStep === "registration"
-                ? "Fill in the required details to become a member of Purvanchal Mitra Mahasabha"
-                : "Support our cause by making a donation"}
+                ? "Become a member of Purvanchal Mitra Mahasabha and support our community development initiatives"
+                : "Complete your membership with a donation to support our NGO's mission"}
             </CardDescription>
           </CardHeader>
 
@@ -507,12 +539,16 @@ export default function FormPageClient() {
                               className="text-primary hover:underline underline-offset-4"
                             >
                               Terms and Conditions
-                            </Link>
+                            </Link>{" "}
+                            and understand that membership requires a minimum
+                            donation
                           </FormLabel>
 
                           <FormDescription className="text-xs text-muted-foreground">
                             I confirm that I am 18+ years old, have no criminal
-                            record, and am a citizen of India.
+                            record, and am a citizen of India. Membership
+                            verification requires completing the donation
+                            process.
                           </FormDescription>
 
                           <FormMessage />

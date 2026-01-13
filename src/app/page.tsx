@@ -100,7 +100,7 @@ export default async function Home() {
                   className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg cursor-pointer"
                   asChild
                 >
-                  <Link href="/register-member">Join Our Community</Link>
+                  <Link href="/membership">Join Our Community</Link>
                 </Button>
                 <Button
                   variant="outline"
@@ -377,7 +377,7 @@ export default async function Home() {
               className="bg-secondary text-secondary-foreground hover:bg-secondary/90 px-8 py-6 text-lg cursor-pointer"
               asChild
             >
-              <Link href="/register-member">Become a Member</Link>
+              <Link href="/membership">Become a Member</Link>
             </Button>
             <Button
               variant="outline"

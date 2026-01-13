@@ -76,7 +76,7 @@ export function generateMockMembers(count: number = 50) {
       mobile: `+91-${Math.floor(7000000000 + Math.random() * 3000000000)}`,
       email,
       dob: new Date(
-        1970 + Math.floor(Math.random() * 40),
+        1960 + Math.floor(Math.random() * 35), // 1960-1995 to ensure 18+ years old
         Math.floor(Math.random() * 12),
         Math.floor(Math.random() * 28) + 1,
       )
@@ -86,8 +86,12 @@ export function generateMockMembers(count: number = 50) {
         educationLevels[Math.floor(Math.random() * educationLevels.length)],
       permanentAddress: `Village ${["Rampur", "Shivpur", "Kumarapur", "Gandhipur", "Ashoknagar"][Math.floor(Math.random() * 5)]}, Dist. ${["Siwan", "Chapra", "Muzaffarpur", "Darbhanga", "Begusarai"][Math.floor(Math.random() * 5)]}`,
       image: null, // No image for mock data
-      donated: Math.floor(Math.random() * 50000),
+      donated: [100, 500, 1000, 2000][Math.floor(Math.random() * 4)],
       type: "member",
+      membershipStatus: "active",
+      membershipStartDate: new Date(
+        Date.now() - Math.floor(Math.random() * 5 * 365 * 24 * 60 * 60 * 1000), // Within last 5 years
+      ).toISOString(),
       createdAt: new Date(
         Date.now() - Math.floor(Math.random() * 13 * 365 * 24 * 60 * 60 * 1000),
       ).toISOString(),

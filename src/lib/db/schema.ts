@@ -1,5 +1,6 @@
 import {
   date,
+  decimal,
   integer,
   pgTable,
   text,
@@ -11,15 +12,36 @@ import {
 export const members = pgTable("members", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
-  address: text("address"),
-  mobile: varchar("mobile", { length: 20 }),
-  email: varchar("email", { length: 255 }),
-  dob: date("dob"),
-  education: varchar("education", { length: 255 }),
-  permanentAddress: text("permanent_address"),
-  image: varchar("image", { length: 500 }), // Required image URL
-  donated: integer("donated").default(0), // Donated field with default value of 0
+  address: text("address").notNull(),
+  mobile: varchar("mobile", { length: 20 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  dob: date("dob").notNull(),
+  education: varchar("education", { length: 255 }).notNull(),
+  permanentAddress: text("permanent_address").notNull(),
+  image: varchar("image", { length: 500 }).notNull(), // Required image URL
+  donated: integer("donated").notNull(), // Donated field with default value of 0
   type: varchar("type", { length: 50 }).default("member").notNull(),
+  membershipStatus: varchar("membership_status", { length: 20 })
+    .default("active")
+    .notNull(),
+  membershipStartDate: timestamp("membership_start_date")
+    .defaultNow()
+    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const paymentHistory = pgTable("payment_history", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  memberId: uuid("member_id")
+    .references(() => members.id)
+    .notNull(),
+  orderId: varchar("order_id", { length: 255 }).notNull().unique(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  currency: varchar("currency", { length: 3 }).default("INR").notNull(),
+  paymentDate: timestamp("payment_date").defaultNow().notNull(),
+  paymentStatus: varchar("payment_status", { length: 50 }).notNull(),
+  paymentMethod: varchar("payment_method", { length: 100 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

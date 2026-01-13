@@ -8,20 +8,20 @@ export const metadata: Metadata = {
   keywords:
     "NGO membership, Purvanchal Mitra Mahasabha registration, community development membership, social welfare organization",
   openGraph: {
-    title: "Member Registration - Purvanchal Mitra Mahasabha",
+    title: "NGO Membership - Purvanchal Mitra Mahasabha",
     description:
-      "Join Purvanchal Mitra Mahasabha as a member. Fill out the registration form to become part of our community development initiatives in eastern India.",
+      "Become a member of Purvanchal Mitra Mahasabha. Join our NGO to support community development initiatives in eastern India through membership and donations.",
     type: "website",
-    url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/register-member`,
+    url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/membership`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Member Registration - Purvanchal Mitra Mahasabha",
+    title: "NGO Membership - Purvanchal Mitra Mahasabha",
     description:
-      "Join Purvanchal Mitra Mahasabha as a member. Fill out the registration form to become part of our community development initiatives in eastern India.",
+      "Become a member of Purvanchal Mitra Mahasabha. Join our NGO to support community development initiatives in eastern India through membership and donations.",
   },
   alternates: {
-    canonical: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/register-member`,
+    canonical: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/membership`,
   },
 };
 

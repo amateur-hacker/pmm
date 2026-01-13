@@ -22,17 +22,33 @@ CREATE TABLE "events" (
 CREATE TABLE "members" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(255) NOT NULL,
-	"address" text,
-	"mobile" varchar(20),
-	"email" varchar(255),
-	"dob" date,
-	"education" varchar(255),
-	"permanent_address" text,
-	"image" varchar(500),
-	"donated" integer DEFAULT 0,
+	"address" text NOT NULL,
+	"mobile" varchar(20) NOT NULL,
+	"email" varchar(255) NOT NULL,
+	"dob" date NOT NULL,
+	"education" varchar(255) NOT NULL,
+	"permanent_address" text NOT NULL,
+	"image" varchar(500) NOT NULL,
+	"donated" integer NOT NULL,
 	"type" varchar(50) DEFAULT 'member' NOT NULL,
+	"membership_status" varchar(20) DEFAULT 'active' NOT NULL,
+	"membership_start_date" timestamp DEFAULT now() NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "payment_history" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"member_id" uuid NOT NULL,
+	"order_id" varchar(255) NOT NULL,
+	"amount" numeric(10, 2) NOT NULL,
+	"currency" varchar(3) DEFAULT 'INR' NOT NULL,
+	"payment_date" timestamp DEFAULT now() NOT NULL,
+	"payment_status" varchar(50) NOT NULL,
+	"payment_method" varchar(100),
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "payment_history_order_id_unique" UNIQUE("order_id")
 );
 --> statement-breakpoint
 CREATE TABLE "accounts" (
@@ -84,5 +100,6 @@ CREATE TABLE "verifications" (
 	"updatedAt" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+ALTER TABLE "payment_history" ADD CONSTRAINT "payment_history_member_id_members_id_fk" FOREIGN KEY ("member_id") REFERENCES "public"."members"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;

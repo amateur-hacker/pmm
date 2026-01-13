@@ -48,14 +48,14 @@ export async function POST(request: NextRequest) {
         customer_phone: customerDetails.customer_phone,
         customer_name: customerDetails.customer_name,
       },
-      // order_meta: {
-      //   // return_url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/payment-success?order_id={order_id}`,
-      //   return_url:
-      //     "https://www.cashfree.com/devstudio/preview/pg/web/checkout?order_id={order_id}",
-      //   // return_url:
-      //   //   "https://www.cashfree.com/devstudio/preview/pg/web/checkout?order_id={order_id}",
-      //   // notify_url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/api/payment-webhook`,
-      // },
+      order_meta: {
+        return_url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/payment-success?order_id={order_id}`,
+        // return_url:
+        //   "https://www.cashfree.com/devstudio/preview/pg/web/checkout?order_id={order_id}",
+        // return_url:
+        //   "https://www.cashfree.com/devstudio/preview/pg/web/checkout?order_id={order_id}",
+        // notify_url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/api/payment-webhook`,
+      },
     };
     const response = await cashfree.PGCreateOrder(orderData);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, LogOut, Menu, User } from "lucide-react";
+import { CreditCard, LayoutDashboard, LogOut, Menu, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -38,7 +38,7 @@ const Navbar = () => {
     { name: "Home", href: "/" },
     { name: "Events", href: "/events" },
     { name: "Members", href: "/members" },
-    { name: "Registration", href: "/register-member" },
+    { name: "Membership", href: "/membership" },
     { name: "About Us", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
@@ -149,6 +149,16 @@ const Navbar = () => {
                         <DropdownMenuSeparator />
                       </>
                     )}
+
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/payment-history"
+                        className="cursor-pointer flex items-center gap-2"
+                      >
+                        <CreditCard size={16} />
+                        <span>Payment History</span>
+                      </Link>
+                    </DropdownMenuItem>
 
                     <DropdownMenuItem
                       onClick={handleSignOut}

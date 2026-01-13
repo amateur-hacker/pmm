@@ -31,7 +31,7 @@ async function getMembers(page: number = 1, searchQuery: string = "") {
   // This is a placeholder until we have the actual API implementation
   // For now, we'll return an empty array and handle the client-side fetch in a child component
   try {
-    let url = `${process.env.NEXT_PUBLIC_SITE_URL || "https://purvanchalmitramahasabha.in"}/api/members?page=${page}&limit=10`;
+    let url = `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/api/members?page=${page}&limit=10`;
     if (searchQuery) {
       url += `&search=${encodeURIComponent(searchQuery)}`;
     }

@@ -1,4 +1,4 @@
-import { and, desc, type SQL, sql } from "drizzle-orm";
+import { and, desc, type SQL, sql, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { getDb } from "@/lib/db";
 import { members } from "@/lib/db/schema";
@@ -8,6 +8,19 @@ const db = getDb();
 export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url);
+
+    // Handle member lookup by email/mobile for payment history
+    const email = url.searchParams.get("email");
+
+    if (email) {
+      const member = await db
+        .select()
+        .from(members)
+        .where(eq(members.email, email))
+        .limit(1);
+
+      return Response.json(member);
+    }
 
     const page = Number.parseInt(url.searchParams.get("page") || "1", 10);
     const limit = Number.parseInt(url.searchParams.get("limit") || "10", 10);
