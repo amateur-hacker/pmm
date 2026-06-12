@@ -4,8 +4,6 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -46,41 +44,45 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [globalFilter, setGlobalFilter] = React.useState("");
-  const [pageSize, _setPageSize] = React.useState(10);
+  const [pageSize, setPageSize] = React.useState(10);
+  const [pageIndex, setPageIndex] = React.useState(0);
 
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: pageSize,
-  });
+  const filteredData = React.useMemo(() => {
+    if (!globalFilter) return data;
+    const q = globalFilter.toLowerCase();
+    return data.filter((item) => {
+      const value = (item as Record<string, unknown>)[searchKey];
+      return String(value ?? "").toLowerCase().includes(q);
+    });
+  }, [data, globalFilter, searchKey]);
+
+  const pageCount = Math.ceil(filteredData.length / pageSize);
+
+  const safePageIndex = Math.min(pageIndex, Math.max(0, pageCount - 1));
+
+  const paginatedData = React.useMemo(() => {
+    const start = safePageIndex * pageSize;
+    return filteredData.slice(start, start + pageSize);
+  }, [filteredData, safePageIndex, pageSize]);
 
   const table = useReactTable({
-    data,
+    data: paginatedData,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    manualPagination: true,
+    pageCount: pageCount,
+    rowCount: filteredData.length,
     onRowSelectionChange: setRowSelection,
-    onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: "includesString",
-    onPaginationChange: setPagination,
     state: {
       rowSelection,
-      globalFilter,
-      pagination,
+      pagination: { pageIndex: safePageIndex, pageSize },
     },
     enableRowSelection: true,
     enableMultiRowSelection: true,
     getRowId: (row) => (row as any).id,
-    initialState: {
-      pagination: {
-        pageSize: pageSize,
-      },
-    },
-    autoResetPageIndex: false,
   });
 
-  // Function to get selected row IDs
   const getSelectedIds = () => {
     const selectedRows = table.getSelectedRowModel().flatRows;
     return selectedRows
@@ -93,7 +95,6 @@ export function DataTable<TData, TValue>({
       const selectedIds = getSelectedIds();
       if (selectedIds.length > 0) {
         onBulkDelete(selectedIds);
-        // Don't reset selections automatically - let user decide
       }
     }
   };
@@ -105,7 +106,9 @@ export function DataTable<TData, TValue>({
           <Input
             placeholder={placeholder}
             value={globalFilter ?? ""}
-            onChange={(e) => setGlobalFilter(e.target.value)}
+            onChange={(e) => {
+              setGlobalFilter(e.target.value);
+            }}
             className="h-9 w-full md:w-80 lg:w-80"
           />
           <div className="flex gap-2">
@@ -115,7 +118,7 @@ export function DataTable<TData, TValue>({
               className="h-9 gap-1"
               onClick={() => {
                 setGlobalFilter("");
-                table.setPageIndex(0);
+                setPageIndex(0);
               }}
             >
               <RotateCcwIcon className="h-3.5 w-3.5" />
@@ -137,18 +140,19 @@ export function DataTable<TData, TValue>({
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
-            value={`${table.getState().pagination.pageSize}`}
+            value={`${pageSize}`}
             onValueChange={(value) => {
-              table.setPageSize(Number(value));
+              setPageSize(Number(value));
+              setPageIndex(0);
             }}
           >
             <SelectTrigger className="h-9 w-20">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
+              <SelectValue placeholder={pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 15, 20, 25, 30].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
+              {[10, 15, 20, 25, 30].map((size) => (
+                <SelectItem key={size} value={`${size}`}>
+                  {size}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -208,30 +212,29 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-between px-2">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {filteredData.length} row(s) selected.
         </div>
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+              onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
+              disabled={safePageIndex <= 0}
             >
               <ChevronLeftIcon className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
+              onClick={() => setPageIndex((p) => p + 1)}
+              disabled={safePageIndex >= pageCount - 1}
             >
               <ChevronRightIcon className="h-4 w-4" />
             </Button>
           </div>
           <div className="flex items-center text-sm font-medium">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
+            Page {safePageIndex + 1} of {pageCount || 1}
           </div>
         </div>
       </div>
