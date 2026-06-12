@@ -166,7 +166,7 @@ export default function MembershipCard({
             <div className="mx-5 border-t border-gray-300" />
 
             {/* Validation */}
-            <div className="px-5 pb-5 pt-3">
+            <div className="px-5 pb-3 pt-3">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                   Membership Valid Until
@@ -185,6 +185,15 @@ export default function MembershipCard({
                   Membership expired. Please renew to continue.
                 </p>
               )}
+            </div>
+
+            {/* President */}
+            <div className="px-5 pb-4 flex justify-end">
+              <p className="text-[10px] text-gray-400 leading-tight text-right max-w-[160px]">
+                shri uttam singh chauhan
+                <br />
+                president
+              </p>
             </div>
           </div>
         </div>
@@ -217,15 +226,16 @@ export default function MembershipCard({
         open={lightboxOpen}
         close={() => setLightboxOpen(false)}
         slides={[{ src: "" }]}
+        controller={{
+          touchAction: "none",
+          disableSwipeNavigation: true,
+        }}
         render={{
           slide: () => {
             if (!cardRef.current) return null;
             return (
-              <div className="flex items-center justify-center h-full w-full p-4">
-                <div
-                  className="w-xl bg-white rounded-xl shadow-lg overflow-hidden shrink-0"
-                  style={{ maxHeight: "90vh" }}
-                >
+              <div className="flex items-center justify-start sm:justify-center h-full w-full p-4 overflow-x-auto">
+                <div className="w-xl bg-white rounded-xl shadow-lg shrink-0">
                   <div className="p-5 pb-3">
                     <div className="flex items-center gap-3">
                       <div className="shrink-0">
@@ -302,7 +312,7 @@ export default function MembershipCard({
                     </div>
                   </div>
                   <div className="mx-5 border-t border-gray-300" />
-                  <div className="px-5 pb-5 pt-3">
+                  <div className="px-5 pb-3 pt-3">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                         Membership Valid Until
@@ -316,6 +326,13 @@ export default function MembershipCard({
                         {formattedValidUntil}
                       </span>
                     </div>
+                  </div>
+                  <div className="px-5 pb-4 flex justify-end">
+                    <p className="text-[10px] text-gray-400 leading-tight text-right max-w-[160px]">
+                      shri uttam singh chauhan
+                      <br />
+                      president
+                    </p>
                   </div>
                 </div>
               </div>
