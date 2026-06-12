@@ -8,11 +8,11 @@ interface PaymentSuccessPageProps {
 export default async function PaymentSuccessPage({
   searchParams,
 }: PaymentSuccessPageProps) {
-  const resolvedSearchParams = await searchParams;
+  const { order_id } = await searchParams;
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <PaymentSuccessClient order_id={resolvedSearchParams.order_id} />
+      <PaymentSuccessClient order_id={order_id} />
     </Suspense>
   );
 }

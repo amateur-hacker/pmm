@@ -5,9 +5,20 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import MembershipCard from "@/components/MembershipCard";
 
 interface PaymentSuccessClientProps {
   order_id?: string;
+}
+
+interface MemberData {
+  name: string;
+  address: string;
+  mobile: string;
+  email: string;
+  dob: string;
+  image?: string | null;
+  donated?: number;
 }
 
 export default function PaymentSuccessClient({
@@ -17,6 +28,8 @@ export default function PaymentSuccessClient({
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [memberSaved, setMemberSaved] = useState(false);
+  const [memberData, setMemberData] = useState<MemberData | null>(null);
+  const [validUntil, setValidUntil] = useState("");
 
   useEffect(() => {
     if (!order_id) {
@@ -25,7 +38,6 @@ export default function PaymentSuccessClient({
 
     const processPaymentAndRegistration = async () => {
       try {
-        // First, verify the payment status
         const verifyResponse = await fetch("/api/verify-payment", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -43,22 +55,20 @@ export default function PaymentSuccessClient({
           return;
         }
 
-        // Payment verified successfully, now check for pending member data
         const pendingData = localStorage.getItem("pendingMemberData");
         if (pendingData) {
-          const memberData = JSON.parse(pendingData);
+          const data: MemberData = JSON.parse(pendingData);
+          setMemberData(data);
 
-          // Save member data now that payment is verified successful
           const registerResponse = await fetch("/api/membership", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(memberData),
+            body: JSON.stringify(data),
           });
 
           if (registerResponse.ok) {
             const newMember = await registerResponse.json();
 
-            // Store payment history
             const paymentHistoryResponse = await fetch("/api/payment-history", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -67,17 +77,29 @@ export default function PaymentSuccessClient({
                 orderId: order_id,
                 amount: verifyData.order_amount,
                 paymentStatus: verifyData.order_status,
-                paymentMethod: "Cashfree", // You can enhance this based on payment data
+                paymentMethod: "Cashfree",
               }),
             });
 
             if (!paymentHistoryResponse.ok) {
               console.error("Failed to store payment history");
-              // Don't throw error here, member is saved successfully
             }
 
+            const validDate = new Date();
+            validDate.setFullYear(validDate.getFullYear() + 1);
+            setValidUntil(validDate.toISOString());
+
             setMemberSaved(true);
-            localStorage.removeItem("pendingMemberData"); // Clean up
+            setMemberData({
+              ...data,
+              name: newMember.name,
+              address: newMember.address,
+              mobile: newMember.mobile,
+              email: newMember.email,
+              dob: newMember.dob,
+              image: newMember.image,
+            });
+            localStorage.removeItem("pendingMemberData");
             toast.success("Member registration completed successfully!");
           } else {
             throw new Error("Failed to save member data");
@@ -103,7 +125,7 @@ export default function PaymentSuccessClient({
         <div className="container mx-auto px-4 max-w-2xl">
           <div className="text-center">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
             </div>
             <h1 className="text-2xl font-bold mb-2">
               Processing Your Registration...
@@ -156,7 +178,7 @@ export default function PaymentSuccessClient({
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="min-h-screen bg-background flex items-center justify-center py-12">
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="text-center border rounded-lg p-8 bg-card">
           <div className="mb-8">
@@ -194,16 +216,34 @@ export default function PaymentSuccessClient({
           <div className="bg-muted/50 p-6 rounded-lg mb-6">
             <h2 className="text-lg font-semibold mb-2">Payment Details</h2>
             <p className="text-sm text-muted-foreground">
-              Order ID: <span className="font-mono">{order_id}</span>
+              Transaction ID:{" "}
+              <span className="font-mono">{order_id}</span>
             </p>
           </div>
+
+          {/* Membership Card */}
+          {memberSaved && memberData && validUntil && (
+            <div className="mb-6 flex flex-col items-center">
+              <h2 className="text-lg font-semibold mb-4">
+                Your Membership Card
+              </h2>
+              <MembershipCard
+                name={memberData.name}
+                address={memberData.address}
+                mobile={memberData.mobile}
+                dob={memberData.dob}
+                image={memberData.image}
+                validUntil={validUntil}
+              />
+            </div>
+          )}
 
           <div className="flex items-center justify-center gap-4">
             <Button className="cursor-pointer" asChild>
               <Link href="/">Return to Home</Link>
             </Button>
             <Button variant="outline" className="cursor-pointer" asChild>
-              <Link href="/payment-history">Payment History</Link>
+              <Link href="/membership">View My Membership</Link>
             </Button>
           </div>
         </div>

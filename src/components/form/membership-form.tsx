@@ -277,7 +277,7 @@ export default function MembershipForm() {
             const verificationResult = await verifyPayment(orderId);
             if (verificationResult.success) {
               // Payment verified successfully - redirect to success page
-              window.location.href = `/payment-success?order_id=${orderId}`;
+              window.location.href = `/payment-success?order_id=${orderId}&t=${Date.now()}`;
             } else {
               toast.error(
                 "Payment verification failed. Please contact support if amount was deducted.",
