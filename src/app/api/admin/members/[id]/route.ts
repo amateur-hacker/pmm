@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { members } from "@/lib/db/schema";
+import { members, paymentHistory } from "@/lib/db/schema";
 
 export async function GET(
   request: NextRequest,
@@ -95,7 +95,7 @@ export async function PUT(
         address,
         mobile,
         email,
-        dob: formattedDob,
+        dob: formattedDob ?? "",
         education,
         permanentAddress,
         image: image || null,
@@ -137,6 +137,7 @@ export async function DELETE(
       return Response.json({ error: "Invalid member ID" }, { status: 400 });
     }
 
+    await db.delete(paymentHistory).where(eq(paymentHistory.memberId, id));
     await db.delete(members).where(eq(members.id, id));
 
     return Response.json({ message: "Member deleted successfully" });

@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
         address,
         mobile,
         email,
-        dob: formattedDob,
+        dob: formattedDob ?? "",
         education,
         permanentAddress,
         image: image || null,

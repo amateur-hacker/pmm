@@ -32,8 +32,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(amount, customerDetails);
-
     const isProduction = process.env.NODE_ENV === "production";
     const orderId = generateOrderId();
 
@@ -59,7 +57,6 @@ export async function POST(request: NextRequest) {
     };
     const response = await cashfree.PGCreateOrder(orderData);
 
-    console.log(response);
     if (!response || !response.data) {
       throw new Error("Failed to create payment order");
     }
@@ -70,8 +67,6 @@ export async function POST(request: NextRequest) {
     //   : "https://sandbox.cashfree.com/checkout/";
     // const paymentLink = `${baseUrl}${response.data.payment_session_id}`;
     //
-    // console.log("Payment link generated:", paymentLink);
-
     return NextResponse.json({
       order_id: response.data.order_id,
       payment_session_id: response.data.payment_session_id,
