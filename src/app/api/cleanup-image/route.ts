@@ -1,8 +1,8 @@
 import { del } from "@vercel/blob";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { type NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { members } from "@/lib/db/schema";
+import { events, members } from "@/lib/db/schema";
 
 const db = getDb();
 
@@ -14,13 +14,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 });
     }
 
-    const existing = await db
+    const inMembers = await db
       .select({ id: members.id })
       .from(members)
       .where(eq(members.image, url))
       .limit(1);
 
-    if (existing.length === 0) {
+    const inEvents = await db
+      .select({ id: events.id })
+      .from(events)
+      .where(eq(events.image, url))
+      .limit(1);
+
+    if (inMembers.length === 0 && inEvents.length === 0) {
       await del(url);
     }
 

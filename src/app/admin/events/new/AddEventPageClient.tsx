@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -48,6 +49,20 @@ type FormData = z.infer<typeof eventSchema>;
 // ----------------- COMPONENT --------------------
 export function AddEventPageClient() {
   const router = useRouter();
+  const uploadedImages = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    return () => {
+      uploadedImages.current.forEach((url) => {
+        fetch("/api/cleanup-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url }),
+        }).catch(() => {});
+      });
+    };
+  }, []);
+
   const form = useForm({
     resolver: zodResolver(eventSchema),
     defaultValues: {
@@ -187,7 +202,10 @@ export function AddEventPageClient() {
                         <FormControl>
                           <FileUpload
                             value={field.value || ""}
-                            onChange={field.onChange}
+                            onChange={(url) => {
+                              if (url) uploadedImages.current.add(url);
+                              field.onChange(url);
+                            }}
                           />
                         </FormControl>
                       </FormItem>

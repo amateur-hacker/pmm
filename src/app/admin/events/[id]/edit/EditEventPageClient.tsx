@@ -85,7 +85,20 @@ export function EditEventPageClient(props: Props) {
   const { control, handleSubmit, setValue, watch } = form;
 
   const eventIdRef = useRef<string | null>(null);
+  const uploadedImages = useRef<Set<string>>(new Set());
   const imageValue = watch("image");
+
+  useEffect(() => {
+    return () => {
+      uploadedImages.current.forEach((url) => {
+        fetch("/api/cleanup-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url }),
+        }).catch(() => {});
+      });
+    };
+  }, []);
 
   // Load Event
   useEffect(() => {
@@ -265,7 +278,10 @@ export function EditEventPageClient(props: Props) {
                         <FormControl>
                           <FileUpload
                             value={field.value || ""}
-                            onChange={field.onChange}
+                            onChange={(url) => {
+                              if (url) uploadedImages.current.add(url);
+                              field.onChange(url);
+                            }}
                             onPreview={() => setLightboxOpen(true)}
                           />
                         </FormControl>
