@@ -32,6 +32,7 @@
     "date-fns": "^4.4.0",
     "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.44.7",
+    "html-to-image": "^1.11.13",
     "jose": "^6.2.3",
     "lightbox": "^0.5.0",
     "lucide-react": "^1.17.0",
