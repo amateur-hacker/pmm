@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import MembershipCard from "@/components/MembershipCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import MembershipCard from "@/components/MembershipCard";
-import { authClient } from "@/lib/auth-client";
 import type { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
 
 interface PaymentRecord {
   id: string;
@@ -42,7 +42,6 @@ export default function MembershipPage() {
   const sessionUser =
     (session?.user as typeof auth.$Infer.Session.user) ?? null;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <loadMembership is defined below>
   useEffect(() => {
     if (!isPending && sessionUser?.email) {
       loadMembership(sessionUser.email);
@@ -159,7 +158,7 @@ export default function MembershipPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-12">
+    <div className="min-h-screen bg-background py-12 overflow-x-hidden">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-4">My Membership</h1>
@@ -173,9 +172,7 @@ export default function MembershipPage() {
             <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
             </div>
-            <p className="text-muted-foreground">
-              Loading membership data...
-            </p>
+            <p className="text-muted-foreground">Loading membership data...</p>
           </div>
         ) : sessionUser ? (
           <div className="space-y-6">
@@ -186,7 +183,10 @@ export default function MembershipPage() {
                 {payments.length > 0 ? (
                   <div className="grid gap-6">
                     {payments.map((payment) => (
-                      <div key={payment.id} className="flex flex-col items-center">
+                      <div
+                        key={payment.id}
+                        className="flex flex-col items-center overflow-x-auto"
+                      >
                         <MembershipCard
                           name={member.name}
                           address={member.address}
@@ -210,9 +210,7 @@ export default function MembershipPage() {
               </div>
             )}
 
-            <h3 className="text-xl font-semibold mt-8">
-              Payment History
-            </h3>
+            <h3 className="text-xl font-semibold mt-8">Payment History</h3>
             {payments.length === 0 ? (
               <Card>
                 <CardContent className="text-center py-8">

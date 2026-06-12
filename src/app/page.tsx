@@ -1,5 +1,6 @@
 /** biome-ignore-all lint/suspicious/noArrayIndexKey: <explanation> */
 
+import { count, eq } from "drizzle-orm";
 import {
   Calendar,
   Heart,
@@ -19,7 +20,6 @@ import { Card } from "@/components/ui/card";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { getDb } from "@/lib/db";
 import { events, members } from "@/lib/db/schema";
-import { count, eq } from "drizzle-orm";
 
 export const metadata: Metadata = {
   title: "Purvanchal Mitra Mahasabha (Regd.) - Home",

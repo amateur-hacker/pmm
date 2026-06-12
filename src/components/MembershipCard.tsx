@@ -69,123 +69,131 @@ export default function MembershipCard({
 
   return (
     <>
-      <div className={cn("w-full space-y-3", className)}>
-        <div
-          ref={cardRef}
-          className="w-full max-w-xl bg-white rounded-xl shadow-lg overflow-hidden border"
-        >
-          {/* Header with Logo and Organization Name */}
-          <div className="p-5 pb-3">
-            <div className="flex items-center gap-3">
-              <div className="shrink-0">
-                <Image
-                  src="/logo.png"
-                  alt="Logo"
-                  width={48}
-                  height={48}
-                  className="rounded-full object-contain"
-                />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <h2 className="text-base font-bold text-gray-900 leading-tight">
-                  Purvanchal Mitra Mahasabha
-                </h2>
-                <div className="flex justify-between gap-3 items-center">
-                  <p className="text-[11px] text-gray-500 leading-tight">
-                    Ph.no: 7982970305
-                  </p>
-                  <p className="text-[11px] text-gray-500 leading-tight">
-                    Reg.no: 9015240451
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Separator */}
-          <div className="mx-5 border-t border-gray-300" />
-
-          {/* Main Content: Details + Profile Image */}
-          <div className="p-5 pt-4">
-            <div className="flex gap-4">
-              {/* Left side - Details */}
-              <div className="flex-1 min-w-0 space-y-1.5">
-                <div>
-                  <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                    Name
-                  </span>
-                  <p className="text-sm font-medium text-gray-900">{name}</p>
-                </div>
-                <div>
-                  <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                    Address
-                  </span>
-                  <p className="text-sm text-gray-700">{address}</p>
-                </div>
-                <div>
-                  <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                    Contact
-                  </span>
-                  <p className="text-sm text-gray-700">{mobile}</p>
-                </div>
-                <div>
-                  <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                    Date of Birth
-                  </span>
-                  <p className="text-sm text-gray-700">{formattedDob}</p>
-                </div>
-              </div>
-
-              {/* Right side - Profile Image */}
-              <div className="shrink-0 flex flex-col items-center justify-center">
-                <Avatar className="h-24 w-24 border-2 border-gray-200">
-                  <AvatarImage
-                    src={
-                      image ||
-                      "https://res.cloudinary.com/ahcloud/image/upload/v1747277562/images/default-profile_bpnjdl_dzyvud.png"
-                    }
-                    alt={name}
+      <div
+        className={cn(
+          "w-full space-y-3 overflow-hidden flex flex-col items-start",
+          className,
+        )}
+      >
+        <div className="w-full overflow-x-auto">
+          {" "}
+          {/* scroll container */}
+          <div
+            ref={cardRef}
+            className="w-xl bg-white rounded-xl shadow-lg overflow-hidden border shrink-0"
+          >
+            {/* Header with Logo and Organization Name */}
+            <div className="p-5 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="shrink-0">
+                  <Image
+                    src="/logo.png"
+                    alt="Logo"
+                    width={48}
+                    height={48}
+                    className="rounded-full object-contain"
                   />
-                  <AvatarFallback className="text-lg">
-                    {name.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <h2 className="text-base font-bold text-gray-900 leading-tight">
+                    Purvanchal Mitra Mahasabha
+                  </h2>
+                  <div className="flex justify-between gap-3 items-center">
+                    <p className="text-[11px] text-gray-500 leading-tight">
+                      Ph.no: 7982970305
+                    </p>
+                    <p className="text-[11px] text-gray-500 leading-tight">
+                      Reg.no: 9015240451
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Separator */}
-          <div className="mx-5 border-t border-gray-300" />
+            {/* Separator */}
+            <div className="mx-5 border-t border-gray-300" />
 
-          {/* Validation */}
-          <div className="px-5 pb-5 pt-3">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                Membership Valid Until
-              </span>
-              <span
-                className={cn(
-                  "text-sm font-semibold",
-                  isExpired ? "text-red-600" : "text-green-600",
-                )}
-              >
-                {formattedValidUntil}
-              </span>
+            {/* Main Content: Details + Profile Image */}
+            <div className="p-5 pt-4">
+              <div className="flex gap-4">
+                {/* Left side - Details */}
+                <div className="flex-1 min-w-0 space-y-1.5">
+                  <div>
+                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                      Name
+                    </span>
+                    <p className="text-sm font-medium text-gray-900">{name}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                      Address
+                    </span>
+                    <p className="text-sm text-gray-700">{address}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                      Contact
+                    </span>
+                    <p className="text-sm text-gray-700">{mobile}</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                      Date of Birth
+                    </span>
+                    <p className="text-sm text-gray-700">{formattedDob}</p>
+                  </div>
+                </div>
+
+                {/* Right side - Profile Image */}
+                <div className="shrink-0 flex flex-col items-center justify-center">
+                  <Avatar className="h-24 w-24 border-2 border-gray-200">
+                    <AvatarImage
+                      src={
+                        image ||
+                        "https://res.cloudinary.com/ahcloud/image/upload/v1747277562/images/default-profile_bpnjdl_dzyvud.png"
+                      }
+                      alt={name}
+                    />
+                    <AvatarFallback className="text-lg">
+                      {name.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              </div>
             </div>
-            {isExpired && (
-              <p className="text-[11px] text-red-500 mt-1">
-                Membership expired. Please renew to continue.
-              </p>
-            )}
+
+            {/* Separator */}
+            <div className="mx-5 border-t border-gray-300" />
+
+            {/* Validation */}
+            <div className="px-5 pb-5 pt-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                  Membership Valid Until
+                </span>
+                <span
+                  className={cn(
+                    "text-sm font-semibold",
+                    isExpired ? "text-red-600" : "text-green-600",
+                  )}
+                >
+                  {formattedValidUntil}
+                </span>
+              </div>
+              {isExpired && (
+                <p className="text-[11px] text-red-500 mt-1">
+                  Membership expired. Please renew to continue.
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Action Buttons */}
         {showActions && (
-          <div className="flex gap-2 max-w-xl">
+          <div className="flex flex-col sm:flex-row w-full gap-2">
             <Button
               variant="outline"
-              size="sm"
               className="flex-1 cursor-pointer"
               onClick={() => setLightboxOpen(true)}
             >
@@ -193,7 +201,6 @@ export default function MembershipCard({
               Preview
             </Button>
             <Button
-              size="sm"
               className="flex-1 cursor-pointer"
               onClick={handleDownload}
               disabled={isDownloading}
@@ -216,7 +223,7 @@ export default function MembershipCard({
             return (
               <div className="flex items-center justify-center h-full w-full p-4">
                 <div
-                  className="w-full max-w-xl bg-white rounded-xl shadow-lg overflow-hidden"
+                  className="w-xl bg-white rounded-xl shadow-lg overflow-hidden shrink-0"
                   style={{ maxHeight: "90vh" }}
                 >
                   <div className="p-5 pb-3">

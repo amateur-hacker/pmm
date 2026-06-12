@@ -1,7 +1,18 @@
 "use client";
 
 import { useElementSize } from "@mantine/hooks";
-import { Calendar, CreditCard, Home, Info, LayoutDashboard, LogOut, Mail, Menu, User, UserPlus } from "lucide-react";
+import {
+  Calendar,
+  CreditCard,
+  Home,
+  Info,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  Menu,
+  User,
+  UserPlus,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,6 +32,7 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
@@ -203,7 +215,7 @@ const Navbar = () => {
               </Button>
             )}
 
-            {isTouchDevice && (
+            {!isTouchDevice && (
               <div className="flex items-center lg:hidden">
                 <Sheet>
                   <SheetTrigger asChild>
@@ -220,6 +232,9 @@ const Navbar = () => {
                     className="flex w-full flex-col px-3"
                   >
                     <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                    <SheetDescription className="sr-only">
+                      Navigate through the website sections
+                    </SheetDescription>
                     <div className="mt-16 flex flex-1 flex-col space-y-4 overflow-y-auto">
                       <div className="flex flex-col space-y-2">
                         {navItems.map((item) => {
