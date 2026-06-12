@@ -61,7 +61,7 @@ const Footer = () => {
               Join our community and stay updated with our initiatives.
             </p>
             <Button variant="default" className="cursor-pointer" asChild>
-              <Link href="/membership">Register as Member</Link>
+              <Link href="/registration">Register as Member</Link>
             </Button>
           </div>
         </div>

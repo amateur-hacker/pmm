@@ -1,7 +1,7 @@
 "use client";
 
 import { useElementSize } from "@mantine/hooks";
-import { CreditCard, LayoutDashboard, LogOut, Menu, User } from "lucide-react";
+import { Calendar, CreditCard, Home, Info, LayoutDashboard, LogOut, Mail, Menu, User, UserPlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -46,7 +46,7 @@ const Navbar = () => {
     { name: "Home", href: "/" },
     { name: "Events", href: "/events" },
     { name: "Members", href: "/members" },
-    { name: "Membership", href: "/membership" },
+    { name: "Registration", href: "/registration" },
     { name: "About Us", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
@@ -169,11 +169,11 @@ const Navbar = () => {
 
                   <DropdownMenuItem asChild>
                     <Link
-                      href="/payment-history"
+                      href="/membership"
                       className="flex cursor-pointer items-center gap-2"
                     >
                       <CreditCard size={16} />
-                      <span>Payment History</span>
+                      <span>My Membership</span>
                     </Link>
                   </DropdownMenuItem>
 
@@ -203,7 +203,7 @@ const Navbar = () => {
               </Button>
             )}
 
-            {!isTouchDevice && (
+            {isTouchDevice && (
               <div className="flex items-center lg:hidden">
                 <Sheet>
                   <SheetTrigger asChild>
@@ -222,21 +222,49 @@ const Navbar = () => {
                     <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                     <div className="mt-16 flex flex-1 flex-col space-y-4 overflow-y-auto">
                       <div className="flex flex-col space-y-2">
-                        {navItems.map((item) => (
-                          <Button
-                            key={item.name}
-                            variant={
-                              isActive(item.href) ? "secondary" : "ghost"
-                            }
-                            className="w-full justify-start text-base font-medium cursor-pointer"
-                            asChild
-                          >
-                            <Link href={item.href}>{item.name}</Link>
-                          </Button>
-                        ))}
+                        {navItems.map((item) => {
+                          const iconMap: Record<string, React.ReactNode> = {
+                            Home: <Home className="mr-2 h-4 w-4" />,
+                            Events: <Calendar className="mr-2 h-4 w-4" />,
+                            Members: <User className="mr-2 h-4 w-4" />,
+                            Registration: <UserPlus className="mr-2 h-4 w-4" />,
+                            "About Us": <Info className="mr-2 h-4 w-4" />,
+                            Contact: <Mail className="mr-2 h-4 w-4" />,
+                          };
+                          return (
+                            <Button
+                              key={item.name}
+                              variant={
+                                isActive(item.href) ? "secondary" : "ghost"
+                              }
+                              className="w-full justify-start text-base font-medium cursor-pointer"
+                              asChild
+                            >
+                              <Link href={item.href}>
+                                {iconMap[item.name]}
+                                {item.name}
+                              </Link>
+                            </Button>
+                          );
+                        })}
                       </div>
 
                       <div className="mt-auto" />
+
+                      <div className="flex flex-col space-y-2 pb-4">
+                        <Button
+                          variant={
+                            isActive("/membership") ? "secondary" : "ghost"
+                          }
+                          className="w-full justify-start text-base font-medium cursor-pointer"
+                          asChild
+                        >
+                          <Link href="/membership">
+                            <CreditCard className="mr-2 h-4 w-4" />
+                            My Membership
+                          </Link>
+                        </Button>
+                      </div>
                     </div>
                   </SheetContent>
                 </Sheet>

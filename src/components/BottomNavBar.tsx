@@ -1,7 +1,7 @@
 "use client";
 
 import { useElementSize } from "@mantine/hooks";
-import { CalendarIcon, UserPlusIcon, UsersIcon } from "lucide-react";
+import { CalendarIcon, CreditCard, UserPlusIcon, UsersIcon } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,7 +14,8 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/events", label: "Events", icon: CalendarIcon },
   { href: "/members", label: "Members", icon: UsersIcon },
-  { href: "/membership", label: "Join", icon: UserPlusIcon },
+  { href: "/registration", label: "Join", icon: UserPlusIcon },
+  { href: "/membership", label: "Membership", icon: CreditCard },
 ] as const;
 
 function BottomNavBar() {
