@@ -1,6 +1,6 @@
 "use client";
 
-import { Smartphone } from "lucide-react";
+import { DownloadIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePWAInstall } from "react-use-pwa-install";
 import { Button } from "@/components/ui/button";
@@ -10,19 +10,22 @@ export function PWAInstallButton() {
   const install = usePWAInstall();
 
   useEffect(() => {
-    // Ensure we're on the client side before attempting to show the button
     setIsClient(true);
   }, []);
 
-  // Only show the button if installation is available and we're on the client
   if (!isClient || !install) {
     return null;
   }
 
   return (
-    <Button onClick={install} size="sm" className="gap-2">
-      <Smartphone className="h-4 w-4" />
-      Install App
+    <Button
+      aria-label="Install App"
+      className="cursor-pointer rounded-full"
+      onClick={install}
+      variant="ghost"
+    >
+      <DownloadIcon className="size-5" />
+      <span className="hidden md:inline-block">Install</span>
     </Button>
   );
 }
