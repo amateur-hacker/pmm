@@ -242,7 +242,7 @@ export function MemberDetailPageClient(props: Props) {
                 )}
               </div>
             )}
-            {member?.image && (
+            {member?.image && !member.image.startsWith("https://picsum.photos/200/200?random=") && (
               <Lightbox
                 open={lightboxOpen}
                 close={() => setLightboxOpen(false)}
