@@ -68,7 +68,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className="fixed inset-x-0 top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
+      className="fixed inset-x-0 top-0 z-50 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80"
       ref={ref}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -113,7 +113,7 @@ const Navbar = () => {
                     variant="ghost"
                     size="icon"
                     title="Open User Menu"
-                    className="cursor-pointer"
+                    className="cursor-pointer rounded-full"
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarImage
@@ -132,7 +132,7 @@ const Navbar = () => {
                 <DropdownMenuContent align="end" className="w-48">
                   <div className="flex flex-col items-center">
                     <div className="flex gap-1.5 px-2 py-1.5">
-                      <Avatar className="h-8 w-8">
+                      <Avatar className="h-8 w-8 rounded-full">
                         <AvatarImage
                           src={
                             sessionUser.image ||
@@ -156,7 +156,7 @@ const Navbar = () => {
                     <>
                       <DropdownMenuItem asChild>
                         <Link
-                          href="/admin?tab=events"
+                          href="/admin?tab=members"
                           className="flex cursor-pointer items-center gap-2"
                         >
                           <LayoutDashboard size={16} />
