@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
@@ -41,6 +43,7 @@ type Props = {
 export function EventDetailPageClient(props: Props) {
   const [event, setEvent] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const router = useRouter();
 
   // Use a useEffect to extract the id from async params
@@ -94,7 +97,7 @@ export function EventDetailPageClient(props: Props) {
       <div className="container mx-auto px-4">
         <div className="mb-8">
           <Button asChild className="cursor-pointer">
-            <Link href="/admin" className="flex items-center">
+            <Link href="/admin?tab=events" className="flex items-center">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Dashboard
             </Link>
@@ -176,18 +179,31 @@ export function EventDetailPageClient(props: Props) {
             </div>
 
             {event.image && (
-              <div className="mb-6 relative h-64">
+              <div className="mb-6">
                 <h3 className="text-sm font-medium text-muted-foreground mb-2">
                   Featured Image
                 </h3>
-                <Image
-                  src={event.image}
-                  alt="Event featured img"
-                  fill
-                  className="object-cover rounded-md border"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
+                <button
+                  type="button"
+                  onClick={() => setLightboxOpen(true)}
+                  className="relative w-48 h-32 cursor-zoom-in"
+                >
+                  <Image
+                    src={event.image}
+                    alt="Event featured img"
+                    fill
+                    className="object-cover rounded-md border"
+                  />
+                </button>
               </div>
+            )}
+            {event.image && (
+              <Lightbox
+                open={lightboxOpen}
+                close={() => setLightboxOpen(false)}
+                slides={[{ src: event.image }]}
+                render={{ buttonPrev: () => null, buttonNext: () => null }}
+              />
             )}
 
             <div>

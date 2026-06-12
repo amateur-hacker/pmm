@@ -1,5 +1,6 @@
 import { Calendar, Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const Footer = () => {
   return (
@@ -59,11 +60,9 @@ const Footer = () => {
             <p className="text-sm text-muted-foreground mb-2">
               Join our community and stay updated with our initiatives.
             </p>
-            <Link href="/membership">
-              <span className="inline-flex items-center px-3 py-1 text-sm bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity">
-                Register as Member
-              </span>
-            </Link>
+            <Button variant="default" className="cursor-pointer" asChild>
+              <Link href="/membership">Register as Member</Link>
+            </Button>
           </div>
         </div>
 

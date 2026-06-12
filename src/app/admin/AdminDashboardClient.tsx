@@ -294,7 +294,7 @@ export function AdminDashboardClient() {
                 setDeleteItemName(member.name);
                 setDeleteDialogOpen(true);
               }}
-              className="text-destructive hover:text-destructive"
+              className="text-destructive hover:text-destructive cursor-pointer"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -512,12 +512,14 @@ export function AdminDashboardClient() {
             <DialogFooter>
               <Button
                 variant="outline"
+                className="cursor-pointer"
                 onClick={() => setDeleteDialogOpen(false)}
               >
                 Cancel
               </Button>
               <Button
                 variant="destructive"
+                className="cursor-pointer"
                 onClick={() => {
                   if (deleteItemType === "member-bulk" && deleteItemId) {
                     // Handle bulk delete for members

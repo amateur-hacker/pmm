@@ -490,7 +490,8 @@ export default async function Home() {
       {/* WhatsApp Button - Fixed bottom right */}
       <Button
         size="icon"
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg z-50 cursor-pointer"
+        className="fixed right-6 h-14 w-14 rounded-full bg-green-600 hover:bg-green-700 text-white shadow-lg z-50 cursor-pointer"
+        style={{ bottom: "calc(1.5rem + var(--bottom-nav-height, 0px))" }}
         asChild
       >
         <a

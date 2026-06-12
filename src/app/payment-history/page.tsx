@@ -239,7 +239,11 @@ export default function PaymentHistoryPage() {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="w-full cursor-pointer"
+                  disabled={isLoading}
+                >
                   {isLoading ? "Searching..." : "Find My Payments"}
                 </Button>
               </form>

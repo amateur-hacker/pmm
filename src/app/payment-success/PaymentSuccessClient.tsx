@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface PaymentSuccessClientProps {
   order_id?: string;
@@ -12,12 +14,13 @@ export default function PaymentSuccessClient({
   order_id,
 }: PaymentSuccessClientProps) {
   const [isProcessing, setIsProcessing] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [memberSaved, setMemberSaved] = useState(false);
 
   useEffect(() => {
     if (!order_id) {
       redirect("/");
-      return;
     }
 
     const processPaymentAndRegistration = async () => {
@@ -32,9 +35,10 @@ export default function PaymentSuccessClient({
         const verifyData = await verifyResponse.json();
 
         if (!verifyResponse.ok || verifyData.order_status !== "PAID") {
-          toast.error(
+          setErrorMessage(
             "Payment verification failed. Please contact support if amount was deducted.",
           );
+          setHasError(true);
           setIsProcessing(false);
           return;
         }
@@ -81,9 +85,10 @@ export default function PaymentSuccessClient({
         }
       } catch (error) {
         console.error("Error processing payment and registration:", error);
-        toast.error(
+        setErrorMessage(
           "Payment successful, but there was an issue saving your registration. Please contact support.",
         );
+        setHasError(true);
       } finally {
         setIsProcessing(false);
       }
@@ -94,7 +99,7 @@ export default function PaymentSuccessClient({
 
   if (isProcessing) {
     return (
-      <div className="min-h-screen bg-background py-12">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="container mx-auto px-4 max-w-2xl">
           <div className="text-center">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -112,10 +117,48 @@ export default function PaymentSuccessClient({
     );
   }
 
+  if (hasError) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="container mx-auto px-4 max-w-2xl">
+          <div className="text-center border rounded-lg p-8 bg-card">
+            <div className="mb-8">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg
+                  className="w-8 h-8 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-label="Error cross"
+                >
+                  <title>Error Icon</title>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+              <h1 className="text-3xl font-bold text-red-600 mb-2">
+                Something Went Wrong
+              </h1>
+              <p className="text-muted-foreground">{errorMessage}</p>
+            </div>
+
+            <Button className="cursor-pointer" asChild>
+              <Link href="/">Return to Home</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-background py-12">
+    <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="container mx-auto px-4 max-w-2xl">
-        <div className="text-center">
+        <div className="text-center border rounded-lg p-8 bg-card">
           <div className="mb-8">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -148,20 +191,20 @@ export default function PaymentSuccessClient({
             )}
           </div>
 
-          <div className="bg-card p-6 rounded-lg border mb-6">
+          <div className="bg-muted/50 p-6 rounded-lg mb-6">
             <h2 className="text-lg font-semibold mb-2">Payment Details</h2>
             <p className="text-sm text-muted-foreground">
               Order ID: <span className="font-mono">{order_id}</span>
             </p>
           </div>
 
-          <div className="space-y-4">
-            <a
-              href="/"
-              className="inline-block bg-primary text-primary-foreground px-6 py-2 rounded-md hover:bg-primary/90 transition-colors"
-            >
-              Return to Home
-            </a>
+          <div className="flex items-center justify-center gap-4">
+            <Button className="cursor-pointer" asChild>
+              <Link href="/">Return to Home</Link>
+            </Button>
+            <Button variant="outline" className="cursor-pointer" asChild>
+              <Link href="/payment-history">Payment History</Link>
+            </Button>
           </div>
         </div>
       </div>

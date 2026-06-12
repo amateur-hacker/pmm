@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import FormPageClient from "@/components/form/form-client";
+import MembershipForm from "@/components/form/membership-form";
 
 export const metadata: Metadata = {
   title: "Member Registration - Purvanchal Mitra Mahasabha",
@@ -27,5 +27,5 @@ export const metadata: Metadata = {
 
 // Server component that returns the client component
 export default function FormPage() {
-  return <FormPageClient />;
+  return <MembershipForm />;
 }

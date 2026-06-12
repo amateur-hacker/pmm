@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { BottomNavBar } from "@/components/BottomNavBar";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
-import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
     siteName: "Purvanchal Mitra Mahasabha",
     images: [
       {
-        url: "/og-image.jpg", // You should create an actual og image
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Purvanchal Mitra Mahasabha",
@@ -93,9 +94,22 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased scroll-smooth`}
       >
         <NuqsAdapter>
-          <Navbar />
-          <main className="pt-16">{children}</main>
-          <Footer />
+          <div className="flex min-h-dvh w-full flex-col">
+            <Navbar />
+            <main
+              className="flex-1"
+              style={{
+                paddingTop: "calc(var(--navbar-height, 64px))",
+                paddingBottom: "calc(var(--bottom-nav-height, 0px))",
+              }}
+            >
+              {children}
+            </main>
+            <Footer />
+          </div>
+          <div className="pointer-events-none fixed inset-0 z-50 flex flex-col justify-end">
+            <BottomNavBar />
+          </div>
           <Toaster closeButton />
           <NextTopLoader color={"var(--primary)"} showSpinner={false} />
           <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" />

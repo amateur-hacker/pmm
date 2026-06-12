@@ -25,7 +25,9 @@ export default function GlobalError({
             <Button variant="outline" className="cursor-pointer" asChild>
               <Link href="/">Go Back Home</Link>
             </Button>
-            <Button onClick={() => reset()}>Try Again</Button>
+            <Button className="cursor-pointer" onClick={() => reset()}>
+              Try Again
+            </Button>
           </div>
         </CardContent>
       </Card>

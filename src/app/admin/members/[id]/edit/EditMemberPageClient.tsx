@@ -9,6 +9,7 @@ import {
   MapPin,
   Phone,
   User,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -19,6 +20,8 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePicker } from "@/components/ui/date-picker";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { FileUpload } from "@/components/ui/file-upload";
 import {
   Form,
@@ -94,8 +97,10 @@ export function EditMemberPageClient(props: Props) {
       donated: 0,
     },
   });
-  const { control, handleSubmit, setValue } = form;
+  const { control, handleSubmit, setValue, watch } = form;
   const memberIdRef = useRef<string | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const imageValue = watch("image");
 
   // Load Member
   useEffect(() => {
@@ -105,7 +110,6 @@ export function EditMemberPageClient(props: Props) {
 
       try {
         const res = await fetch(`/api/admin/members/${memberId}`, {
-          method: "DELETE",
           credentials: "include",
         });
 
@@ -121,7 +125,7 @@ export function EditMemberPageClient(props: Props) {
         setValue("address", data.address);
         setValue("mobile", data.mobile);
         setValue("email", data.email);
-        setValue("dob", new Date(data.dob).toISOString());
+        setValue("dob", data.dob ? new Date(data.dob).toISOString() : "");
         setValue("education", data.education);
         setValue("permanentAddress", data.permanentAddress);
         setValue("image", data.image || "");
@@ -330,11 +334,25 @@ export function EditMemberPageClient(props: Props) {
                           <FileUpload
                             value={field.value || ""}
                             onChange={field.onChange}
+                            onPreview={() => setLightboxOpen(true)}
+                            previewClassName="rounded-full"
                           />
                         </FormControl>
                       </FormItem>
                     )}
                   />
+
+                  {imageValue && (
+                    <Lightbox
+                      open={lightboxOpen}
+                      close={() => setLightboxOpen(false)}
+                      slides={[{ src: imageValue }]}
+                      render={{
+                        buttonPrev: () => null,
+                        buttonNext: () => null,
+                      }}
+                    />
+                  )}
 
                   {/* DONATED AMOUNT */}
                   <FormField
@@ -414,7 +432,9 @@ export function EditMemberPageClient(props: Props) {
                     <Link href="/admin">Cancel</Link>
                   </Button>
 
-                  <Button type="submit">Update Member</Button>
+                  <Button type="submit" className="cursor-pointer">
+                    Update Member
+                  </Button>
                 </div>
               </form>
             </Form>

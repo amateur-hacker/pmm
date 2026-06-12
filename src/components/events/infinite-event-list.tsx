@@ -153,7 +153,6 @@ const InfiniteEventList = ({ initialData }: EventListProps) => {
     searchDebounceRef.current = window.setTimeout(async () => {
       // fetch page 1 with new query
       const data = await fetchPage(1, searchQuery || undefined, yearFilter);
-      console.log(data);
       if (!data) return;
 
       setEvents(data.items);

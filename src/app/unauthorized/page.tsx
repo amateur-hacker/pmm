@@ -21,7 +21,7 @@ export default function UnauthorizedPage() {
             Contact your administrator if you believe this is an error.
           </p>
           <Button
-            className="mt-4 w-full"
+            className="mt-4 w-full cursor-pointer"
             onClick={async () => {
               await authClient.signIn.social({
                 provider: "google",

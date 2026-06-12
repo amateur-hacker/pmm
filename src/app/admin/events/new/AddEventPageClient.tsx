@@ -248,7 +248,9 @@ export function AddEventPageClient() {
                     <Link href="/admin">Cancel</Link>
                   </Button>
 
-                  <Button type="submit">Create Event</Button>
+                  <Button type="submit" className="cursor-pointer">
+                    Create Event
+                  </Button>
                 </div>
               </form>
             </Form>

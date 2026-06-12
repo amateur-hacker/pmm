@@ -14,6 +14,8 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -66,6 +68,7 @@ type Props = {
 export function EditEventPageClient(props: Props) {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(eventSchema),
@@ -82,6 +85,7 @@ export function EditEventPageClient(props: Props) {
   const { control, handleSubmit, setValue, watch } = form;
 
   const eventIdRef = useRef<string | null>(null);
+  const imageValue = watch("image");
 
   // Load Event
   useEffect(() => {
@@ -167,8 +171,8 @@ export function EditEventPageClient(props: Props) {
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         <div className="mb-8">
-          <Button variant="outline" asChild>
-            <Link href="/admin" className="flex items-center">
+          <Button variant="outline" className="cursor-pointer" asChild>
+            <Link href="/admin?tab=events" className="flex items-center">
               <ArrowLeft className="h-4 w-4 mr-2" /> Back to Dashboard
             </Link>
           </Button>
@@ -262,11 +266,24 @@ export function EditEventPageClient(props: Props) {
                           <FileUpload
                             value={field.value || ""}
                             onChange={field.onChange}
+                            onPreview={() => setLightboxOpen(true)}
                           />
                         </FormControl>
                       </FormItem>
                     )}
                   />
+
+                  {imageValue && (
+                    <Lightbox
+                      open={lightboxOpen}
+                      close={() => setLightboxOpen(false)}
+                      slides={[{ src: imageValue }]}
+                      render={{
+                        buttonPrev: () => null,
+                        buttonNext: () => null,
+                      }}
+                    />
+                  )}
                 </div>
 
                 {/* EXCERPT */}
@@ -319,10 +336,12 @@ export function EditEventPageClient(props: Props) {
 
                 <div className="flex justify-end gap-4 pt-4">
                   <Button asChild variant="outline" className="cursor-pointer">
-                    <Link href="/admin">Cancel</Link>
+                    <Link href="/admin?tab=events">Cancel</Link>
                   </Button>
 
-                  <Button type="submit">Update Event</Button>
+                  <Button type="submit" className="cursor-pointer">
+                    Update Event
+                  </Button>
                 </div>
               </form>
             </Form>

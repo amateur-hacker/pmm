@@ -3,8 +3,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Edit, Eye, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,11 +50,16 @@ interface Member {
 }
 
 export default function AdminDashboardClient() {
-  // const { data: session, isPending } = authClient.useSession();
+  const searchParams = useSearchParams();
   const [members, setMembers] = useState<Member[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const activeTab = useMemo(
+    () => searchParams.get("tab") || "members",
+    [searchParams],
+  );
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
   const [deleteItemType, setDeleteItemType] = useState<
@@ -278,7 +283,7 @@ export default function AdminDashboardClient() {
                 setDeleteItemName(member.name);
                 setDeleteDialogOpen(true);
               }}
-              className="text-destructive hover:text-destructive"
+              className="text-destructive hover:text-destructive cursor-pointer"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -418,7 +423,11 @@ export default function AdminDashboardClient() {
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
         </div>
 
-        <Tabs defaultValue="members" className="w-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => router.push(`/admin?tab=${value}`)}
+          className="w-full"
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="members">Members</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
@@ -498,12 +507,14 @@ export default function AdminDashboardClient() {
             <DialogFooter>
               <Button
                 variant="outline"
+                className="cursor-pointer"
                 onClick={() => setDeleteDialogOpen(false)}
               >
                 Cancel
               </Button>
               <Button
                 variant="destructive"
+                className="cursor-pointer"
                 onClick={() => {
                   if (deleteItemType === "member-bulk" && deleteItemId) {
                     // Handle bulk delete for members

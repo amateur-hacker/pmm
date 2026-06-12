@@ -14,6 +14,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -39,6 +41,7 @@ type Props = {
 export function MemberDetailPageClient(props: Props) {
   const [member, setMember] = useState<Member | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const router = useRouter();
 
   // Use a useEffect to extract the id from async params
@@ -218,16 +221,34 @@ export function MemberDetailPageClient(props: Props) {
                 <h3 className="text-sm font-medium text-muted-foreground mb-2">
                   Profile Image
                 </h3>
-                <div className="relative w-32 h-32">
-                  <Image
-                    src={member.image}
-                    alt="Member profile"
-                    fill
-                    className="object-cover rounded-md border"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
+                {member.image.startsWith("https://picsum.photos/200/200?random=") ? (
+                  <div className="flex h-32 w-32 items-center justify-center rounded-full border-2 border-muted bg-muted/50">
+                    <User className="h-12 w-12 text-muted-foreground" />
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setLightboxOpen(true)}
+                    className="relative h-32 w-32 overflow-hidden rounded-full border-2 border-muted cursor-zoom-in"
+                  >
+                    <Image
+                      src={member.image}
+                      alt="Member profile"
+                      fill
+                      className="object-cover"
+                      sizes="128px"
+                    />
+                  </button>
+                )}
               </div>
+            )}
+            {member?.image && (
+              <Lightbox
+                open={lightboxOpen}
+                close={() => setLightboxOpen(false)}
+                slides={[{ src: member.image }]}
+                render={{ buttonPrev: () => null, buttonNext: () => null }}
+              />
             )}
           </CardContent>
         </Card>

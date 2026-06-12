@@ -219,20 +219,22 @@ const InfiniteMemberList = ({ initialData }: InfiniteMemberListProps) => {
       {/* Members Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {members.map((member) => (
-          <Card key={member.id} className="overflow-hidden">
-            {member.image ? (
-              <div className="relative w-full h-48">
+          <Card key={member.id} className="overflow-hidden pt-0!">
+            {member.image && !member.image.startsWith("https://picsum.photos/200/200?random=") ? (
+              <div className="relative w-full h-48 flex items-center justify-center bg-muted/60">
                 <Image
                   src={member.image}
                   alt={member.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  width={96}
+                  height={96}
+                  className="rounded-full object-cover w-24 h-24"
                 />
               </div>
             ) : (
-              <div className="bg-gray-100 border-2 border-dashed rounded-xl w-full h-48 flex items-center justify-center">
-                <User className="h-16 w-16 text-gray-400" />
+              <div className="bg-muted/60 w-full h-48 flex items-center justify-center">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-muted">
+                  <User className="h-12 w-12 text-muted-foreground" />
+                </div>
               </div>
             )}
             <CardHeader>
