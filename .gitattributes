@@ -1,0 +1,28 @@
+# GitHub Linguist configuration
+# Exclude generated files from language statistics
+
+# Exclude build outputs and dependencies
+node_modules/** linguist-vendored
+.next/** linguist-vendored
+dist/** linguist-vendored
+build/** linguist-vendored
+
+# Exclude generated documentation/visualizations
+graphify-out/** linguist-vendored
+
+# Exclude tooling and configs
+.opencode/** linguist-vendored
+.agents/** linguist-vendored
+
+# Exclude lockfiles (they distort language stats)
+bun.lock linguist-vendored
+package-lock.json linguist-vendored
+
+# Configuration for generated files
+*.ico binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.webp binary
