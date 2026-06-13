@@ -9,6 +9,7 @@ import {
   MapPin,
   Phone,
   User,
+  IndianRupee,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -351,6 +352,7 @@ export function EditMemberPageClient(props: Props) {
                         buttonPrev: () => null,
                         buttonNext: () => null,
                       }}
+                      controller={{ disableSwipeNavigation: true }}
                     />
                   )}
 
@@ -362,8 +364,8 @@ export function EditMemberPageClient(props: Props) {
                       <FormItem>
                         <FormLabel>
                           <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-muted-foreground" />
-                            Donated Amount (₹)
+                            <IndianRupee className="h-4 w-4 text-muted-foreground" />
+                            Paid
                           </div>
                         </FormLabel>
                         <FormControl>

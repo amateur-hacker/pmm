@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s | Purvanchal Mitra Mahasabha",
   },
   description:
-    "Official website of Purvanchal Mitra Mahasabha (Regd.) - A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
+    "Official website of Purvanchal Mitra Mahasabha - A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
   keywords:
     "NGO, Purvanchal Mitra Mahasabha, community development, social welfare, India, membership, eastern India, Delhi NGO",
   authors: [{ name: "Purvanchal Mitra Mahasabha" }],
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
       process.env.NEXT_PUBLIC_SITE_URL || "https://purvanchalmitramahasabha.in",
     title: "Purvanchal Mitra Mahasabha",
     description:
-      "Official website of Purvanchal Mitra Mahasabha (Regd.) - A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
+      "Official website of Purvanchal Mitra Mahasabha - A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
     siteName: "Purvanchal Mitra Mahasabha",
     images: [
       {
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Purvanchal Mitra Mahasabha",
     description:
-      "Official website of Purvanchal Mitra Mahasabha (Regd.) - A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
+      "Official website of Purvanchal Mitra Mahasabha - A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
   },
   robots: {
     index: true,

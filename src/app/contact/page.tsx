@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with Purvanchal Mitra Mahasabha (Regd.). Find our contact information, office location, phone numbers, and office hours for community development initiatives.",
+    "Get in touch with Purvanchal Mitra Mahasabha. Find our contact information, office location, phone numbers, and office hours for community development initiatives.",
   keywords:
     "contact NGO, Purvanchal Mitra Mahasabha contact, NGO Delhi, community development contact",
 };
@@ -17,7 +17,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
           <p className="text-xl text-muted-foreground">
-            Get in touch with Purvanchal Mitra Mahasabha (Regd.)
+            Get in touch with Purvanchal Mitra Mahasabha
           </p>
         </div>
       </section>

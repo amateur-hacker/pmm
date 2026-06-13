@@ -203,6 +203,7 @@ export function EventDetailPageClient(props: Props) {
                 close={() => setLightboxOpen(false)}
                 slides={[{ src: event.image }]}
                 render={{ buttonPrev: () => null, buttonNext: () => null }}
+                controller={{ disableSwipeNavigation: true }}
               />
             )}
 

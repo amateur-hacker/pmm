@@ -272,6 +272,7 @@ export function EditEventPageClient(props: Props) {
                         buttonPrev: () => null,
                         buttonNext: () => null,
                       }}
+                      controller={{ disableSwipeNavigation: true }}
                     />
                   )}
                 </div>

@@ -1,9 +1,11 @@
 "use client";
 
+import { useRef, useState } from "react";
+
+import Image from "next/image";
+
 import { toPng } from "html-to-image";
 import { Download, Eye } from "lucide-react";
-import Image from "next/image";
-import { useRef, useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -71,7 +73,7 @@ export default function MembershipCard({
     <>
       <div
         className={cn(
-          "w-full space-y-3 overflow-hidden flex flex-col items-start",
+          "flex w-full flex-col items-start space-y-3 overflow-hidden",
           className,
         )}
       >
@@ -79,26 +81,26 @@ export default function MembershipCard({
           {" "}
           {/* scroll container */}
           <div
+            className="w-xl shrink-0 overflow-hidden rounded-xl border bg-white shadow-lg"
             ref={cardRef}
-            className="w-xl bg-white rounded-xl shadow-lg overflow-hidden border shrink-0"
           >
             {/* Header with Logo and Organization Name */}
             <div className="p-5 pb-3">
               <div className="flex items-center gap-3">
                 <div className="shrink-0">
                   <Image
-                    src="/logo.png"
                     alt="Logo"
-                    width={48}
-                    height={48}
                     className="rounded-full object-contain"
+                    height={64}
+                    src="/logo.png"
+                    width={64}
                   />
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <h2 className="text-base font-bold text-gray-900 leading-tight">
+                  <h2 className="font-bold text-base text-gray-900 leading-tight">
                     Purvanchal Mitra Mahasabha
                   </h2>
-                  <div className="flex justify-between gap-3 items-center">
+                  <div className="flex items-center justify-between gap-3">
                     <p className="text-[11px] text-gray-500 leading-tight">
                       Ph.no: 7982970305
                     </p>
@@ -111,48 +113,48 @@ export default function MembershipCard({
             </div>
 
             {/* Separator */}
-            <div className="mx-5 border-t border-gray-300" />
+            <div className="mx-5 border-gray-300 border-t" />
 
             {/* Main Content: Details + Profile Image */}
             <div className="p-5 pt-4">
               <div className="flex gap-4">
                 {/* Left side - Details */}
-                <div className="flex-1 min-w-0 space-y-1.5">
+                <div className="min-w-0 flex-1 space-y-1.5 text-start">
                   <div>
-                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                    <span className="font-semibold text-[10px] text-gray-400 uppercase tracking-wider">
                       Name
                     </span>
-                    <p className="text-sm font-medium text-gray-900">{name}</p>
+                    <p className="font-medium text-gray-900 text-sm">{name}</p>
                   </div>
                   <div>
-                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                    <span className="font-semibold text-[10px] text-gray-400 uppercase tracking-wider">
                       Address
                     </span>
-                    <p className="text-sm text-gray-700">{address}</p>
+                    <p className="text-gray-700 text-sm">{address}</p>
                   </div>
                   <div>
-                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                    <span className="font-semibold text-[10px] text-gray-400 uppercase tracking-wider">
                       Contact
                     </span>
-                    <p className="text-sm text-gray-700">{mobile}</p>
+                    <p className="text-gray-700 text-sm">{mobile}</p>
                   </div>
                   <div>
-                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                    <span className="font-semibold text-[10px] text-gray-400 uppercase tracking-wider">
                       Date of Birth
                     </span>
-                    <p className="text-sm text-gray-700">{formattedDob}</p>
+                    <p className="text-gray-700 text-sm">{formattedDob}</p>
                   </div>
                 </div>
 
                 {/* Right side - Profile Image */}
-                <div className="shrink-0 flex flex-col items-center justify-center">
+                <div className="flex shrink-0 flex-col items-center justify-center">
                   <Avatar className="h-24 w-24 border-2 border-gray-200">
                     <AvatarImage
+                      alt={name}
                       src={
                         image ||
                         "https://res.cloudinary.com/ahcloud/image/upload/v1747277562/images/default-profile_bpnjdl_dzyvud.png"
                       }
-                      alt={name}
                     />
                     <AvatarFallback className="text-lg">
                       {name.slice(0, 2).toUpperCase()}
@@ -163,17 +165,17 @@ export default function MembershipCard({
             </div>
 
             {/* Separator */}
-            <div className="mx-5 border-t border-gray-300" />
+            <div className="mx-5 border-gray-300 border-t" />
 
             {/* Validation */}
-            <div className="px-5 pb-3 pt-3">
+            <div className="px-5 pt-3 pb-3">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                <span className="font-semibold text-[10px] text-gray-400 uppercase tracking-wider">
                   Membership Valid Until
                 </span>
                 <span
                   className={cn(
-                    "text-sm font-semibold",
+                    "font-semibold text-sm",
                     isExpired ? "text-red-600" : "text-green-600",
                   )}
                 >
@@ -181,15 +183,15 @@ export default function MembershipCard({
                 </span>
               </div>
               {isExpired && (
-                <p className="text-[11px] text-red-500 mt-1">
+                <p className="mt-1 text-[11px] text-red-500">
                   Membership expired. Please renew to continue.
                 </p>
               )}
             </div>
 
             {/* President */}
-            <div className="px-5 pb-4 flex justify-end">
-              <p className="text-[10px] text-gray-400 leading-tight text-right max-w-[160px]">
+            <div className="flex justify-end px-5 pb-4">
+              <p className="max-w-[160px] text-right text-[10px] text-gray-400 leading-tight">
                 shri uttam singh chauhan
                 <br />
                 president
@@ -200,21 +202,21 @@ export default function MembershipCard({
 
         {/* Action Buttons */}
         {showActions && (
-          <div className="flex flex-col sm:flex-row w-full gap-2">
+          <div className="flex w-full flex-col gap-2 sm:flex-row">
             <Button
-              variant="outline"
               className="flex-1 cursor-pointer"
               onClick={() => setLightboxOpen(true)}
+              variant="outline"
             >
-              <Eye className="h-4 w-4 mr-1" />
+              <Eye className="mr-1 h-4 w-4" />
               Preview
             </Button>
             <Button
               className="flex-1 cursor-pointer"
-              onClick={handleDownload}
               disabled={isDownloading}
+              onClick={handleDownload}
             >
-              <Download className="h-4 w-4 mr-1" />
+              <Download className="mr-1 h-4 w-4" />
               {isDownloading ? "Downloading..." : "Download"}
             </Button>
           </div>
@@ -223,35 +225,31 @@ export default function MembershipCard({
 
       {/* Lightbox for preview */}
       <Lightbox
-        open={lightboxOpen}
         close={() => setLightboxOpen(false)}
-        slides={[{ src: "" }]}
-        controller={{
-          touchAction: "none",
-          disableSwipeNavigation: true,
-        }}
+        controller={{ disableSwipeNavigation: true }}
+        open={lightboxOpen}
         render={{
           slide: () => {
             if (!cardRef.current) return null;
             return (
-              <div className="flex items-center justify-start sm:justify-center h-full w-full p-4 overflow-x-auto">
-                <div className="w-xl bg-white rounded-xl shadow-lg shrink-0">
+              <div className="flex h-full w-full items-center justify-start overflow-x-auto p-4 sm:justify-center">
+                <div className="w-xl shrink-0 rounded-xl bg-white shadow-lg">
                   <div className="p-5 pb-3">
                     <div className="flex items-center gap-3">
                       <div className="shrink-0">
                         <Image
-                          src="/logo.png"
                           alt="Logo"
-                          width={48}
-                          height={48}
                           className="rounded-full object-contain"
+                          height={48}
+                          src="/logo.png"
+                          width={48}
                         />
                       </div>
                       <div className="flex flex-col gap-0.5">
-                        <h2 className="text-base font-bold text-gray-900 leading-tight">
+                        <h2 className="font-bold text-base text-gray-900 leading-tight">
                           Purvanchal Mitra Mahasabha
                         </h2>
-                        <div className="flex justify-between gap-3 items-center">
+                        <div className="flex items-center justify-between gap-3">
                           <p className="text-[11px] text-gray-500 leading-tight">
                             Ph.no: 7982970305
                           </p>
@@ -262,47 +260,47 @@ export default function MembershipCard({
                       </div>
                     </div>
                   </div>
-                  <div className="mx-5 border-t border-gray-300" />
+                  <div className="mx-5 border-gray-300 border-t" />
                   <div className="p-5 pt-4">
                     <div className="flex gap-4">
-                      <div className="flex-1 min-w-0 space-y-1.5">
+                      <div className="min-w-0 flex-1 space-y-1.5">
                         <div>
-                          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                          <span className="font-semibold text-[10px] text-gray-400 uppercase tracking-wider">
                             Name
                           </span>
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="font-medium text-gray-900 text-sm">
                             {name}
                           </p>
                         </div>
                         <div>
-                          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                          <span className="font-semibold text-[10px] text-gray-400 uppercase tracking-wider">
                             Address
                           </span>
-                          <p className="text-sm text-gray-700">{address}</p>
+                          <p className="text-gray-700 text-sm">{address}</p>
                         </div>
                         <div>
-                          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                          <span className="font-semibold text-[10px] text-gray-400 uppercase tracking-wider">
                             Contact
                           </span>
-                          <p className="text-sm text-gray-700">{mobile}</p>
+                          <p className="text-gray-700 text-sm">{mobile}</p>
                         </div>
                         <div>
-                          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                          <span className="font-semibold text-[10px] text-gray-400 uppercase tracking-wider">
                             Date of Birth
                           </span>
-                          <p className="text-sm text-gray-700">
+                          <p className="text-gray-700 text-sm">
                             {formattedDob}
                           </p>
                         </div>
                       </div>
-                      <div className="shrink-0 flex items-center">
+                      <div className="flex shrink-0 items-center">
                         <Avatar className="h-32 w-32 border-2 border-gray-200">
                           <AvatarImage
+                            alt={name}
                             src={
                               image ||
                               "https://res.cloudinary.com/ahcloud/image/upload/v1747277562/images/default-profile_bpnjdl_dzyvud.png"
                             }
-                            alt={name}
                           />
                           <AvatarFallback className="text-lg">
                             {name.slice(0, 2).toUpperCase()}
@@ -311,15 +309,15 @@ export default function MembershipCard({
                       </div>
                     </div>
                   </div>
-                  <div className="mx-5 border-t border-gray-300" />
-                  <div className="px-5 pb-3 pt-3">
+                  <div className="mx-5 border-gray-300 border-t" />
+                  <div className="px-5 pt-3 pb-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                      <span className="font-semibold text-[10px] text-gray-400 uppercase tracking-wider">
                         Membership Valid Until
                       </span>
                       <span
                         className={cn(
-                          "text-sm font-semibold",
+                          "font-semibold text-sm",
                           isExpired ? "text-red-600" : "text-green-600",
                         )}
                       >
@@ -327,8 +325,8 @@ export default function MembershipCard({
                       </span>
                     </div>
                   </div>
-                  <div className="px-5 pb-4 flex justify-end">
-                    <p className="text-[10px] text-gray-400 leading-tight text-right max-w-[160px]">
+                  <div className="flex justify-end px-5 pb-4">
+                    <p className="max-w-[160px] text-right text-[10px] text-gray-400 leading-tight">
                       shri uttam singh chauhan
                       <br />
                       president
@@ -341,6 +339,7 @@ export default function MembershipCard({
           buttonPrev: () => null,
           buttonNext: () => null,
         }}
+        slides={[{ src: "" }]}
       />
     </>
   );

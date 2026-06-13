@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Learn about Purvanchal Mitra Mahasabha (Regd.), a socially committed NGO working for community development, cultural preservation, and social welfare in eastern India.",
+    "Learn about Purvanchal Mitra Mahasabha, a socially committed NGO working for community development, cultural preservation, and social welfare in eastern India.",
   keywords:
     "about NGO, Purvanchal Mitra Mahasabha, social welfare organization, community development, cultural preservation",
 };
@@ -20,7 +20,7 @@ export default function AboutPage() {
           </div>
           <h1 className="text-4xl font-bold mb-4">About Us</h1>
           <p className="text-xl text-muted-foreground">
-            Purvanchal Mitra Mahasabha (Regd.)
+            Purvanchal Mitra Mahasabha
           </p>
         </div>
       </section>

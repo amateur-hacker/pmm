@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Purvanchal Mitra Mahasabha",
     short_name: "PMM",
     description:
-      "Official website of Purvanchal Mitra Mahasabha (Regd.) - A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
+      "Official website of Purvanchal Mitra Mahasabha - A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",

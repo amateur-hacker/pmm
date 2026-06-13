@@ -2,8 +2,10 @@
 
 import {
   ArrowLeft,
+  BadgeCheck,
   Calendar,
   GraduationCap,
+  IndianRupee,
   Mail,
   MapPin,
   Phone,
@@ -186,6 +188,7 @@ export function MemberDetailPageClient(props: Props) {
                 </div>
 
                 <div className="flex items-center">
+                  <BadgeCheck className="h-5 w-5 text-muted-foreground mr-3" />
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground">
                       Membership Type
@@ -195,6 +198,7 @@ export function MemberDetailPageClient(props: Props) {
                 </div>
 
                 <div className="flex items-center">
+                  <Calendar className="h-5 w-5 text-muted-foreground mr-3" />
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground">
                       Registration Date
@@ -206,11 +210,12 @@ export function MemberDetailPageClient(props: Props) {
                 </div>
 
                 <div className="flex items-center">
+                  <IndianRupee className="h-5 w-5 text-muted-foreground mr-3" />
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground">
-                      Total Donated (₹)
+                      Paid
                     </h3>
-                    <p className="font-medium">₹{member.donated || 0}</p>
+                    <p className="font-medium">{member.donated || 0}</p>
                   </div>
                 </div>
               </div>
@@ -248,6 +253,7 @@ export function MemberDetailPageClient(props: Props) {
                 close={() => setLightboxOpen(false)}
                 slides={[{ src: member.image }]}
                 render={{ buttonPrev: () => null, buttonNext: () => null }}
+                controller={{ disableSwipeNavigation: true }}
               />
             )}
           </CardContent>
