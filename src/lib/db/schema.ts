@@ -56,6 +56,7 @@ export const admins = pgTable("admins", {
 export const events = pgTable("events", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
   content: text("content").notNull(), // Markdown content
   excerpt: text("excerpt"), // Short description
   author: varchar("author", { length: 255 }).notNull(),

@@ -8,6 +8,13 @@
       "when": 1766258126893,
       "tag": "0000_flashy_solo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781341480914,
+      "tag": "0001_milky_talos",
+      "breakpoints": true
     }
   ]
 }
