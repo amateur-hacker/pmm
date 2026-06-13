@@ -44,7 +44,7 @@ export async function PUT(
     }
 
     const { id } = await params;
-    const { title, content, excerpt, author, published, image } =
+    const { title, slug, content, excerpt, author, published, image } =
       await request.json();
 
     if (!title || !content || !author) {
@@ -56,10 +56,15 @@ export async function PUT(
 
     const isPublished = published ? 1 : 0;
 
+    // Append last 6 hex digits of the UUID to ensure uniqueness
+    const idSuffix = id.replace(/-/g, "").slice(-6);
+    const uniqueSlug = `${slug}-${idSuffix}`;
+
     const [updated] = await db
       .update(events)
       .set({
         title,
+        slug: uniqueSlug,
         content,
         excerpt: excerpt || null,
         author,

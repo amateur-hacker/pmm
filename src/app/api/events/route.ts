@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { events } from "@/lib/db/schema";
+import { slugify } from "@/lib/slug";
 
 const db = getDb();
 
@@ -105,8 +106,10 @@ export async function POST(request: NextRequest) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const { title, content, excerpt, author, published, image } =
+    const { title, slug: rawSlug, content, excerpt, author, published, image } =
       await request.json();
+
+    const slug = rawSlug && rawSlug !== "" ? rawSlug : slugify(title);
 
     if (!title || !content || !author) {
       return Response.json(
@@ -121,6 +124,7 @@ export async function POST(request: NextRequest) {
       .insert(events)
       .values({
         title,
+        slug,
         content,
         excerpt: excerpt || null,
         author,
@@ -130,7 +134,17 @@ export async function POST(request: NextRequest) {
       })
       .returning();
 
-    return Response.json(result, { status: 201 });
+    // Append last 6 hex digits of the generated UUID to ensure uniqueness
+    const idSuffix = result.id.replace(/-/g, "").slice(-6);
+    const uniqueSlug = `${slug}-${idSuffix}`;
+
+    const [updated] = await db
+      .update(events)
+      .set({ slug: uniqueSlug })
+      .where(eq(events.id, result.id))
+      .returning();
+
+    return Response.json(updated, { status: 201 });
   } catch (err) {
     console.error("POST /events Error:", err);
     return Response.json({ error: "Failed to create event" }, { status: 500 });

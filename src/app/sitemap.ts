@@ -9,6 +9,7 @@ export default async function sitemap() {
   const publishedEvents = await db
     .select({
       id: events.id,
+      slug: events.slug,
       updatedAt: events.updatedAt,
     })
     .from(events)
@@ -20,7 +21,7 @@ export default async function sitemap() {
 
   // Generate sitemap entries
   const eventEntries = publishedEvents.map((event) => ({
-    url: `${siteUrl}/events/${event.id}`,
+    url: `${siteUrl}/events/${event.slug}`,
     lastModified: event.updatedAt,
     changeFrequency: "weekly" as const,
     priority: 0.8,
@@ -42,12 +43,6 @@ export default async function sitemap() {
     },
     {
       url: `${siteUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.9,
-    },
-    {
-      url: `${siteUrl}/membership`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.9,

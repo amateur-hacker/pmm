@@ -4,19 +4,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getDb } from "@/lib/db";
 import { events } from "@/lib/db/schema";
 import { MarkdownViewer } from "./MarkdownViewer";
 
-async function getEvent(id: string) {
+async function getEvent(slug: string) {
   try {
     const db = await getDb();
     const event = await db
       .select()
       .from(events)
-      .where(eq(events.id, id))
+      .where(eq(events.slug, slug))
       .limit(1);
 
     return event[0] || null;
@@ -27,12 +26,12 @@ async function getEvent(id: string) {
 }
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { id } = await props.params;
-  const event = await getEvent(id);
+  const { slug } = await props.params;
+  const event = await getEvent(slug);
 
   if (!event) {
     return {
@@ -49,7 +48,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       title: event.title,
       description: event.excerpt || `${event.content.substring(0, 160)}...`,
       type: "article",
-      url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/events/${event.id}`,
+      url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/events/${event.slug}`,
       images: event.image
         ? [
             {
@@ -68,14 +67,14 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       images: event.image ? [event.image] : [],
     },
     alternates: {
-      canonical: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/events/${event.id}`,
+      canonical: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/events/${event.slug}`,
     },
   };
 }
 
 export default async function EventDetailPage(props: Props) {
-  const { id } = await props.params;
-  const event = await getEvent(id);
+  const { slug } = await props.params;
+  const event = await getEvent(slug);
 
   if (!event) {
     notFound();
@@ -120,11 +119,6 @@ export default async function EventDetailPage(props: Props) {
                   day: "numeric",
                 })}
               </span>
-              {event.published === 1 && (
-                <Badge variant="secondary" className="ml-auto">
-                  Published
-                </Badge>
-              )}
             </div>
           </div>
 
