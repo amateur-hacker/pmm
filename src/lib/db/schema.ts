@@ -9,6 +9,8 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
+import { users } from "./auth-schema";
+
 export const members = pgTable("members", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
@@ -36,7 +38,8 @@ export const paymentHistory = pgTable("payment_history", {
   memberId: uuid("member_id")
     .references(() => members.id)
     .notNull(),
-  orderId: varchar("order_id", { length: 255 }).notNull().unique(),
+  userId: text("user_id").references(() => users.id),
+  transactionId: varchar("transaction_id", { length: 255 }).notNull().unique(),
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
   currency: varchar("currency", { length: 3 }).default("INR").notNull(),
   paymentDate: timestamp("payment_date").defaultNow().notNull(),

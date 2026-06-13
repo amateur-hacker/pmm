@@ -15,6 +15,13 @@
       "when": 1781341480914,
       "tag": "0001_milky_talos",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781341500000,
+      "tag": "0002_steep_squad",
+      "breakpoints": true
     }
   ]
 }
