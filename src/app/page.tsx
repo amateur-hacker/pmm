@@ -22,27 +22,14 @@ import { getDb } from "@/lib/db";
 import { events, members } from "@/lib/db/schema";
 
 export const metadata: Metadata = {
-  title: "Purvanchal Mitra Mahasabha (Regd.) - Home",
+  title: {
+    absolute:
+      "Purvanchal Mitra Mahasabha - Social Welfare NGO in Delhi NCR",
+  },
   description:
-    "A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India. Join our organization and contribute to social welfare programs.",
+    "Purvanchal Mitra Mahasabha is a socially committed NGO serving communities across eastern India and Delhi NCR. Join us in community development, cultural preservation, and social welfare initiatives that empower lives and build a better tomorrow.",
   keywords:
-    "NGO, Purvanchal Mitra Mahasabha, community development, social welfare, India, membership",
-  openGraph: {
-    title: "Purvanchal Mitra Mahasabha (Regd.) - Home",
-    description:
-      "A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
-    type: "website",
-    url: process.env.SITE_URL || "https://purvanchalmitramahasabha.in",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Purvanchal Mitra Mahasabha (Regd.) - Home",
-    description:
-      "A socially committed NGO working tirelessly for the development and well-being of communities across the eastern region of India.",
-  },
-  alternates: {
-    canonical: "https://purvanchalmitramahasabha.org",
-  },
+    "NGO, Purvanchal Mitra Mahasabha, community development, social welfare, India, membership, Delhi NGO, eastern India",
 };
 
 export default async function Home() {
@@ -87,7 +74,7 @@ export default async function Home() {
 
             <div className="max-w-4xl">
               <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                Purvanchal Mitra Mahasabha (Regd.)
+                Purvanchal Mitra Mahasabha
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto">
                 A socially committed NGO working tirelessly for the development

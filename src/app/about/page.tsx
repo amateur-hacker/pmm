@@ -2,27 +2,11 @@ import { Handshake } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Purvanchal Mitra Mahasabha - NGO in India",
+  title: "About",
   description:
     "Learn about Purvanchal Mitra Mahasabha (Regd.), a socially committed NGO working for community development, cultural preservation, and social welfare in eastern India.",
   keywords:
     "about NGO, Purvanchal Mitra Mahasabha, social welfare organization, community development, cultural preservation",
-  openGraph: {
-    title: "About Purvanchal Mitra Mahasabha - NGO in India",
-    description:
-      "Learn about Purvanchal Mitra Mahasabha (Regd.), a socially committed NGO working for community development, cultural preservation, and social welfare in eastern India.",
-    type: "website",
-    url: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/about`,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "About Purvanchal Mitra Mahasabha - NGO in India",
-    description:
-      "Learn about Purvanchal Mitra Mahasabha (Regd.), a socially committed NGO working for community development, cultural preservation, and social welfare in eastern India.",
-  },
-  alternates: {
-    canonical: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/about`,
-  },
 };
 
 export default function AboutPage() {

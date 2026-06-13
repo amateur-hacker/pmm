@@ -2,27 +2,11 @@ import { Calendar, Mail, MapPin, Phone } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact Purvanchal Mitra Mahasabha - NGO in India",
+  title: "Contact",
   description:
     "Get in touch with Purvanchal Mitra Mahasabha (Regd.). Find our contact information, office location, phone numbers, and office hours for community development initiatives.",
   keywords:
     "contact NGO, Purvanchal Mitra Mahasabha contact, NGO Delhi, community development contact",
-  openGraph: {
-    title: "Contact Purvanchal Mitra Mahasabha - NGO in India",
-    description:
-      "Get in touch with Purvanchal Mitra Mahasabha (Regd.). Find our contact information, office location, phone numbers, and office hours for community development initiatives.",
-    type: "website",
-    url: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/contact`,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Contact Purvanchal Mitra Mahasabha - NGO in India",
-    description:
-      "Get in touch with Purvanchal Mitra Mahasabha (Regd.). Find our contact information, office location, phone numbers, and office hours for community development initiatives.",
-  },
-  alternates: {
-    canonical: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/contact`,
-  },
 };
 
 export default function ContactPage() {

@@ -42,7 +42,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${event.title} - Purvanchal Mitra Mahasabha Events`,
+    title: event.title,
     description: event.excerpt || `${event.content.substring(0, 160)}...`,
     keywords: `${event.title}, Purvanchal Mitra Mahasabha, community development, social welfare`,
     openGraph: {

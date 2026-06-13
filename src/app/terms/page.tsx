@@ -2,27 +2,11 @@ import { AlertCircle, CheckCircle, FileText } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms and Conditions - Purvanchal Mitra Mahasabha",
+  title: "Terms and Conditions",
   description:
     "Membership eligibility requirements and terms and conditions for joining Purvanchal Mitra Mahasabha. Learn about age requirements, citizenship, and community commitment expectations.",
   keywords:
     "NGO terms and conditions, membership requirements, Purvanchal Mitra Mahasabha terms, community organization membership",
-  openGraph: {
-    title: "Terms and Conditions - Purvanchal Mitra Mahasabha",
-    description:
-      "Membership eligibility requirements and terms and conditions for joining Purvanchal Mitra Mahasabha. Learn about age requirements, citizenship, and community commitment expectations.",
-    type: "website",
-    url: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/terms`,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Terms and Conditions - Purvanchal Mitra Mahasabha",
-    description:
-      "Membership eligibility requirements and terms and conditions for joining Purvanchal Mitra Mahasabha. Learn about age requirements, citizenship, and community commitment expectations.",
-  },
-  alternates: {
-    canonical: `https://${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/terms`,
-  },
 };
 
 export default function TermsPage() {

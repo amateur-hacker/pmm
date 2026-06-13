@@ -2,27 +2,11 @@ import type { Metadata } from "next";
 import InfiniteEventList from "@/components/events/infinite-event-list";
 
 export const metadata: Metadata = {
-  title: "Events - Purvanchal Mitra Mahasabha",
+  title: "Events",
   description:
     "Read insights, updates, and stories from Purvanchal Mitra Mahasabha. Learn about our community development initiatives, social welfare activities, and cultural preservation efforts.",
   keywords:
     "NGO events, Purvanchal Mitra Mahasabha events, community development articles, social welfare updates, cultural preservation",
-  openGraph: {
-    title: "Events - Purvanchal Mitra Mahasabha",
-    description:
-      "Read insights, updates, and stories from Purvanchal Mitra Mahasabha. Learn about our community development initiatives, social welfare activities, and cultural preservation efforts.",
-    type: "website",
-    url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/events`,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Events - Purvanchal Mitra Mahasabha",
-    description:
-      "Read insights, updates, and stories from Purvanchal Mitra Mahasabha. Learn about our community development initiatives, social welfare activities, and cultural preservation efforts.",
-  },
-  alternates: {
-    canonical: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/events`,
-  },
 };
 
 // We need server component for metadata, so we'll fetch data on the server

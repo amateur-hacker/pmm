@@ -5,11 +5,9 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { id } = await props.params;
-  // For security reasons, we'll just provide generic metadata for admin pages
+export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: `Member Details - Purvanchal Mitra Mahasabha Admin`,
+    title: "Member Details",
     description:
       "Member details page for Purvanchal Mitra Mahasabha admin panel. Manage and view member information.",
   };
