@@ -12,7 +12,6 @@ import {
 import Image from "next/image";
 import { useQueryState } from "nuqs";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
@@ -220,7 +219,10 @@ const InfiniteMemberList = ({ initialData }: InfiniteMemberListProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {members.map((member) => (
           <Card key={member.id} className="overflow-hidden pt-0!">
-            {member.image && !member.image.startsWith("https://picsum.photos/200/200?random=") ? (
+            {member.image &&
+            !member.image.startsWith(
+              "https://picsum.photos/200/200?random=",
+            ) ? (
               <div className="relative w-full h-48 flex items-center justify-center bg-muted/60">
                 <Image
                   src={member.image}
@@ -238,9 +240,13 @@ const InfiniteMemberList = ({ initialData }: InfiniteMemberListProps) => {
               </div>
             )}
             <CardHeader>
-              <div className="flex justify-between items-start">
+              <div className="flex justify-between items-start gap-2">
                 <CardTitle className="text-xl">{member.name}</CardTitle>
-                <Badge variant="secondary">{member.type}</Badge>
+                {member.type === "Special" && (
+                  <span className="inline-flex shrink-0 items-center rounded-full border border-transparent bg-secondary px-2.5 py-0.5 text-xs font-semibold text-secondary-foreground transition-colors">
+                    Special
+                  </span>
+                )}
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -272,10 +278,6 @@ const InfiniteMemberList = ({ initialData }: InfiniteMemberListProps) => {
                 </div>
               )}
 
-              <div className="flex items-center">
-                <Heart className="h-4 w-4 mr-2 text-muted-foreground" />
-                <span className="text-sm">Donated: ₹{member.donated || 0}</span>
-              </div>
             </CardContent>
           </Card>
         ))}

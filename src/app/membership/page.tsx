@@ -1,18 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { toast } from "sonner";
+
 import MembershipCard from "@/components/MembershipCard";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 import type { auth } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
 
 interface PaymentRecord {
   id: string;
-  orderId: string;
+  transactionId: string;
   amount: string;
   currency: string;
   paymentDate: string;
@@ -20,116 +19,95 @@ interface PaymentRecord {
   paymentMethod: string | null;
 }
 
+interface PaymentWithMember extends PaymentRecord {
+  member: {
+    id: string;
+    name: string;
+    address: string;
+    mobile: string;
+    dob: string;
+    image: string | null;
+  };
+}
+
 interface MemberData {
   id: string;
   name: string;
   address: string;
   mobile: string;
-  email: string;
   dob: string;
   image: string | null;
-  membershipStartDate: string;
 }
 
 export default function MembershipPage() {
-  const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [payments, setPayments] = useState<PaymentRecord[]>([]);
-  const [member, setMember] = useState<MemberData | null>(null);
+  const [members, setMembers] = useState<MemberData[]>([]);
+  const [paymentsByMember, setPaymentsByMember] = useState<
+    Record<string, PaymentRecord[]>
+  >({});
 
   const { data: session, isPending } = authClient.useSession();
   const sessionUser =
     (session?.user as typeof auth.$Infer.Session.user) ?? null;
 
   useEffect(() => {
-    if (!isPending && sessionUser?.email) {
-      loadMembership(sessionUser.email);
+    if (!isPending && sessionUser?.id) {
+      loadMembership(sessionUser.id);
     } else if (!isPending && !sessionUser) {
       setIsLoading(false);
     }
   }, [sessionUser, isPending]);
 
-  const loadMembership = async (userEmail: string) => {
+  const loadMembership = async (userId: string) => {
     try {
       setIsLoading(true);
 
-      const memberResponse = await fetch(
-        `/api/members?email=${encodeURIComponent(userEmail)}`,
-      );
-
-      if (!memberResponse.ok) {
-        setIsLoading(false);
-        return;
-      }
-
-      const members = await memberResponse.json();
-
-      if (members.length === 0) {
-        setIsLoading(false);
-        return;
-      }
-
-      const memberData = members[0];
-      setMember(memberData);
-
       const paymentResponse = await fetch(
-        `/api/payment-history?memberId=${memberData.id}`,
+        `/api/payment-history?userId=${encodeURIComponent(userId)}`,
       );
 
       if (!paymentResponse.ok) {
-        throw new Error("Failed to fetch payment history");
+        setIsLoading(false);
+        return;
       }
 
-      const paymentData = await paymentResponse.json();
-      setPayments(paymentData);
+      const { payments: paymentsWithMember } =
+        (await paymentResponse.json()) as {
+          payments: PaymentWithMember[];
+        };
+
+      if (paymentsWithMember.length === 0) {
+        setIsLoading(false);
+        return;
+      }
+
+      const seenMembers = new Set<string>();
+      const membersList: MemberData[] = [];
+      const paymentsMap: Record<string, PaymentRecord[]> = {};
+      const allPayments: PaymentRecord[] = [];
+
+      for (const pm of paymentsWithMember) {
+        allPayments.push(pm);
+
+        if (!paymentsMap[pm.member.id]) {
+          paymentsMap[pm.member.id] = [];
+        }
+        paymentsMap[pm.member.id].push(pm);
+
+        if (!seenMembers.has(pm.member.id)) {
+          seenMembers.add(pm.member.id);
+          membersList.push(pm.member);
+        }
+      }
+
+      setMembers(membersList);
+      setPaymentsByMember(paymentsMap);
+      setPayments(allPayments);
     } catch (error) {
       console.error("Error:", error);
       toast.error("Failed to load membership data. Please try again.");
       setPayments([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleLookup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const memberResponse = await fetch(
-        `/api/members?email=${encodeURIComponent(email)}`,
-      );
-
-      if (!memberResponse.ok) {
-        throw new Error("Member not found");
-      }
-
-      const members = await memberResponse.json();
-
-      if (members.length === 0) {
-        toast.error("No member found with the provided details");
-        setIsLoading(false);
-        return;
-      }
-
-      const memberData = members[0];
-      setMember(memberData);
-
-      const paymentResponse = await fetch(
-        `/api/payment-history?memberId=${memberData.id}`,
-      );
-
-      if (!paymentResponse.ok) {
-        throw new Error("Failed to fetch payment history");
-      }
-
-      const paymentData = await paymentResponse.json();
-      setPayments(paymentData);
-      toast.success("Membership data loaded successfully");
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to load membership data. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -144,12 +122,12 @@ export default function MembershipPage() {
   if (isPending) {
     return (
       <div className="min-h-screen bg-background py-12">
-        <div className="container mx-auto px-4 max-w-4xl">
+        <div className="container mx-auto max-w-4xl px-4">
           <div className="text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+              <div className="h-8 w-8 animate-spin rounded-full border-blue-600 border-b-2" />
             </div>
-            <h1 className="text-2xl font-bold mb-2">Loading...</h1>
+            <h1 className="mb-2 font-bold text-2xl">Loading...</h1>
             <p className="text-muted-foreground">Checking your session...</p>
           </div>
         </div>
@@ -158,10 +136,10 @@ export default function MembershipPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-12 overflow-x-hidden">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-4">My Membership</h1>
+    <div className="min-h-screen overflow-x-hidden bg-background py-12">
+      <div className="container mx-auto max-w-4xl px-4">
+        <div className="mb-8 text-center">
+          <h1 className="mb-4 font-bold text-3xl">My Memberships</h1>
           <p className="text-muted-foreground">
             View your membership cards and payment history
           </p>
@@ -169,51 +147,58 @@ export default function MembershipPage() {
 
         {isLoading ? (
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+              <div className="h-8 w-8 animate-spin rounded-full border-primary border-b-2" />
             </div>
             <p className="text-muted-foreground">Loading membership data...</p>
           </div>
         ) : sessionUser ? (
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold">Membership Card</h2>
+            <h2 className="font-semibold text-2xl">Membership Card</h2>
 
-            {member && (
-              <div className="mb-8">
-                {payments.length > 0 ? (
-                  <div className="grid gap-6">
-                    {payments.map((payment) => (
-                      <div
-                        key={payment.id}
-                        className="flex flex-col items-center overflow-x-auto"
-                      >
-                        <MembershipCard
-                          name={member.name}
-                          address={member.address}
-                          mobile={member.mobile}
-                          dob={member.dob}
-                          image={member.image}
-                          validUntil={getValidUntil(payment.paymentDate)}
-                        />
+            {members.length > 0 &&
+              members.map((member) => {
+                const memberPayments = paymentsByMember[member.id] || [];
+                return (
+                  <div className="mb-8" key={member.id}>
+                    <h3 className="mb-4 font-semibold text-xl">
+                      {member.name}
+                    </h3>
+                    {memberPayments.length > 0 ? (
+                      <div className="grid gap-6">
+                        {memberPayments.map((payment) => (
+                          <div
+                            className="flex flex-col items-center overflow-x-auto"
+                            key={payment.id}
+                          >
+                            <MembershipCard
+                              address={member.address}
+                              dob={member.dob}
+                              image={member.image}
+                              mobile={member.mobile}
+                              name={member.name}
+                              validUntil={getValidUntil(payment.paymentDate)}
+                            />
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    ) : (
+                      <Card>
+                        <CardContent className="py-8 text-center">
+                          <p className="text-muted-foreground">
+                            No payment records found.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
                   </div>
-                ) : (
-                  <Card>
-                    <CardContent className="text-center py-8">
-                      <p className="text-muted-foreground">
-                        No payment records found.
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-            )}
+                );
+              })}
 
-            <h3 className="text-xl font-semibold mt-8">Payment History</h3>
+            <h3 className="mt-8 font-semibold text-xl">Payment History</h3>
             {payments.length === 0 ? (
               <Card>
-                <CardContent className="text-center py-8">
+                <CardContent className="py-8 text-center">
                   <p className="text-muted-foreground">
                     No payment records found.
                   </p>
@@ -224,24 +209,26 @@ export default function MembershipPage() {
                 {payments.map((payment) => (
                   <Card key={payment.id}>
                     <CardContent className="p-6">
-                      <div className="flex justify-between items-start">
+                      <div className="flex items-start justify-between">
                         <div>
                           <p className="font-semibold">
-                            Transaction ID: {payment.orderId}
+                            Transaction ID: {payment.transactionId}
                           </p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-muted-foreground text-sm">
                             Date:{" "}
-                            {new Date(payment.paymentDate).toLocaleDateString("en-US")}
+                            {new Date(payment.paymentDate).toLocaleDateString(
+                              "en-US",
+                            )}
                           </p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-muted-foreground text-sm">
                             Method: {payment.paymentMethod || "N/A"}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-2xl font-bold text-green-600">
+                          <p className="font-bold text-2xl text-green-600">
                             ₹{payment.amount}
                           </p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-muted-foreground text-sm">
                             Status: {payment.paymentStatus}
                           </p>
                         </div>
@@ -253,45 +240,11 @@ export default function MembershipPage() {
             )}
           </div>
         ) : (
-          <Card className="w-full max-w-md mx-auto">
-            <CardHeader>
-              <CardTitle>Find Your Membership</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Please enter your details to view your membership.
+          <Card className="mx-auto w-full max-w-md text-center">
+            <CardContent className="py-12">
+              <p className="text-muted-foreground">
+                Please log in to view your membership.
               </p>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleLookup} className="space-y-4">
-                <div>
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="mobile">Mobile Number</Label>
-                  <Input
-                    id="mobile"
-                    type="tel"
-                    value={mobile}
-                    onChange={(e) => setMobile(e.target.value)}
-                    placeholder="Enter your mobile number"
-                    required
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full cursor-pointer"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Searching..." : "Find My Membership"}
-                </Button>
-              </form>
             </CardContent>
           </Card>
         )}

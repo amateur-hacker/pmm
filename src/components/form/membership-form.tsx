@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Calendar,
   GraduationCap,
-  Heart,
   Image as ImageIcon,
   Mail,
   MapPin,
@@ -16,11 +15,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { z } from "zod";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -42,14 +42,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 // ---------------- SCHEMAS ----------------
 const memberSchema = z.object({
@@ -60,7 +52,7 @@ const memberSchema = z.object({
   mobile: z
     .string()
     .min(10, { message: "Mobile number must be at least 10 digits" }),
-  email: z.email({ message: "Invalid email address" }),
+  email: z.string().email({ message: "Invalid email address" }).optional().or(z.literal("")),
   dob: z.string().refine(
     (date) => {
       const parsedDate = Date.parse(date);
@@ -95,7 +87,10 @@ const memberSchema = z.object({
 });
 
 const donationSchema = z.object({
-  amount: z.string().min(1, { message: "Please select a donation amount" }),
+  plan: z.enum(["year", "lifetime"]),
+  tier: z.enum(["Normal", "Special"]),
+  years: z.number().min(1).max(5),
+  amount: z.string().min(1, { message: "Please select an amount" }),
 });
 
 const generateCustomerId = () => {
@@ -136,22 +131,25 @@ export default function MembershipForm() {
   const registrationForm = useForm({
     resolver: zodResolver(memberSchema),
     defaultValues: {
-      name: "",
-      address: "",
-      mobile: "",
-      email: "",
-      dob: "",
-      education: "",
-      permanentAddress: "",
+      name: "xyz123",
+      address: "xyz123",
+      mobile: "1234567890",
+      email: "xyz123@gmail.com",
+      dob: "1/1/2001",
+      education: "xyz",
+      permanentAddress: "xyz123",
       image: "",
-      terms: false,
+      terms: true,
     },
   });
 
-  const donationForm = useForm({
+  const donationForm = useForm<z.infer<typeof donationSchema>>({
     resolver: zodResolver(donationSchema),
     defaultValues: {
-      amount: "",
+      plan: "year",
+      amount: "100",
+      tier: "Normal",
+      years: 1,
     },
   });
 
@@ -160,7 +158,7 @@ export default function MembershipForm() {
 
     try {
       const response = await fetch(
-        `/api/check-member?name=${encodeURIComponent(data.name)}`,
+        `/api/check-member?name=${encodeURIComponent(data.name)}&mobile=${encodeURIComponent(data.mobile)}`,
       );
 
       if (!response.ok) throw new Error("Failed to check member existence");
@@ -192,12 +190,12 @@ export default function MembershipForm() {
 
     setIsSubmitting(true);
 
-    const verifyPayment = async (orderId: string) => {
+    const verifyPayment = async (txnId: string) => {
       try {
         const res = await fetch("/api/verify-payment", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ order_id: orderId }),
+          body: JSON.stringify({ transaction_id: txnId }),
         });
 
         const data = await res.json();
@@ -215,13 +213,15 @@ export default function MembershipForm() {
 
     try {
       // Store member data in localStorage for later use after payment success
+      const type = data.plan === "lifetime" ? "Lifetime" : data.tier;
+
       localStorage.setItem(
         "pendingMemberData",
         JSON.stringify({
           ...memberData,
           image: memberData.image || null,
-          type: "member",
-          donated: parseInt(data.amount),
+          type,
+          donated: parseInt(data.amount, 10),
         }),
       );
 
@@ -256,13 +256,12 @@ export default function MembershipForm() {
       if (!paymentResponse.ok) throw new Error("Failed to create payment");
 
       const paymentData = await paymentResponse.json();
-      const orderId = paymentData.order_id;
+      const txnId = paymentData.order_id;
 
       // Initialize checkout with the payment session ID
       const checkoutOptions = {
         paymentSessionId: paymentData.payment_session_id,
-        redirectTarget: "_modal", // Use modal instead of redirect
-        // redirectTarget: "_self", // Use modal instead of redirect
+        redirectTarget: "_modal",
       };
 
       // Start the checkout process
@@ -274,10 +273,10 @@ export default function MembershipForm() {
             setIsSubmitting(false);
           } else if (result.paymentDetails) {
             // Verify payment before redirecting to success page
-            const verificationResult = await verifyPayment(orderId);
+            const verificationResult = await verifyPayment(txnId);
             if (verificationResult.success) {
               // Payment verified successfully - redirect to success page
-              window.location.href = `/payment-success?order_id=${orderId}&t=${Date.now()}`;
+              window.location.href = `/payment-success?transaction_id=${txnId}&t=${Date.now()}`;
             } else {
               toast.error(
                 "Payment verification failed. Please contact support if amount was deducted.",
@@ -313,12 +312,12 @@ export default function MembershipForm() {
             <CardTitle className="text-2xl font-bold">
               {currentStep === "registration"
                 ? "NGO Membership"
-                : "Membership Donation"}
+                : "Membership Type"}
             </CardTitle>
             <CardDescription>
               {currentStep === "registration"
                 ? "Become a member of Purvanchal Mitra Mahasabha and support our community development initiatives"
-                : "Complete your membership with a donation to support our NGO's mission"}
+                : "Choose your membership type to complete registration"}
             </CardDescription>
           </CardHeader>
 
@@ -494,6 +493,7 @@ export default function MembershipForm() {
                         buttonPrev: () => null,
                         buttonNext: () => null,
                       }}
+                      controller={{ disableSwipeNavigation: true }}
                     />
                   </div>
 
@@ -603,7 +603,9 @@ export default function MembershipForm() {
                     className="w-full cursor-pointer"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Submitting..." : "Continue to Donation"}
+                    {isSubmitting
+                      ? "Submitting..."
+                      : "Continue to Registration"}
                   </Button>
                 </form>
               </Form>
@@ -614,42 +616,162 @@ export default function MembershipForm() {
                   className="space-y-6"
                 >
                   <div className="text-center mb-6">
-                    <Heart className="h-12 w-12 text-red-500 mx-auto mb-4" />
                     <p className="text-muted-foreground">
-                      Thank you for registering! Your support helps us continue
-                      our mission.
+                      Thank you for registering! Please select your membership
+                      type.
                     </p>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label className="text-center block text-sm font-medium">
-                      <div className="flex items-center justify-center gap-2">
-                        <Heart className="h-4 w-4 text-muted-foreground" />
-                        Select Donation Amount
-                      </div>
-                    </Label>
-                    <Select
-                      value={donationForm.watch("amount")}
-                      onValueChange={(value) =>
-                        donationForm.setValue("amount", value)
-                      }
+                  {/* Plan Selection */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Year */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const tier = donationForm.getValues("tier");
+                        const years = donationForm.getValues("years");
+                        const base = tier === "Special" ? 500 : 100;
+                        donationForm.setValue("plan", "year");
+                        donationForm.setValue("amount", String(base * years));
+                      }}
+                      className={`flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all cursor-pointer ${
+                        donationForm.watch("plan") === "year"
+                          ? "border-primary bg-primary/5"
+                          : "border-muted hover:border-muted-foreground/30"
+                      }`}
                     >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select donation amount" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="100">₹100</SelectItem>
-                        <SelectItem value="500">₹500</SelectItem>
-                        <SelectItem value="1000">₹1000</SelectItem>
-                        <SelectItem value="2000">₹2000</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {donationForm.formState.errors.amount && (
-                      <p className="text-sm text-destructive">
-                        {donationForm.formState.errors.amount.message}
-                      </p>
-                    )}
+                      <span className="text-2xl font-bold">Yearly</span>
+                      <span className="text-sm text-muted-foreground">
+                        ₹100/yr – ₹500/yr
+                      </span>
+                    </button>
+
+                    {/* Lifetime */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        donationForm.setValue("plan", "lifetime");
+                        donationForm.setValue("amount", "5000");
+                      }}
+                      className={`flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all cursor-pointer ${
+                        donationForm.watch("plan") === "lifetime"
+                          ? "border-primary bg-primary/5"
+                          : "border-muted hover:border-muted-foreground/30"
+                      }`}
+                    >
+                      <span className="text-3xl font-bold">₹5,000</span>
+                      <Badge variant="default">Lifetime Member</Badge>
+                    </button>
                   </div>
+
+                  {/* Year Options */}
+                  {donationForm.watch("plan") === "year" && (
+                    <div className="space-y-4 rounded-lg border p-4">
+                      {/* Tier Toggle */}
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const years = donationForm.getValues("years");
+                            donationForm.setValue("tier", "Normal");
+                            donationForm.setValue("amount", String(100 * years));
+                          }}
+                          className={`flex-1 cursor-pointer rounded-md px-4 py-2 text-sm font-medium transition-all ${
+                            donationForm.watch("tier") === "Normal"
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted hover:bg-muted/80"
+                          }`}
+                        >
+                          Normal (₹100/yr)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const years = donationForm.getValues("years");
+                            donationForm.setValue("tier", "Special");
+                            donationForm.setValue(
+                              "amount",
+                              String(500 * years),
+                            );
+                          }}
+                          className={`flex-1 cursor-pointer rounded-md px-4 py-2 text-sm font-medium transition-all ${
+                            donationForm.watch("tier") === "Special"
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted hover:bg-muted/80"
+                          }`}
+                        >
+                          Special (₹500/yr)
+                        </button>
+                      </div>
+
+                      {/* Year Selector */}
+                      <div>
+                        <FormLabel>Duration</FormLabel>
+                        <div className="mt-1 flex gap-2">
+                          {[1, 2, 3, 4, 5].map((y) => (
+                            <button
+                              key={y}
+                              type="button"
+                              onClick={() => {
+                                donationForm.setValue("years", y);
+                                const tier =
+                                  donationForm.getValues("tier");
+                                const base =
+                                  tier === "Special" ? 500 : 100;
+                                donationForm.setValue(
+                                  "amount",
+                                  String(base * y),
+                                );
+                              }}
+                              className={`flex-1 cursor-pointer rounded-md px-3 py-2 text-sm font-medium transition-all ${
+                                donationForm.watch("years") === y
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-muted hover:bg-muted/80"
+                              }`}
+                            >
+                              {y} {y === 1 ? "yr" : "yrs"}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Computed Amount */}
+                      <div className="rounded-md bg-primary/5 p-3 text-center">
+                        <p className="text-sm text-muted-foreground">
+                          Total Amount
+                        </p>
+                        <p className="text-2xl font-bold text-primary">
+                          ₹
+                          {(
+                            (donationForm.watch("tier") === "Special"
+                              ? 500
+                              : 100) * donationForm.watch("years")
+                          ).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Lifetime Display */}
+                  {donationForm.watch("plan") === "lifetime" && (
+                    <div className="rounded-lg border bg-primary/5 p-4 text-center">
+                      <p className="text-lg font-semibold">
+                        Lifetime Membership
+                      </p>
+                      <p className="mt-2 text-3xl font-bold text-primary">
+                        ₹5,000
+                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        One-time payment, lifetime access
+                      </p>
+                    </div>
+                  )}
+
+                  {donationForm.formState.errors.amount && (
+                    <p className="text-center text-sm text-destructive">
+                      {donationForm.formState.errors.amount.message}
+                    </p>
+                  )}
 
                   <div className="flex gap-4">
                     <Button
@@ -665,7 +787,7 @@ export default function MembershipForm() {
                       className="flex-1 cursor-pointer"
                       disabled={isSubmitting || !donationForm.watch("amount")}
                     >
-                      {isSubmitting ? "Processing..." : "Donate & Complete"}
+                      {isSubmitting ? "Processing..." : "Continue Registration"}
                     </Button>
                   </div>
                 </form>
