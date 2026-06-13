@@ -231,7 +231,7 @@ export default function MembershipPage() {
                           </p>
                           <p className="text-sm text-muted-foreground">
                             Date:{" "}
-                            {new Date(payment.paymentDate).toLocaleDateString()}
+                            {new Date(payment.paymentDate).toLocaleDateString("en-US")}
                           </p>
                           <p className="text-sm text-muted-foreground">
                             Method: {payment.paymentMethod || "N/A"}

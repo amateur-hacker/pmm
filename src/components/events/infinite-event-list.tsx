@@ -1,12 +1,11 @@
 "use client";
 
-import { CalendarIcon, Search, UserIcon } from "lucide-react";
+import { CalendarIcon, ChevronRight, Search, UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useQueryState } from "nuqs";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,6 +19,7 @@ import {
 
 interface Event {
   id: string;
+  slug: string;
   title: string;
   content: string;
   excerpt: string | null;
@@ -289,26 +289,25 @@ const InfiniteEventList = ({ initialData }: EventListProps) => {
 
 const EventCard = ({ event }: { event: Event }) => {
   return (
-    <Card className="overflow-hidden h-full flex flex-col">
+    <Card className="group overflow-hidden h-full flex flex-col pt-0">
       {event.image && (
-        <div className="h-48 overflow-hidden relative">
+        <div className="h-56 overflow-hidden relative">
           <Image
             src={event.image}
             alt={event.title}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
       )}
       <CardHeader className="flex-1">
         <div className="flex justify-between items-start mb-2">
-          <Badge variant="secondary" className="text-xs">
-            {event.published ? "Published" : "Draft"}
-          </Badge>
-          <div className="flex items-center text-sm text-muted-foreground ml-2">
+          <div className="flex items-center text-sm text-muted-foreground">
             <CalendarIcon className="h-4 w-4 mr-1" />
-            <span>{new Date(event.publishedAt).toLocaleDateString()}</span>
+            <span>
+              {new Date(event.publishedAt).toLocaleDateString("en-US")}
+            </span>
           </div>
         </div>
         <CardTitle className="text-xl line-clamp-2 mb-2">
@@ -323,8 +322,11 @@ const EventCard = ({ event }: { event: Event }) => {
         <div className="prose prose-sm max-w-none mb-4 flex-1 line-clamp-3">
           {event.excerpt ?? `${event.content.slice(0, 150)}...`}
         </div>
-        <Button variant="outline" className="cursor-pointer" asChild>
-          <Link href={`/events/${event.id}`}>Read More</Link>
+        <Button variant="outline" className="cursor-pointer group/btn" asChild>
+          <Link href={`/events/${event.slug}`} className="flex items-center">
+            Read More
+            <ChevronRight className="ml-1 h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-0.5" />
+          </Link>
         </Button>
       </CardContent>
     </Card>

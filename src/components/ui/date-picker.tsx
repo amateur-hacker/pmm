@@ -28,7 +28,7 @@ export function DatePicker({
           id="date"
           className={`w-full justify-between font-normal ${!date ? "text-muted-foreground hover:text-muted-foreground" : "text-foreground hover:text-foreground"}`}
         >
-          {date ? date.toLocaleDateString() : placeholder}
+          {date ? date.toLocaleDateString("en-US") : placeholder}
           <ChevronDownIcon size={16} />
         </Button>
       </PopoverTrigger>

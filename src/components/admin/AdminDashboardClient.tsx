@@ -240,7 +240,7 @@ export default function AdminDashboardClient() {
     {
       accessorKey: "dob",
       header: "DOB",
-      cell: ({ row }) => new Date(row.original.dob).toLocaleDateString(),
+      cell: ({ row }) => new Date(row.original.dob).toLocaleDateString("en-US"),
     },
     {
       accessorKey: "donated",
@@ -349,7 +349,7 @@ export default function AdminDashboardClient() {
     {
       accessorKey: "createdAt",
       header: "Created",
-      cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString(),
+      cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString("en-US"),
     },
     {
       id: "actions",

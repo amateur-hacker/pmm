@@ -158,7 +158,7 @@ export function MemberDetailPageClient(props: Props) {
                       Date of Birth
                     </h3>
                     <p className="font-medium">
-                      {new Date(member.dob).toLocaleDateString()}
+                      {new Date(member.dob).toLocaleDateString("en-US")}
                     </p>
                   </div>
                 </div>
@@ -200,7 +200,7 @@ export function MemberDetailPageClient(props: Props) {
                       Registration Date
                     </h3>
                     <p className="font-medium">
-                      {new Date(member.createdAt).toLocaleDateString()}
+                      {new Date(member.createdAt).toLocaleDateString("en-US")}
                     </p>
                   </div>
                 </div>
