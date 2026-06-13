@@ -1,15 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+
 import cashfree from "@/lib/cashfree";
 
 type VerifyPaymentBody = {
-  order_id: string;
+  order_id?: string;
+  transaction_id?: string;
 };
 
 export async function POST(request: NextRequest) {
   try {
-    const { order_id } = (await request.json()) as VerifyPaymentBody;
+    const body = (await request.json()) as VerifyPaymentBody;
+    const orderId = body.order_id || body.transaction_id;
 
-    if (!order_id) {
+    if (!orderId) {
       return NextResponse.json(
         { error: "order_id is required" },
         { status: 400 },
@@ -17,7 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch order details from Cashfree
-    const response = await cashfree.PGFetchOrder(order_id);
+    const response = await cashfree.PGFetchOrder(orderId);
 
     if (!response?.data) {
       throw new Error("Unable to fetch order from Cashfree");

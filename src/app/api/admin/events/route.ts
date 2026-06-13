@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { events } from "@/lib/db/schema";
+import { slugify } from "@/lib/slug";
 
 const db = getDb();
 
@@ -114,7 +115,10 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { title, content, excerpt, author, published, image } = body;
+    const { title, slug: rawSlug, content, excerpt, author, published, image } =
+      body;
+
+    const slug = rawSlug && rawSlug !== "" ? rawSlug : slugify(title);
 
     const isPublished = published ? 1 : 0;
 
@@ -122,6 +126,7 @@ export async function POST(request: NextRequest) {
       .insert(events)
       .values({
         title,
+        slug,
         content,
         excerpt: excerpt || null,
         author,

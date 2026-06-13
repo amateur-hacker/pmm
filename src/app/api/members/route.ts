@@ -16,8 +16,7 @@ export async function GET(request: NextRequest) {
       const member = await db
         .select()
         .from(members)
-        .where(eq(members.email, email))
-        .limit(1);
+        .where(eq(members.email, email));
 
       return Response.json(member);
     }
@@ -50,18 +49,23 @@ export async function GET(request: NextRequest) {
     // ------------------------
     // MAIN PAGINATED LIST
     // ------------------------
+    const orderBy = [
+      sql`CASE WHEN ${members.type} = 'Special' THEN 0 ELSE 1 END`,
+      desc(members.createdAt),
+    ];
+
     const listQuery = finalWhere
       ? db
           .select()
           .from(members)
           .where(finalWhere)
-          .orderBy(desc(members.createdAt))
+          .orderBy(...orderBy)
           .limit(limit)
           .offset(offset)
       : db
           .select()
           .from(members)
-          .orderBy(desc(members.createdAt))
+          .orderBy(...orderBy)
           .limit(limit)
           .offset(offset);
 

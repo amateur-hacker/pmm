@@ -1,17 +1,26 @@
-import { desc, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
+
+import { desc, eq } from "drizzle-orm";
+
 import { getDb } from "@/lib/db";
-import { paymentHistory } from "@/lib/db/schema";
+import { members, paymentHistory } from "@/lib/db/schema";
 
 const db = getDb();
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { memberId, orderId, amount, paymentStatus, paymentMethod } = body;
+    const {
+      memberId,
+      userId,
+      transactionId,
+      amount,
+      paymentStatus,
+      paymentMethod,
+    } = body;
 
     // Validate required fields
-    if (!memberId || !orderId || !amount || !paymentStatus) {
+    if (!memberId || !transactionId || !amount || !paymentStatus) {
       return Response.json(
         { error: "Missing required fields" },
         { status: 400 },
@@ -22,7 +31,8 @@ export async function POST(request: NextRequest) {
       .insert(paymentHistory)
       .values({
         memberId: memberId,
-        orderId: orderId,
+        userId: userId || null,
+        transactionId: transactionId,
         amount: amount.toString(),
         paymentStatus: paymentStatus,
         paymentMethod: paymentMethod || null,
@@ -43,9 +53,43 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const memberId = searchParams.get("memberId");
+    const userId = searchParams.get("userId");
 
-    if (!memberId) {
-      return Response.json({ error: "memberId is required" }, { status: 400 });
+    if (!memberId && !userId) {
+      return Response.json(
+        { error: "memberId or userId is required" },
+        { status: 400 },
+      );
+    }
+
+    if (userId) {
+      const rows = await db
+        .select()
+        .from(paymentHistory)
+        .where(eq(paymentHistory.userId, userId))
+        .innerJoin(members, eq(paymentHistory.memberId, members.id))
+        .orderBy(desc(paymentHistory.createdAt));
+
+      const paymentsWithMember = rows.map((row) => ({
+        id: row.payment_history.id,
+        transactionId: row.payment_history.transactionId,
+        amount: row.payment_history.amount,
+        paymentDate: row.payment_history.paymentDate,
+        paymentStatus: row.payment_history.paymentStatus,
+        paymentMethod: row.payment_history.paymentMethod,
+        member: {
+          id: row.members.id,
+          name: row.members.name,
+          address: row.members.address,
+          mobile: row.members.mobile,
+          dob: row.members.dob,
+          image: row.members.image,
+          email: row.members.email,
+          membershipStartDate: row.members.membershipStartDate,
+        },
+      }));
+
+      return Response.json({ payments: paymentsWithMember });
     }
 
     const payments = await db

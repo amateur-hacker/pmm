@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { getDb } from "@/lib/db";
 import { events, members } from "@/lib/db/schema";
 import { generateMockEvents, generateMockMembers } from "@/lib/mock-data";
+import { slugify } from "@/lib/slug";
 
 // Load environment variables
 config({ path: ".env" });
@@ -52,6 +53,7 @@ async function seedDatabase() {
       await db.insert(events).values({
         id: uuidv4(), // Generate a new UUID for each event
         title: event.title,
+        slug: slugify(event.title),
         content: event.content,
         excerpt: event.excerpt,
         author: event.author,

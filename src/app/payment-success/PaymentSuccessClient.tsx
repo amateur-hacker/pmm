@@ -1,28 +1,22 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+
 import MembershipCard from "@/components/MembershipCard";
+import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 interface PaymentSuccessClientProps {
-  order_id?: string;
-}
-
-interface MemberData {
-  name: string;
-  address: string;
-  mobile: string;
-  email: string;
-  dob: string;
-  image?: string | null;
-  donated?: number;
+  transaction_id?: string;
 }
 
 export default function PaymentSuccessClient({
-  order_id,
+  transaction_id,
 }: PaymentSuccessClientProps) {
   const [isProcessing, setIsProcessing] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -32,16 +26,19 @@ export default function PaymentSuccessClient({
   const [validUntil, setValidUntil] = useState("");
 
   useEffect(() => {
-    if (!order_id) {
+    if (!transaction_id) {
       redirect("/");
     }
 
     const processPaymentAndRegistration = async () => {
       try {
+        const { data: currentSession } = await authClient.getSession();
+        const currentUserId = currentSession?.user?.id || null;
+
         const verifyResponse = await fetch("/api/verify-payment", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ order_id }),
+          body: JSON.stringify({ transaction_id }),
         });
 
         const verifyData = await verifyResponse.json();
@@ -74,7 +71,8 @@ export default function PaymentSuccessClient({
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 memberId: newMember.id,
-                orderId: order_id,
+                userId: currentUserId,
+                transactionId: transaction_id,
                 amount: verifyData.order_amount,
                 paymentStatus: verifyData.order_status,
                 paymentMethod: "Cashfree",
@@ -117,17 +115,17 @@ export default function PaymentSuccessClient({
     };
 
     processPaymentAndRegistration();
-  }, [order_id]);
+  }, [transaction_id]);
 
   if (isProcessing) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="container mx-auto px-4 max-w-2xl">
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="container mx-auto max-w-2xl px-4">
           <div className="text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+              <div className="h-8 w-8 animate-spin rounded-full border-blue-600 border-b-2" />
             </div>
-            <h1 className="text-2xl font-bold mb-2">
+            <h1 className="mb-2 font-bold text-2xl">
               Processing Your Registration...
             </h1>
             <p className="text-muted-foreground">
@@ -141,34 +139,34 @@ export default function PaymentSuccessClient({
 
   if (hasError) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <div className="text-center border rounded-lg p-8 bg-card">
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="container mx-auto max-w-2xl px-4">
+          <div className="rounded-lg border bg-card p-8 text-center">
             <div className="mb-8">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
                 <svg
-                  className="w-8 h-8 text-red-600"
+                  aria-label="Error cross"
+                  className="h-8 w-8 text-red-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  aria-label="Error cross"
                 >
                   <title>Error Icon</title>
                   <path
+                    d="M6 18L18 6M6 6l12 12"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
               </div>
-              <h1 className="text-3xl font-bold text-red-600 mb-2">
+              <h1 className="mb-2 font-bold text-3xl text-red-600">
                 Something Went Wrong
               </h1>
               <p className="text-muted-foreground">{errorMessage}</p>
             </div>
 
-            <Button className="cursor-pointer" asChild>
+            <Button asChild className="cursor-pointer">
               <Link href="/">Return to Home</Link>
             </Button>
           </div>
@@ -178,28 +176,28 @@ export default function PaymentSuccessClient({
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center py-12">
-      <div className="container mx-auto px-4 max-w-2xl">
-        <div className="text-center border rounded-lg p-8 bg-card">
+    <div className="flex min-h-screen items-center justify-center bg-background py-12">
+      <div className="container mx-auto max-w-2xl px-4">
+        <div className="rounded-lg border bg-card p-8 text-center">
           <div className="mb-8">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
               <svg
-                className="w-8 h-8 text-green-600"
+                aria-label="Success checkmark"
+                className="h-8 w-8 text-green-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                aria-label="Success checkmark"
               >
                 <title>Tick Icon</title>
                 <path
+                  d="M5 13l4 4L19 7"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M5 13l4 4L19 7"
                 />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-green-600 mb-2">
+            <h1 className="mb-2 font-bold text-3xl text-green-600">
               Payment Successful!
             </h1>
             <p className="text-muted-foreground">
@@ -207,42 +205,42 @@ export default function PaymentSuccessClient({
               continue our mission.
             </p>
             {memberSaved && (
-              <p className="text-green-600 font-medium mt-2">
+              <p className="mt-2 font-medium text-green-600">
                 ✓ Member registration completed successfully!
               </p>
             )}
           </div>
 
-          <div className="bg-muted/50 p-6 rounded-lg mb-6">
-            <h2 className="text-lg font-semibold mb-2">Payment Details</h2>
-            <p className="text-sm text-muted-foreground">
+          <div className="mb-6 rounded-lg bg-muted/50 p-6">
+            <h2 className="mb-2 font-semibold text-lg">Payment Details</h2>
+            <p className="text-muted-foreground text-sm">
               Transaction ID:{" "}
-              <span className="font-mono">{order_id}</span>
+              <span className="font-mono">{transaction_id}</span>
             </p>
           </div>
 
           {/* Membership Card */}
           {memberSaved && memberData && validUntil && (
             <div className="mb-6 flex flex-col items-center">
-              <h2 className="text-lg font-semibold mb-4">
+              <h2 className="mb-4 font-semibold text-lg">
                 Your Membership Card
               </h2>
               <MembershipCard
-                name={memberData.name}
                 address={memberData.address}
-                mobile={memberData.mobile}
                 dob={memberData.dob}
                 image={memberData.image}
+                mobile={memberData.mobile}
+                name={memberData.name}
                 validUntil={validUntil}
               />
             </div>
           )}
 
           <div className="flex items-center justify-center gap-4">
-            <Button className="cursor-pointer" asChild>
+            <Button asChild className="cursor-pointer">
               <Link href="/">Return to Home</Link>
             </Button>
-            <Button variant="outline" className="cursor-pointer" asChild>
+            <Button asChild className="cursor-pointer" variant="outline">
               <Link href="/membership">View My Membership</Link>
             </Button>
           </div>

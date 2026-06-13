@@ -1,5 +1,7 @@
-import type { Metadata } from "next";
 import { Suspense } from "react";
+
+import type { Metadata } from "next";
+
 import PaymentSuccessClient from "./PaymentSuccessClient";
 
 export const metadata: Metadata = {
@@ -13,17 +15,17 @@ export const metadata: Metadata = {
 };
 
 interface PaymentSuccessPageProps {
-  searchParams: Promise<{ order_id?: string }>;
+  searchParams: Promise<{ transaction_id?: string }>;
 }
 
 export default async function PaymentSuccessPage({
   searchParams,
 }: PaymentSuccessPageProps) {
-  const { order_id } = await searchParams;
+  const { transaction_id } = await searchParams;
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <PaymentSuccessClient order_id={order_id} />
+      <PaymentSuccessClient transaction_id={transaction_id} />
     </Suspense>
   );
 }

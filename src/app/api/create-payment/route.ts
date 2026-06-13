@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         customer_name: customerDetails.customer_name,
       },
       order_meta: {
-        return_url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/payment-success?order_id={order_id}`,
+        return_url: `${process.env.SITE_URL || "https://purvanchalmitramahasabha.in"}/payment-success?transaction_id={order_id}`,
         // return_url:
         //   "https://www.cashfree.com/devstudio/preview/pg/web/checkout?order_id={order_id}",
         // return_url:
