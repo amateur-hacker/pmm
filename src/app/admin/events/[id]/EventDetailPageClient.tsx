@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -21,10 +20,10 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { authClient } from "@/lib/auth-client";
 
 interface Blog {
   id: string;
+  slug: string;
   title: string;
   content: string;
   excerpt: string | null;
@@ -44,7 +43,6 @@ export function EventDetailPageClient(props: Props) {
   const [event, setEvent] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const router = useRouter();
 
   // Use a useEffect to extract the id from async params
   useEffect(() => {
@@ -96,7 +94,7 @@ export function EventDetailPageClient(props: Props) {
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         <div className="mb-8">
-          <Button asChild className="cursor-pointer">
+          <Button asChild variant="outline" className="cursor-pointer">
             <Link href="/admin?tab=events" className="flex items-center">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Dashboard
@@ -143,7 +141,7 @@ export function EventDetailPageClient(props: Props) {
                       Created Date
                     </h3>
                     <p className="font-medium">
-                      {new Date(event.createdAt).toLocaleDateString()}
+                      {new Date(event.createdAt).toLocaleDateString("en-US")}
                     </p>
                   </div>
                 </div>
@@ -156,7 +154,9 @@ export function EventDetailPageClient(props: Props) {
                         Published Date
                       </h3>
                       <p className="font-medium">
-                        {new Date(event.publishedAt).toLocaleDateString()}
+                        {new Date(event.publishedAt).toLocaleDateString(
+                          "en-US",
+                        )}
                       </p>
                     </div>
                   </div>
@@ -216,9 +216,9 @@ export function EventDetailPageClient(props: Props) {
             </div>
 
             <div className="flex space-x-4 mt-8 pt-6 border-t">
-              <Button asChild className="cursor-pointer">
+              <Button asChild variant="outline" className="cursor-pointer">
                 <Link
-                  href={`/events/${event.id}`}
+                  href={`/events/${event.slug}`}
                   target="_blank"
                   className="flex items-center"
                 >

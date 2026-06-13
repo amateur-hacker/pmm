@@ -21,7 +21,6 @@ import { FileUpload } from "@/components/ui/file-upload";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -123,9 +122,11 @@ export function AddEventPageClient() {
 
           <CardContent>
             <Form {...form}>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col gap-6"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* TITLE */}
                   <FormField
                     control={control}
                     name="title"
@@ -145,7 +146,6 @@ export function AddEventPageClient() {
                     )}
                   />
 
-                  {/* AUTHOR */}
                   <FormField
                     control={control}
                     name="author"
@@ -165,29 +165,6 @@ export function AddEventPageClient() {
                     )}
                   />
 
-                  {/* PUBLISHED */}
-                  <FormField
-                    control={control}
-                    name="published"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>Published</FormLabel>
-                          <FormDescription>
-                            Check this to publish the event for public viewing
-                          </FormDescription>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* IMAGE */}
                   <FormField
                     control={control}
                     name="image"
@@ -213,7 +190,6 @@ export function AddEventPageClient() {
                   />
                 </div>
 
-                {/* EXCERPT */}
                 <FormField
                   control={control}
                   name="excerpt"
@@ -237,7 +213,6 @@ export function AddEventPageClient() {
                   )}
                 />
 
-                {/* CONTENT */}
                 <FormField
                   control={control}
                   name="content"
@@ -260,6 +235,22 @@ export function AddEventPageClient() {
                     </FormItem>
                   )}
                 />
+
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="published"
+                    checked={form.watch("published")}
+                    onCheckedChange={(c) =>
+                      form.setValue("published", c === true)
+                    }
+                  />
+                  <label
+                    htmlFor="published"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Published
+                  </label>
+                </div>
 
                 <div className="flex justify-end gap-4 pt-4">
                   <Button variant="outline" className="cursor-pointer" asChild>

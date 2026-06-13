@@ -13,9 +13,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,7 +23,6 @@ import { FileUpload } from "@/components/ui/file-upload";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,7 +30,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { authClient } from "@/lib/auth-client";
 
 // ----------------- SCHEMA --------------------
 const eventSchema = z.object({
@@ -49,6 +47,7 @@ const eventSchema = z.object({
 
 interface Event {
   id: string;
+  slug: string;
   title: string;
   content: string;
   excerpt: string | null;
@@ -200,7 +199,6 @@ export function EditEventPageClient(props: Props) {
             <Form {...form}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* TITLE */}
                   <FormField
                     control={control}
                     name="title"
@@ -220,7 +218,6 @@ export function EditEventPageClient(props: Props) {
                     )}
                   />
 
-                  {/* AUTHOR */}
                   <FormField
                     control={control}
                     name="author"
@@ -236,29 +233,6 @@ export function EditEventPageClient(props: Props) {
                           <Input placeholder="Enter author name" {...field} />
                         </FormControl>
                         <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* PUBLISHED */}
-                  <FormField
-                    control={control}
-                    name="published"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            className="mt-1"
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>Published</FormLabel>
-                          <FormDescription>
-                            Check this to publish the event for public viewing
-                          </FormDescription>
-                        </div>
                       </FormItem>
                     )}
                   />
@@ -349,6 +323,22 @@ export function EditEventPageClient(props: Props) {
                     </FormItem>
                   )}
                 />
+
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="published"
+                    checked={form.watch("published")}
+                    onCheckedChange={(c) =>
+                      form.setValue("published", c === true)
+                    }
+                  />
+                  <label
+                    htmlFor="published"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Published
+                  </label>
+                </div>
 
                 <div className="flex justify-end gap-4 pt-4">
                   <Button asChild variant="outline" className="cursor-pointer">
