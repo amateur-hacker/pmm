@@ -15,6 +15,19 @@ interface PaymentSuccessClientProps {
   transaction_id?: string;
 }
 
+interface MemberData {
+  name: string;
+  address: string;
+  mobile: string;
+  email?: string;
+  dob: string;
+  education?: string;
+  permanentAddress?: string;
+  image?: string | null;
+  type?: string;
+  donated?: number;
+}
+
 export default function PaymentSuccessClient({
   transaction_id,
 }: PaymentSuccessClientProps) {
