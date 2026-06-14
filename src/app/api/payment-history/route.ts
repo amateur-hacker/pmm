@@ -92,6 +92,13 @@ export async function GET(request: NextRequest) {
       return Response.json({ payments: paymentsWithMember });
     }
 
+    if (!memberId) {
+      return Response.json(
+        { error: "memberId is required" },
+        { status: 400 },
+      );
+    }
+
     const payments = await db
       .select()
       .from(paymentHistory)
