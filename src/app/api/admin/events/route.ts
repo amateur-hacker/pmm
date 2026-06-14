@@ -115,8 +115,15 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { title, slug: rawSlug, content, excerpt, author, published, image } =
-      body;
+    const {
+      title,
+      slug: rawSlug,
+      content,
+      excerpt,
+      author,
+      published,
+      image,
+    } = body;
 
     const slug = rawSlug && rawSlug !== "" ? rawSlug : slugify(title);
 

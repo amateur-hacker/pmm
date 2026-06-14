@@ -1,7 +1,12 @@
 "use client";
 
 import { useElementSize } from "@mantine/hooks";
-import { CalendarIcon, CreditCard, UserPlusIcon, UsersIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  CreditCard,
+  UserPlusIcon,
+  UsersIcon,
+} from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

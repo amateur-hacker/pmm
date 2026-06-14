@@ -581,7 +581,7 @@ export default function MembershipForm() {
                                 Terms and Conditions
                               </Link>{" "}
                               and understand that membership requires a minimum
-                              donation
+                              fees
                             </FormLabel>
 
                             <FormDescription className="text-muted-foreground text-xs leading-relaxed">

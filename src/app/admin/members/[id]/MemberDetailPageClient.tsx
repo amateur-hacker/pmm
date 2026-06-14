@@ -226,7 +226,9 @@ export function MemberDetailPageClient(props: Props) {
                 <h3 className="text-sm font-medium text-muted-foreground mb-2">
                   Profile Image
                 </h3>
-                {member.image.startsWith("https://picsum.photos/200/200?random=") ? (
+                {member.image.startsWith(
+                  "https://picsum.photos/200/200?random=",
+                ) ? (
                   <div className="flex h-32 w-32 items-center justify-center rounded-full border-2 border-muted bg-muted/50">
                     <User className="h-12 w-12 text-muted-foreground" />
                   </div>
@@ -247,15 +249,18 @@ export function MemberDetailPageClient(props: Props) {
                 )}
               </div>
             )}
-            {member?.image && !member.image.startsWith("https://picsum.photos/200/200?random=") && (
-              <Lightbox
-                open={lightboxOpen}
-                close={() => setLightboxOpen(false)}
-                slides={[{ src: member.image }]}
-                render={{ buttonPrev: () => null, buttonNext: () => null }}
-                controller={{ disableSwipeNavigation: true }}
-              />
-            )}
+            {member?.image &&
+              !member.image.startsWith(
+                "https://picsum.photos/200/200?random=",
+              ) && (
+                <Lightbox
+                  open={lightboxOpen}
+                  close={() => setLightboxOpen(false)}
+                  slides={[{ src: member.image }]}
+                  render={{ buttonPrev: () => null, buttonNext: () => null }}
+                  controller={{ disableSwipeNavigation: true }}
+                />
+              )}
           </CardContent>
         </Card>
       </div>

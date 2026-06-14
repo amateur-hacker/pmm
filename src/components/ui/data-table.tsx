@@ -52,7 +52,9 @@ export function DataTable<TData, TValue>({
     const q = globalFilter.toLowerCase();
     return data.filter((item) => {
       const value = (item as Record<string, unknown>)[searchKey];
-      return String(value ?? "").toLowerCase().includes(q);
+      return String(value ?? "")
+        .toLowerCase()
+        .includes(q);
     });
   }, [data, globalFilter, searchKey]);
 

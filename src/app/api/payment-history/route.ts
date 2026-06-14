@@ -93,10 +93,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (!memberId) {
-      return Response.json(
-        { error: "memberId is required" },
-        { status: 400 },
-      );
+      return Response.json({ error: "memberId is required" }, { status: 400 });
     }
 
     const payments = await db

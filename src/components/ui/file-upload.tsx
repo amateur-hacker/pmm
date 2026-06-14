@@ -76,11 +76,17 @@ export function FileUpload({
       <div className="flex items-center gap-2 overflow-hidden">
         <button
           type="button"
-          onClick={value?.startsWith("https://picsum.photos/200/200?random=") ? undefined : onPreview}
+          onClick={
+            value?.startsWith("https://picsum.photos/200/200?random=")
+              ? undefined
+              : onPreview
+          }
           className={cn(
             "shrink-0 w-9 h-9 overflow-hidden border border-muted bg-background flex items-center justify-center hover:opacity-80 transition-opacity rounded-sm",
             previewClassName,
-            value?.startsWith("https://picsum.photos/200/200?random=") ? "cursor-default" : "cursor-zoom-in",
+            value?.startsWith("https://picsum.photos/200/200?random=")
+              ? "cursor-default"
+              : "cursor-zoom-in",
           )}
         >
           {value?.startsWith("https://picsum.photos/200/200?random=") ? (

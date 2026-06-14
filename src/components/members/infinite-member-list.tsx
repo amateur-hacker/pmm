@@ -277,7 +277,6 @@ const InfiniteMemberList = ({ initialData }: InfiniteMemberListProps) => {
                   <span className="text-sm">{member.email}</span>
                 </div>
               )}
-
             </CardContent>
           </Card>
         ))}

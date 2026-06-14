@@ -349,7 +349,8 @@ export default function AdminDashboardClient() {
     {
       accessorKey: "createdAt",
       header: "Created",
-      cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString("en-US"),
+      cell: ({ row }) =>
+        new Date(row.original.createdAt).toLocaleDateString("en-US"),
     },
     {
       id: "actions",

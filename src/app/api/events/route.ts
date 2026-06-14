@@ -106,8 +106,15 @@ export async function POST(request: NextRequest) {
       return new Response("Unauthorized", { status: 403 });
     }
 
-    const { title, slug: rawSlug, content, excerpt, author, published, image } =
-      await request.json();
+    const {
+      title,
+      slug: rawSlug,
+      content,
+      excerpt,
+      author,
+      published,
+      image,
+    } = await request.json();
 
     const slug = rawSlug && rawSlug !== "" ? rawSlug : slugify(title);
 
