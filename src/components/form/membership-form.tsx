@@ -131,15 +131,15 @@ export default function MembershipForm() {
   const registrationForm = useForm({
     resolver: zodResolver(memberSchema),
     defaultValues: {
-      name: "xyz123",
-      address: "xyz123",
-      mobile: "1234567890",
-      email: "xyz123@gmail.com",
-      dob: "1/1/2001",
-      education: "xyz",
-      permanentAddress: "xyz123",
+      name: "",
+      address: "",
+      mobile: "",
+      email: "",
+      dob: "",
+      education: "",
+      permanentAddress: "",
       image: "",
-      terms: true,
+      terms: false,
     },
   });
 
