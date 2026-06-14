@@ -21,8 +21,8 @@ interface MemberData {
   mobile: string;
   email?: string;
   dob: string;
-  education?: string;
-  permanentAddress?: string;
+  education: string;
+  permanentAddress: string;
   image?: string | null;
   type?: string;
   donated?: number;
