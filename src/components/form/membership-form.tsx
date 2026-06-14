@@ -1,6 +1,11 @@
 "use client";
 
 import crypto from "node:crypto";
+
+import { useEffect, useRef, useState } from "react";
+
+import Link from "next/link";
+
 // @ts-expect-error
 import { load } from "@cashfreepayments/cashfree-js";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,13 +18,12 @@ import {
   Phone,
   User,
 } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { z } from "zod";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,7 +56,11 @@ const memberSchema = z.object({
   mobile: z
     .string()
     .min(10, { message: "Mobile number must be at least 10 digits" }),
-  email: z.string().email({ message: "Invalid email address" }).optional().or(z.literal("")),
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .optional()
+    .or(z.literal("")),
   dob: z.string().refine(
     (date) => {
       const parsedDate = Date.parse(date);
@@ -232,7 +240,8 @@ export default function MembershipForm() {
       let cashfree: any;
       const initializeSDK = async () => {
         cashfree = await load({
-          mode: "sandbox",
+          mode:
+            process.env.NODE_ENV === "production" ? "production" : "sandbox",
         });
       };
       initializeSDK();
@@ -306,10 +315,10 @@ export default function MembershipForm() {
 
   return (
     <div className="min-h-screen bg-background py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div className="container mx-auto max-w-4xl px-4">
         <Card className="w-full">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">
+            <CardTitle className="font-bold text-2xl">
               {currentStep === "registration"
                 ? "NGO Membership"
                 : "Membership Type"}
@@ -325,10 +334,10 @@ export default function MembershipForm() {
             {currentStep === "registration" ? (
               <Form {...registrationForm}>
                 <form
-                  onSubmit={registrationForm.handleSubmit(onRegistrationSubmit)}
                   className="space-y-6"
+                  onSubmit={registrationForm.handleSubmit(onRegistrationSubmit)}
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     {/* NAME */}
                     <FormField
                       control={registrationForm.control}
@@ -467,13 +476,13 @@ export default function MembershipForm() {
                           </FormLabel>
                           <FormControl>
                             <FileUpload
-                              value={field.value || ""}
                               onChange={(url) => {
                                 if (url) uploadedImages.current.add(url);
                                 field.onChange(url);
                               }}
                               onPreview={() => setLightboxOpen(true)}
                               previewClassName="rounded-full"
+                              value={field.value || ""}
                             />
                           </FormControl>
                           <FormMessage />
@@ -482,18 +491,18 @@ export default function MembershipForm() {
                     />
 
                     <Lightbox
-                      open={lightboxOpen}
                       close={() => setLightboxOpen(false)}
+                      controller={{ disableSwipeNavigation: true }}
+                      open={lightboxOpen}
+                      render={{
+                        buttonPrev: () => null,
+                        buttonNext: () => null,
+                      }}
                       slides={[
                         {
                           src: registrationForm.watch("image") || "",
                         },
                       ]}
-                      render={{
-                        buttonPrev: () => null,
-                        buttonNext: () => null,
-                      }}
-                      controller={{ disableSwipeNavigation: true }}
                     />
                   </div>
 
@@ -555,19 +564,19 @@ export default function MembershipForm() {
                           <FormControl>
                             <Checkbox
                               checked={!!field.value}
+                              className="mt-1"
                               onCheckedChange={(v) =>
                                 field.onChange(Boolean(v))
                               }
-                              className="mt-1"
                             />
                           </FormControl>
 
                           <div className="space-y-1">
-                            <FormLabel className="text-sm font-medium leading-relaxed inline-block">
+                            <FormLabel className="inline-block font-medium text-sm leading-relaxed">
                               I agree to the{" "}
                               <Link
+                                className="text-primary underline-offset-4 hover:underline"
                                 href="/terms"
-                                className="text-primary hover:underline underline-offset-4"
                               >
                                 Terms and Conditions
                               </Link>{" "}
@@ -575,7 +584,7 @@ export default function MembershipForm() {
                               donation
                             </FormLabel>
 
-                            <FormDescription className="text-xs text-muted-foreground leading-relaxed">
+                            <FormDescription className="text-muted-foreground text-xs leading-relaxed">
                               I confirm that I am 18+ years old, have no
                               criminal record, and am a citizen of India.
                             </FormDescription>
@@ -589,7 +598,7 @@ export default function MembershipForm() {
 
                   {/* EXISTING MEMBER */}
                   {existingMember && (
-                    <div className="p-4 bg-warning/20 border border-warning rounded-md">
+                    <div className="rounded-md border border-warning bg-warning/20 p-4">
                       <p className="text-warning-foreground">
                         <strong>Note:</strong> A member with this name already
                         exists.
@@ -599,9 +608,9 @@ export default function MembershipForm() {
 
                   {/* SUBMIT */}
                   <Button
-                    type="submit"
                     className="w-full cursor-pointer"
                     disabled={isSubmitting}
+                    type="submit"
                   >
                     {isSubmitting
                       ? "Submitting..."
@@ -612,10 +621,10 @@ export default function MembershipForm() {
             ) : (
               <Form {...donationForm}>
                 <form
-                  onSubmit={donationForm.handleSubmit(onDonationSubmit)}
                   className="space-y-6"
+                  onSubmit={donationForm.handleSubmit(onDonationSubmit)}
                 >
-                  <div className="text-center mb-6">
+                  <div className="mb-6 text-center">
                     <p className="text-muted-foreground">
                       Thank you for registering! Please select your membership
                       type.
@@ -623,10 +632,14 @@ export default function MembershipForm() {
                   </div>
 
                   {/* Plan Selection */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {/* Year */}
                     <button
-                      type="button"
+                      className={`flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all ${
+                        donationForm.watch("plan") === "year"
+                          ? "border-primary bg-primary/5"
+                          : "border-muted hover:border-muted-foreground/30"
+                      }`}
                       onClick={() => {
                         const tier = donationForm.getValues("tier");
                         const years = donationForm.getValues("years");
@@ -634,32 +647,28 @@ export default function MembershipForm() {
                         donationForm.setValue("plan", "year");
                         donationForm.setValue("amount", String(base * years));
                       }}
-                      className={`flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all cursor-pointer ${
-                        donationForm.watch("plan") === "year"
-                          ? "border-primary bg-primary/5"
-                          : "border-muted hover:border-muted-foreground/30"
-                      }`}
+                      type="button"
                     >
-                      <span className="text-2xl font-bold">Yearly</span>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="font-bold text-2xl">Yearly</span>
+                      <span className="text-muted-foreground text-sm">
                         ₹100/yr – ₹500/yr
                       </span>
                     </button>
 
                     {/* Lifetime */}
                     <button
-                      type="button"
-                      onClick={() => {
-                        donationForm.setValue("plan", "lifetime");
-                        donationForm.setValue("amount", "5000");
-                      }}
-                      className={`flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all cursor-pointer ${
+                      className={`flex cursor-pointer flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all ${
                         donationForm.watch("plan") === "lifetime"
                           ? "border-primary bg-primary/5"
                           : "border-muted hover:border-muted-foreground/30"
                       }`}
+                      onClick={() => {
+                        donationForm.setValue("plan", "lifetime");
+                        donationForm.setValue("amount", "5000");
+                      }}
+                      type="button"
                     >
-                      <span className="text-3xl font-bold">₹5,000</span>
+                      <span className="font-bold text-3xl">₹5,000</span>
                       <Badge variant="default">Lifetime Member</Badge>
                     </button>
                   </div>
@@ -670,22 +679,29 @@ export default function MembershipForm() {
                       {/* Tier Toggle */}
                       <div className="flex gap-2">
                         <button
-                          type="button"
-                          onClick={() => {
-                            const years = donationForm.getValues("years");
-                            donationForm.setValue("tier", "Normal");
-                            donationForm.setValue("amount", String(100 * years));
-                          }}
-                          className={`flex-1 cursor-pointer rounded-md px-4 py-2 text-sm font-medium transition-all ${
+                          className={`flex-1 cursor-pointer rounded-md px-4 py-2 font-medium text-sm transition-all ${
                             donationForm.watch("tier") === "Normal"
                               ? "bg-primary text-primary-foreground"
                               : "bg-muted hover:bg-muted/80"
                           }`}
+                          onClick={() => {
+                            const years = donationForm.getValues("years");
+                            donationForm.setValue("tier", "Normal");
+                            donationForm.setValue(
+                              "amount",
+                              String(100 * years),
+                            );
+                          }}
+                          type="button"
                         >
                           Normal (₹100/yr)
                         </button>
                         <button
-                          type="button"
+                          className={`flex-1 cursor-pointer rounded-md px-4 py-2 font-medium text-sm transition-all ${
+                            donationForm.watch("tier") === "Special"
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted hover:bg-muted/80"
+                          }`}
                           onClick={() => {
                             const years = donationForm.getValues("years");
                             donationForm.setValue("tier", "Special");
@@ -694,11 +710,7 @@ export default function MembershipForm() {
                               String(500 * years),
                             );
                           }}
-                          className={`flex-1 cursor-pointer rounded-md px-4 py-2 text-sm font-medium transition-all ${
-                            donationForm.watch("tier") === "Special"
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted hover:bg-muted/80"
-                          }`}
+                          type="button"
                         >
                           Special (₹500/yr)
                         </button>
@@ -710,24 +722,22 @@ export default function MembershipForm() {
                         <div className="mt-1 flex gap-2">
                           {[1, 2, 3, 4, 5].map((y) => (
                             <button
+                              className={`flex-1 cursor-pointer rounded-md px-3 py-2 font-medium text-sm transition-all ${
+                                donationForm.watch("years") === y
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-muted hover:bg-muted/80"
+                              }`}
                               key={y}
-                              type="button"
                               onClick={() => {
                                 donationForm.setValue("years", y);
-                                const tier =
-                                  donationForm.getValues("tier");
-                                const base =
-                                  tier === "Special" ? 500 : 100;
+                                const tier = donationForm.getValues("tier");
+                                const base = tier === "Special" ? 500 : 100;
                                 donationForm.setValue(
                                   "amount",
                                   String(base * y),
                                 );
                               }}
-                              className={`flex-1 cursor-pointer rounded-md px-3 py-2 text-sm font-medium transition-all ${
-                                donationForm.watch("years") === y
-                                  ? "bg-primary text-primary-foreground"
-                                  : "bg-muted hover:bg-muted/80"
-                              }`}
+                              type="button"
                             >
                               {y} {y === 1 ? "yr" : "yrs"}
                             </button>
@@ -737,10 +747,10 @@ export default function MembershipForm() {
 
                       {/* Computed Amount */}
                       <div className="rounded-md bg-primary/5 p-3 text-center">
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                           Total Amount
                         </p>
-                        <p className="text-2xl font-bold text-primary">
+                        <p className="font-bold text-2xl text-primary">
                           ₹
                           {(
                             (donationForm.watch("tier") === "Special"
@@ -755,37 +765,37 @@ export default function MembershipForm() {
                   {/* Lifetime Display */}
                   {donationForm.watch("plan") === "lifetime" && (
                     <div className="rounded-lg border bg-primary/5 p-4 text-center">
-                      <p className="text-lg font-semibold">
+                      <p className="font-semibold text-lg">
                         Lifetime Membership
                       </p>
-                      <p className="mt-2 text-3xl font-bold text-primary">
+                      <p className="mt-2 font-bold text-3xl text-primary">
                         ₹5,000
                       </p>
-                      <p className="mt-1 text-sm text-muted-foreground">
+                      <p className="mt-1 text-muted-foreground text-sm">
                         One-time payment, lifetime access
                       </p>
                     </div>
                   )}
 
                   {donationForm.formState.errors.amount && (
-                    <p className="text-center text-sm text-destructive">
+                    <p className="text-center text-destructive text-sm">
                       {donationForm.formState.errors.amount.message}
                     </p>
                   )}
 
                   <div className="flex gap-4">
                     <Button
-                      type="button"
-                      variant="outline"
                       className="flex-1 cursor-pointer"
                       onClick={() => setCurrentStep("registration")}
+                      type="button"
+                      variant="outline"
                     >
                       Back
                     </Button>
                     <Button
-                      type="submit"
                       className="flex-1 cursor-pointer"
                       disabled={isSubmitting || !donationForm.watch("amount")}
+                      type="submit"
                     >
                       {isSubmitting ? "Processing..." : "Continue Registration"}
                     </Button>
