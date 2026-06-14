@@ -5,6 +5,7 @@ import Script from "next/script";
 import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { BottomNavBar } from "@/components/BottomNavBar";
+import DonationButton from "@/components/DonationButton";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
@@ -110,6 +111,7 @@ export default function RootLayout({
           <div className="pointer-events-none fixed inset-0 z-50 flex flex-col justify-end">
             <BottomNavBar />
           </div>
+          <DonationButton />
           <Toaster closeButton />
           <NextTopLoader color={"var(--primary)"} showSpinner={false} />
           <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" />
