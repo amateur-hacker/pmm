@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import cashfree from "@/lib/cashfree";
 import crypto from "node:crypto";
+
+import { type NextRequest, NextResponse } from "next/server";
+
+import cashfree from "@/lib/cashfree";
 
 type CreateOrderBody = {
   amount: string;
@@ -12,7 +14,7 @@ type CreateOrderBody = {
   };
 };
 
-const generateOrderId = () => {
+const generateTransactionId = () => {
   const uniqueId = crypto.randomBytes(16).toString("hex");
 
   const hash = crypto.createHash("sha256");
@@ -32,12 +34,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const isProduction = process.env.NODE_ENV === "production";
-    const orderId = generateOrderId();
+    // const isProduction = process.env.NODE_ENV === "production";
+    const transactionId = generateTransactionId();
 
     // Create order using Cashfree SDK
     const orderData = {
-      order_id: orderId,
+      order_id: transactionId,
       order_amount: parseFloat(amount),
       order_currency: "INR",
       customer_details: {
@@ -57,7 +59,7 @@ export async function POST(request: NextRequest) {
     };
     const response = await cashfree.PGCreateOrder(orderData);
 
-    if (!response || !response.data) {
+    if (!response?.data) {
       throw new Error("Failed to create payment order");
     }
 
